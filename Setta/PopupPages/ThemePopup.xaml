@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="Setta.PopupPages.ThemePopup"
+    VerticalOptions="End">
+
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
+          Padding="20"
+          ColumnDefinitions="*"
+          WidthRequest="600"
+          MaximumHeightRequest="240">
+
+        <VerticalStackLayout Spacing="20">
+            <BoxView HeightRequest="4" WidthRequest="40" CornerRadius="10" HorizontalOptions="Center"
+                     BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}"/>
+
+            <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
+            <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>
+            <RadioButton Content="Авто" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
+        </VerticalStackLayout>
+
+    </Grid>
+
+</toolkit:Popup>

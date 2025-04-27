@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Setta.Pages.SettingsPage">
+
+    <Shell.TitleView>
+        <Grid Padding="5">
+            <Label Text="Настройки" Style="{StaticResource Headline}" />
+        </Grid>
+    </Shell.TitleView>
+
+    <ScrollView>
+        <StackLayout Padding="20,0,20,20">
+
+            <!-- Раздел: Приложение -->
+            <Label Text="Приложение" FontSize="16" TextColor="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}"/>
+
+            <Frame CornerRadius="10" Padding="10" Margin="0,5">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ThemeSwitch}" />
+                </Frame.GestureRecognizers>
+
+                <StackLayout>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="theme.svg" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Label Grid.Column="1" Text="Тема" VerticalOptions="Center" />
+                        <Image Source="arrowright.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
