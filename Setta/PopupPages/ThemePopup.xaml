@@ -5,7 +5,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="Setta.PopupPages.ThemePopup"
     VerticalOptions="End"
-    Color="Transparent">
+    Color="Transparent"
+    Opened="OnPopupOpened">
 
     <Frame
         BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
@@ -26,7 +27,7 @@
 
             <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
             <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>
-            <RadioButton Content="Авто" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
+            <RadioButton Content="Системная" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
         </VerticalStackLayout>
 
     </Frame>
