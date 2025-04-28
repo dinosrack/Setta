@@ -42,13 +42,23 @@ namespace Setta.PopupPages
         {
             string selectedTheme = Preferences.Get("SelectedTheme", "Auto");
 
-            foreach (var view in (Content as Frame)?.Content as VerticalStackLayout)
+            if (Content is Grid grid)
             {
-                if (view is RadioButton radioButton && radioButton.Value is string value)
+                if (grid.Children.FirstOrDefault() is Border border)
                 {
-                    radioButton.IsChecked = value == selectedTheme;
+                    if (border.Content is VerticalStackLayout layout)
+                    {
+                        foreach (var view in layout.Children)
+                        {
+                            if (view is RadioButton radioButton && radioButton.Value is string value)
+                            {
+                                radioButton.IsChecked = value == selectedTheme;
+                            }
+                        }
+                    }
                 }
             }
         }
+
     }
 }

@@ -12,8 +12,8 @@ namespace Setta.Models
     {
         public string ExerciseName { get; set; }
         public string MuscleGroup { get; set; }
+        public string SecondaryMuscleGroup { get; set; }
         //public string ExerciseIcon { get; set; } 
-
         public bool IsLastItem { get; set; }
     }
 

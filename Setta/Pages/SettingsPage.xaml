@@ -15,25 +15,30 @@
             <!-- Раздел: Приложение -->
             <Label Text="Приложение" Style="{StaticResource SecondaryLabel}"/>
 
-            <Frame CornerRadius="10" Padding="10" Margin="0,5">
-                <Frame.GestureRecognizers>
+            <Border
+                StrokeShape="RoundRectangle 10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                Padding="10"
+                Margin="0,5">
+
+                <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ThemeSwitch}" />
-                </Frame.GestureRecognizers>
+                </Border.GestureRecognizers>
 
-                <StackLayout>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                        <Image Source="theme.svg" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
-                        <Label Grid.Column="1" Text="Тема" VerticalOptions="Center" />
-                        <Image Source="arrowright.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
-                    </Grid>
-                </StackLayout>
-            </Frame>
+                    <Image Source="theme.svg" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                    <Label Grid.Column="1" Text="Тема" VerticalOptions="Center" />
+                    <Image Source="arrowright.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
+                </Grid>
+
+            </Border>
+
         </StackLayout>
     </ScrollView>
 </ContentPage>

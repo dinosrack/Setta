@@ -9,26 +9,27 @@
     Color="Transparent"
     Opened="OnPopupOpened">
 
-    <Frame
-        BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
-        Padding="20"
-        CornerRadius="20"
-        HasShadow="True"
-        HorizontalOptions="Center"
-        VerticalOptions="End">
+    <Grid HorizontalOptions="Fill" VerticalOptions="End">
 
-        <VerticalStackLayout Spacing="20">
-            <BoxView HeightRequest="4"
-                     WidthRequest="40"
-                     CornerRadius="10"
-                     HorizontalOptions="Center"
-                     BackgroundColor="{StaticResource Secondary}"/>
+        <Border
+            StrokeShape="RoundRectangle 10,10,0,0"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
+            Padding="20"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
 
-            <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
-            <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>
-            <RadioButton Content="Системная" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
-        </VerticalStackLayout>
+            <VerticalStackLayout Spacing="20">
+                <BoxView HeightRequest="4"
+                         WidthRequest="40"
+                         CornerRadius="10"
+                         HorizontalOptions="Center"
+                         BackgroundColor="{StaticResource Secondary}" />
 
-    </Frame>
+                <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
+                <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>
+                <RadioButton Content="Системная" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
+            </VerticalStackLayout>
 
+        </Border>
+    </Grid>
 </toolkit:Popup>
