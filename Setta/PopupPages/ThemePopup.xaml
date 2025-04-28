@@ -5,6 +5,7 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="Setta.PopupPages.ThemePopup"
     VerticalOptions="End"
+    HorizontalOptions="Fill"
     Color="Transparent"
     Opened="OnPopupOpened">
 
@@ -13,8 +14,6 @@
         Padding="20"
         CornerRadius="20"
         HasShadow="True"
-        WidthRequest="600"
-        MaximumHeightRequest="240"
         HorizontalOptions="Center"
         VerticalOptions="End">
 
@@ -23,7 +22,7 @@
                      WidthRequest="40"
                      CornerRadius="10"
                      HorizontalOptions="Center"
-                     BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}"/>
+                     BackgroundColor="{StaticResource Secondary}"/>
 
             <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
             <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>

@@ -9,27 +9,14 @@
     <!-- Тёмная тема -->
     <Color x:Key="DarkBackground">#202020</Color>
     <Color x:Key="DarkElement">#282828</Color>
-    <Color x:Key="DarkImportant">#31BF6A</Color>
     <Color x:Key="DarkText">#FFFFFF</Color>
-    <Color x:Key="DarkSecondary">#808080</Color>
-    
-    <SolidColorBrush x:Key="DarkBackgroundBrush" Color="{StaticResource DarkBackground}" />
-    <SolidColorBrush x:Key="DarkElementBrush" Color="{StaticResource DarkElement}" />
-    <SolidColorBrush x:Key="DarkImportantBrush" Color="{StaticResource DarkImportant}" />
-    <SolidColorBrush x:Key="DarkTextBrush" Color="{StaticResource DarkText}" />
-    <SolidColorBrush x:Key="DarkSecondaryBrush" Color="{StaticResource DarkSecondary}" />
 
     <!-- Светлая тема -->
     <Color x:Key="LightBackground">#FFFFFF</Color>
     <Color x:Key="LightElement">#EDEDED</Color>
-    <Color x:Key="LightImportant">#31BF6A</Color>
     <Color x:Key="LightText">#202020</Color>
-    <Color x:Key="LightSecondary">#808080</Color>
 
-    <SolidColorBrush x:Key="LightBackgroundBrush" Color="{StaticResource LightBackground}" />
-    <SolidColorBrush x:Key="LightElementBrush" Color="{StaticResource LightElement}" />
-    <SolidColorBrush x:Key="LightImportantBrush" Color="{StaticResource LightImportant}" />
-    <SolidColorBrush x:Key="LightTextBrush" Color="{StaticResource LightText}" />
-    <SolidColorBrush x:Key="LightSecondaryBrush" Color="{StaticResource LightSecondary}" />
-
+    <!--Палитра обоих тем-->
+    <Color x:Key="Important">#31BF6A</Color>
+    <Color x:Key="Secondary">#808080</Color>
 </ResourceDictionary>

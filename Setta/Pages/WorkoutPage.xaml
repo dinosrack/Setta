@@ -4,7 +4,7 @@
              x:Class="Setta.Pages.WorkoutPage">
     <Shell.TitleView>
         <Grid Padding="5">
-            <Label Text="Тренировки" Style="{StaticResource Headline}" />
+            <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
         </Grid>
     </Shell.TitleView>
 </ContentPage>

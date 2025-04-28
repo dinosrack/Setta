@@ -13,13 +13,13 @@
         <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
         <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
         <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
-        <Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" />
-        <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" />
+        <Setter Property="Shell.DisabledColor" Value="{StaticResource Secondary}" />
+        <Setter Property="Shell.UnselectedColor" Value="{StaticResource Secondary}" />
         <Setter Property="Shell.NavBarHasShadow" Value="False" />
         <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
-        <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource LightImportant}, Dark={StaticResource DarkImportant}}" />
-        <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource LightImportant}, Dark={StaticResource DarkImportant}}" />
-        <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" />
+        <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Important}" />
+        <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Important}" />
+        <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}" />
     </Style>
 
     <Style TargetType="Frame">
@@ -35,14 +35,21 @@
         <Setter Property="FontSize" Value="16" />
     </Style>
 
-    <Style TargetType="Label" x:Key="Secondary">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" />
+    <Style TargetType="Label" x:Key="SecondaryLabel">
+        <Setter Property="TextColor" Value="{StaticResource Secondary}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="RubikRegular" />
         <Setter Property="FontSize" Value="16" />
     </Style>
 
-    <Style TargetType="Label" x:Key="Headline">
+    <Style TargetType="Label" x:Key="SecondarySmallLabel">
+        <Setter Property="TextColor" Value="{StaticResource Secondary}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontFamily" Value="RubikRegular" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="HeadlineLabel">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
         <Setter Property="FontFamily" Value="RubikMedium" />
         <Setter Property="FontSize" Value="24" />
@@ -58,12 +65,12 @@
 
             <Grid WidthRequest="20" HeightRequest="20" VerticalOptions="Center" HorizontalOptions="Center">
                 <Ellipse 
-                            Stroke="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" 
+                            Stroke="{StaticResource Secondary}" 
                             StrokeThickness="2"
                             Fill="Transparent"/>
                 <Ellipse 
                             x:Name="ContentCheck"
-                            Fill="{AppThemeBinding Light={StaticResource LightImportant}, Dark={StaticResource DarkImportant}}"
+                            Fill="{StaticResource Important}"
                             WidthRequest="10"
                             HeightRequest="10"
                             HorizontalOptions="Center"
@@ -105,7 +112,7 @@
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="RubikRegular"/>
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource Secondary}" />
         <Setter Property="HeightRequest" Value="48" />
     </Style>
 

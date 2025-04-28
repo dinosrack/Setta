@@ -5,7 +5,7 @@
     <Shell.TitleView>
         <Grid Padding="5">
             <Label Text="Результаты"
-                   Style="{StaticResource Headline}" />
+                   Style="{StaticResource HeadlineLabel}" />
         </Grid>
     </Shell.TitleView>
 </ContentPage>

@@ -4,7 +4,7 @@
              x:Class="Setta.Pages.TemplatePage">
     <Shell.TitleView>
         <Grid Padding="5">
-            <Label Text="Шаблоны" Style="{StaticResource Headline}" />
+            <Label Text="Шаблоны" Style="{StaticResource HeadlineLabel}" />
         </Grid>
     </Shell.TitleView>
 </ContentPage>
