@@ -48,13 +48,55 @@
         <Setter Property="FontSize" Value="24" />
     </Style>
 
+    <ControlTemplate x:Key="RadioButtonTemplate">
+        <Grid HeightRequest="40" VerticalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid WidthRequest="20" HeightRequest="20" VerticalOptions="Center" HorizontalOptions="Center">
+                <Ellipse 
+                            Stroke="{AppThemeBinding Light={StaticResource LightSecondary}, Dark={StaticResource DarkSecondary}}" 
+                            StrokeThickness="2"
+                            Fill="Transparent"/>
+                <Ellipse 
+                            x:Name="ContentCheck"
+                            Fill="{AppThemeBinding Light={StaticResource LightImportant}, Dark={StaticResource DarkImportant}}"
+                            WidthRequest="10"
+                            HeightRequest="10"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Opacity="0"/>
+            </Grid>
+
+            <ContentPresenter Grid.Column="2"
+                              VerticalOptions="Center"
+                              HorizontalOptions="Start" 
+                              Margin="10,0,0,0" />
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CheckedStates">
+                        <VisualState x:Name="Checked">
+                            <VisualState.Setters>
+                                <Setter TargetName="ContentCheck" Property="Opacity" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Unchecked">
+                            <VisualState.Setters>
+                                <Setter TargetName="ContentCheck" Property="Opacity" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </VisualStateManager.VisualStateGroups>
+        </Grid>
+    </ControlTemplate>
+
     <Style TargetType="RadioButton">
-        <Setter Property="BackgroundColor" Value="Transparent"/>
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
-        <Setter Property="FontFamily" Value="RubikRegular"/>
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="MinimumHeightRequest" Value="40"/>
-        <Setter Property="MinimumWidthRequest" Value="40"/>
+        <Setter Property="ControlTemplate" Value="{StaticResource RadioButtonTemplate}" />
     </Style>
 
     <Style TargetType="Entry">
