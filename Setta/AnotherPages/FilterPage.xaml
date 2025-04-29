@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Setta.AnotherPages.FilterPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:Setta.Models">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+          <models:BoolToColorConverter x:Key="SelectedColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Shell.TitleView>
+        <Grid Padding="5">
+            <Label Text="Фильтры"
+                   Style="{StaticResource HeadlineLabel}" />
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid RowDefinitions="*,Auto" Padding="20,0,20,20">
+
+        <!-- Прокручиваемая часть с фильтрами -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout>
+
+                <Label Text="Основная группа мышц"
+                   Style="{StaticResource SecondaryLabel}"/>
+
+                <FlexLayout
+                    BindableLayout.ItemsSource="{Binding MuscleGroups}"
+                    Wrap="Wrap"
+                    Direction="Row"
+                    JustifyContent="Start"
+                    AlignItems="Start">
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                  Text="{Binding Name}"
+                                  Command="{Binding ToggleCommand}"
+                                  BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"
+                                  Margin="0,5,5,0"
+                                  Padding="10,5"
+                                  FontFamily="RubikRegular"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Нижняя панель с кнопками действий -->
+        <Grid Grid.Row="1"
+          ColumnDefinitions="*,*"
+          ColumnSpacing="10">
+            <Button Text="Сбросить"
+                Command="{Binding ResetCommand}"
+                Grid.Column="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"/>
+            <Button Text="Применить"
+                Command="{Binding ApplyCommand}"
+                Grid.Column="1"
+                BackgroundColor="{StaticResource Important}"
+                TextColor="{StaticResource DarkText}"/>
+        </Grid>
+    </Grid>
+
+</ContentPage>

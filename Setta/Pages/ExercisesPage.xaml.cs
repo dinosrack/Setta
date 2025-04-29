@@ -1,4 +1,6 @@
+using Setta.AnotherPages;
 using Setta.Models;
+using Setta.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -15,6 +17,9 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
 
     // Фильтруемый список упражнений
     private ObservableCollection<Exercise> _exercises;
+
+    // храним выбранные группы между открытиями
+    private List<string> _selectedGroups = new();
 
     public ObservableCollection<Exercise> Exercises
     {
@@ -45,11 +50,40 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         InitializeComponent();
         BindingContext = this;
 
-        // Загрузка начальных данных
         _allExercises = new ObservableCollection<Exercise>(ExerciseData.Exercises);
         Exercises = new ObservableCollection<Exercise>(_allExercises);
+
+        // подписка на событие применения фильтра
+        MessagingCenter.Subscribe<FilterPageViewModel, List<string>>(this, "FiltersApplied", (_, selected) =>
+        {
+            _selectedGroups = selected;
+            ApplyGroupFilter();
+        });
     }
 
+    private async void OnFilterClicked(object sender, EventArgs e)
+    {
+        // передаём текущие выбранные группы
+        await Navigation.PushAsync(new FilterPage(_selectedGroups));
+    }
+
+    // Применить групповой фильтр + поиск по строке (если есть)
+    private void ApplyGroupFilter()
+    {
+        var source = ExerciseData.Exercises.AsEnumerable();
+        if (_selectedGroups.Any())
+            source = source.Where(e => _selectedGroups.Contains(e.MuscleGroup));
+
+        // дополнительно фильтр по строке поиска
+        if (!string.IsNullOrWhiteSpace(SearchQuery))
+            source = source.Where(e => e.ExerciseName
+                .Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+
+        Exercises = new ObservableCollection<Exercise>(source);
+        UpdateLastItem();
+    }
+
+    // Фильтрация запроса поиска
     private void FilterExercises()
     {
         if (string.IsNullOrWhiteSpace(SearchQuery))

@@ -49,7 +49,8 @@
                              HeightRequest="20"
                              WidthRequest="20"
                              HorizontalOptions="Center"
-                             VerticalOptions="Center" />
+                             VerticalOptions="Center"
+                             Clicked="OnFilterClicked"/>
             </Frame>
 
             <!-- Кнопка создания упражнения -->
