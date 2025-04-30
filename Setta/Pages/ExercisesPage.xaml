@@ -40,17 +40,23 @@
 
             <!-- Кнопка фильтра -->
             <Frame Grid.Column="1"
-                   CornerRadius="10"
-                   HeightRequest="40"
-                   WidthRequest="40"
-                   Margin="10,0,0,0"
-                   VerticalOptions="Center">
-                <ImageButton Source="filter.svg"
+                    CornerRadius="10"
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    Margin="10,0,0,0"
+                    VerticalOptions="Center">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Tapped="OnFilterClicked"
+                        NumberOfTapsRequired="1" />
+                </Frame.GestureRecognizers>
+
+                <!-- Картинка внутри -->
+                <Image Source="filter.svg"
                              HeightRequest="20"
                              WidthRequest="20"
                              HorizontalOptions="Center"
-                             VerticalOptions="Center"
-                             Clicked="OnFilterClicked"/>
+                             VerticalOptions="Center"/>
             </Frame>
 
             <!-- Кнопка создания упражнения -->

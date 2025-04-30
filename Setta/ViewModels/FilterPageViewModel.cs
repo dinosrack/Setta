@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Setta.Models;
@@ -11,12 +13,13 @@ namespace Setta.ViewModels
         // Список фильтров для отображения
         public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; }
 
+        // Команды для кнопок
         public ICommand ApplyCommand { get; }
         public ICommand ResetCommand { get; }
 
         public FilterPageViewModel(IEnumerable<string> selected)
         {
-            // все уникальные группы из исходных данных
+            // Получаем все уникальные группы из ExerciseData
             var allGroups = ExerciseData.Exercises
                 .Select(e => e.MuscleGroup)
                 .Distinct()
@@ -26,27 +29,30 @@ namespace Setta.ViewModels
                 allGroups.Select(g => new MuscleGroupFilter(g, selected.Contains(g)))
             );
 
-            ApplyCommand = new Command(OnApply);
+            // Лямбда-подписка на асинхронный метод
+            ApplyCommand = new Command(async () => await OnApplyAsync());
             ResetCommand = new Command(OnReset);
         }
 
-        void OnApply()
+        // Асинхронный метод применения фильтров и закрытия страницы
+        private async Task OnApplyAsync()
         {
-            // собираем выбранные
+            // Собирать выбранные группы
             var chosen = MuscleGroups
                 .Where(f => f.IsSelected)
                 .Select(f => f.Name)
                 .ToList();
 
-            // отправляем обратно на ExercisesPage
+            // Отправить результат на ExercisesPage
             MessagingCenter.Send(this, "FiltersApplied", chosen);
-            // закрываем страницу
-            Application.Current.MainPage.Navigation.PopAsync();
+
+            // Закрыть страницу через тот же NavigationStack
+            await Shell.Current.Navigation.PopAsync(animated: false);
         }
 
-        void OnReset()
+        // Сброс всех фильтров
+        private void OnReset()
         {
-            // снимаем выделение со всех
             foreach (var filter in MuscleGroups)
                 filter.IsSelected = false;
         }

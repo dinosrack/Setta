@@ -14,11 +14,32 @@
           <models:BoolToColorConverter x:Key="SelectedColorConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
     <Shell.TitleView>
-        <Grid Padding="5">
-            <Label Text="Фильтры"
-                   Style="{StaticResource HeadlineLabel}" />
+        <Grid Padding="5" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+
+            <!-- Столбец 0: Заголовок -->
+            <Label
+        Grid.Column="0"
+        Text="Фильтры"
+        Style="{StaticResource HeadlineLabel}" />
+
+            <!-- Столбец 1: Текст-элемент Закрыть -->
+            <Label
+        Grid.Column="1"
+        Text="Закрыть"
+        VerticalOptions="Center"
+        HorizontalOptions="End"
+        FontSize="16"
+        Padding="0,0,20,0"
+        TextColor="{AppThemeBinding
+                      Light={StaticResource LightText},
+                      Dark={StaticResource DarkText}}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCloseTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+
         </Grid>
     </Shell.TitleView>
 

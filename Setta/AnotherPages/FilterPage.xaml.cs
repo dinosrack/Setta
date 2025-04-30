@@ -12,5 +12,10 @@ namespace Setta.AnotherPages
             InitializeComponent();
             BindingContext = new FilterPageViewModel(selectedGroups);
         }
+
+        private async void OnCloseTapped(object sender, EventArgs e)
+        {
+            await Navigation.PopAsync(animated: false);
+        }
     }
 }
