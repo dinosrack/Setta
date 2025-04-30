@@ -119,16 +119,9 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private async void OnExerciseSelected(object sender, SelectionChangedEventArgs e)
+    private async void OnExerciseTapped(object sender, EventArgs e)
     {
-        // Получаем выбранный объект
-        if (e.CurrentSelection.FirstOrDefault() is Exercise exercise)
-        {
-            // Передаём его в параметризованный конструктор
+        if ((sender as VisualElement)?.BindingContext is Exercise exercise)
             await Navigation.PushAsync(new ExerciseInfoPage(exercise));
-        }
-
-    // Сбрасываем выбор, чтобы снова можно было выбрать тот же элемент
-    ((CollectionView)sender).SelectedItem = null;
     }
 }
