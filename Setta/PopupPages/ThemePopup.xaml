@@ -13,17 +13,22 @@
 
         <Border
             StrokeShape="RoundRectangle 10,10,0,0"
-            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
             Padding="20"
             HorizontalOptions="Fill"
-            VerticalOptions="End">
+            VerticalOptions="End"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
-            <VerticalStackLayout Spacing="20">
+            <VerticalStackLayout Spacing="10">
                 <BoxView HeightRequest="4"
                          WidthRequest="40"
                          CornerRadius="10"
                          HorizontalOptions="Center"
                          BackgroundColor="{StaticResource Secondary}" />
+
+                <Label
+                      Text="Тема"
+                      Style="{StaticResource HeadlineLabel}"
+                      Margin="0"/>
 
                 <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
                 <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>

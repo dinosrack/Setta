@@ -35,19 +35,15 @@ namespace Setta.ViewModels
         }
 
         // Асинхронный метод применения фильтров и закрытия страницы
-        private async Task OnApplyAsync()
+        public async Task OnApplyAsync()
         {
-            // Собирать выбранные группы
             var chosen = MuscleGroups
                 .Where(f => f.IsSelected)
                 .Select(f => f.Name)
                 .ToList();
 
-            // Отправить результат на ExercisesPage
+            // отправляем результат
             MessagingCenter.Send(this, "FiltersApplied", chosen);
-
-            // Закрыть страницу через тот же NavigationStack
-            await Shell.Current.Navigation.PopAsync(animated: false);
         }
 
         // Сброс всех фильтров

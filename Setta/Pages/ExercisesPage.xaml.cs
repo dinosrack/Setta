@@ -1,10 +1,11 @@
-using Setta.AnotherPages;
+using Setta.PopupPages;
 using Setta.Models;
 using Setta.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Maui.Views;
 
 namespace Setta.Pages;
 
@@ -63,8 +64,10 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
 
     private async void OnFilterClicked(object sender, EventArgs e)
     {
-        // передаём текущие выбранные группы
-        await Navigation.PushAsync(new FilterPage(_selectedGroups));
+        // Открываем Popup с текущими выбранными группами
+        var popup = new FilterPopup(_selectedGroups);
+        // показываем его поверх страницы
+        this.ShowPopup(popup);
     }
 
     // Применить групповой фильтр + поиск по строке (если есть)
