@@ -75,22 +75,53 @@
             </Frame>
         </Grid>
 
-        <!-- Вторая строка: список упражнений -->
-        <CollectionView Grid.Row="1"
+        <!-- Cписок упражнений -->
+        <CollectionView
+                Grid.Row="1"
                 ItemsSource="{Binding Exercises}"
+                SelectionMode="Single"
+                SelectionChanged="OnExerciseSelected"
                 Margin="0,10,0,0">
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Spacing="2" Padding="0,5">
-                        <Label Text="{Binding ExerciseName}" FontSize="16"/>
-                        <Label Text="{Binding MuscleGroup}" Style="{StaticResource SecondarySmallLabel}" />
+                    <StackLayout
+                        Spacing="2"
+                        Padding="0,5"
+                        BackgroundColor="Transparent">
 
-                        <BoxView HeightRequest="1"
-                         Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                         HorizontalOptions="Fill" 
-                         Margin="0,10,0,0"
-                         CornerRadius="10"
-                         IsVisible="{Binding IsLastItem, Converter={StaticResource InverseBoolConverter}}"/>
+                        <!-- Визуальные состояния для Normal/Selected -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor" Value="Transparent" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Property="BackgroundColor">
+                                            <Setter.Value>
+                                                <AppThemeBinding
+                                                    Light="#1A000000"
+                                                    Dark="#1AFFFFFF"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Label Text="{Binding ExerciseName}" FontSize="16" />
+                        <Label Text="{Binding MuscleGroup}" Style="{StaticResource SecondarySmallLabel}" />
+                        <BoxView
+                              HeightRequest="1"
+                              Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                              HorizontalOptions="Fill"
+                              Margin="0,10,0,0"
+                              CornerRadius="10"
+                              IsVisible="{Binding IsLastItem, Converter={StaticResource InverseBoolConverter}}"/>
+
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -29,6 +29,35 @@
         <Setter Property="CornerRadius" Value="10"/>
     </Style>
 
+    <Style TargetType="CollectionView">
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <Setter.Value>
+                <VisualStateGroupList>
+                    <VisualStateGroup Name="CommonStates">
+                        <!-- Обычное состояние -->
+                        <VisualState Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Transparent" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <!-- Выделенное состояние: 10% тёмного/светлого слоя -->
+                        <VisualState Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor">
+                                    <Setter.Value>
+                                        <AppThemeBinding
+                                            Light="#1A000000"  
+                                            Dark="#1AFFFFFF" />
+                                    </Setter.Value>
+                                </Setter>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="Frame">
         <Setter Property="HasShadow" Value="False" />
         <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}" />

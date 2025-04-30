@@ -19,7 +19,8 @@
                 StrokeShape="RoundRectangle 10"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                 Padding="10"
-                Margin="0,5">
+                Margin="0,5"
+                HeightRequest="50">
 
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ThemeSwitch}" />
