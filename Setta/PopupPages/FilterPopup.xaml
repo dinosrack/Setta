@@ -61,11 +61,45 @@
                                     BackgroundColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
                                     Margin="0,5,5,0"
                                     Padding="10,5"
-                                    FontFamily="RubikRegular"/>
+                                    FontFamily="RubikRegular"
+                                    HorizontalOptions="Start"
+                                    FlexLayout.Basis="Auto"/>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
                 </ScrollView>
+
+                <!--  Заголовок  -->
+                <Label
+                    Text="Оборудование"
+                    Style="{StaticResource SecondaryLabel}"
+                    Margin="0,10,0,0"/>
+
+                <!-- Список фильтров -->
+                <ScrollView>
+                    <FlexLayout
+                          BindableLayout.ItemsSource="{Binding EquipmentFilters}"
+                          Wrap="Wrap"
+                          Direction="Row"
+                          JustifyContent="Start"
+                          AlignItems="Start"
+                          Margin="0,-10,0,0">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Text="{Binding Name}"
+                                    Command="{Binding ToggleCommand}"
+                                    BackgroundColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
+                                    Margin="0,5,5,0"
+                                    Padding="10,5"
+                                    FontFamily="RubikRegular"
+                                    HorizontalOptions="Start"
+                                    FlexLayout.Basis="Auto"/>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </ScrollView>
+
 
                 <!-- Кнопки действия -->
                 <Grid 

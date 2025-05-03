@@ -3,14 +3,15 @@ using Setta.Models;
 using Setta.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Maui.Views;
+using System.Linq;
 
 namespace Setta.Pages;
 
 public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
 {
+    // Поисковый запрос
     private string _searchQuery;
 
     // Исходный список упражнений
@@ -19,30 +20,32 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
     // Фильтруемый список упражнений
     private ObservableCollection<Exercise> _exercises;
 
-    // храним выбранные группы между открытиями
+    // Выбранные фильтры
     private List<string> _selectedGroups = new();
+    private List<string> _selectedEquipment = new();
 
+    // Публичное свойство для привязки списка
     public ObservableCollection<Exercise> Exercises
     {
         get => _exercises;
         set
         {
+            if (_exercises == value) return;
             _exercises = value;
             OnPropertyChanged();
         }
     }
 
+    // Публичное свойство для привязки поискового запроса
     public string SearchQuery
     {
         get => _searchQuery;
         set
         {
-            if (_searchQuery != value)
-            {
-                _searchQuery = value;
-                OnPropertyChanged();
-                FilterExercises();
-            }
+            if (_searchQuery == value) return;
+            _searchQuery = value;
+            OnPropertyChanged();
+            ApplyFilters();
         }
     }
 
@@ -54,74 +57,57 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         _allExercises = new ObservableCollection<Exercise>(ExerciseData.Exercises);
         Exercises = new ObservableCollection<Exercise>(_allExercises);
 
-        // подписка на событие применения фильтра
-        MessagingCenter.Subscribe<FilterPageViewModel, List<string>>(this, "FiltersApplied", (_, selected) =>
-        {
-            _selectedGroups = selected;
-            ApplyGroupFilter();
-        });
+        // Подписка на выбранные фильтры (группы + оборудование)
+        MessagingCenter.Subscribe<FilterPageViewModel, Tuple<List<string>, List<string>>>(this, "FiltersApplied",
+            (_, tuple) =>
+            {
+                _selectedGroups = tuple.Item1;
+                _selectedEquipment = tuple.Item2;
+                ApplyFilters();
+            });
     }
 
-    private async void OnFilterClicked(object sender, EventArgs e)
-    {
-        // Открываем Popup с текущими выбранными группами
-        var popup = new FilterPopup(_selectedGroups);
-        // показываем его поверх страницы
-        this.ShowPopup(popup);
-    }
-
-    // Применить групповой фильтр + поиск по строке (если есть)
-    private void ApplyGroupFilter()
+    // Общая логика фильтрации по группам, оборудованию и тексту
+    private void ApplyFilters()
     {
         var source = ExerciseData.Exercises.AsEnumerable();
+
         if (_selectedGroups.Any())
             source = source.Where(e => _selectedGroups.Contains(e.MuscleGroup));
 
-        // дополнительно фильтр по строке поиска
+        if (_selectedEquipment.Any())
+            source = source.Where(e => e.EquipmentList.Any(eq => _selectedEquipment.Contains(eq)));
+
         if (!string.IsNullOrWhiteSpace(SearchQuery))
-            source = source.Where(e => e.ExerciseName
-                .Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+            source = source.Where(e =>
+                e.ExerciseName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
 
         Exercises = new ObservableCollection<Exercise>(source);
         UpdateLastItem();
     }
 
-    // Фильтрация запроса поиска
-    private void FilterExercises()
-    {
-        if (string.IsNullOrWhiteSpace(SearchQuery))
-        {
-            Exercises = new ObservableCollection<Exercise>(_allExercises);
-        }
-        else
-        {
-            var filteredExercises = _allExercises
-                .Where(e => e.ExerciseName.ToLower().Contains(SearchQuery.ToLower()));
-
-            Exercises = new ObservableCollection<Exercise>(filteredExercises);
-        }
-
-        UpdateLastItem();
-    }
-
+    // Отмечаем последний элемент списка (для отрисовки separator’а)
     private void UpdateLastItem()
     {
         for (int i = 0; i < Exercises.Count; i++)
-        {
             Exercises[i].IsLastItem = i == Exercises.Count - 1;
-        }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    // Открытие страницы фильтров
+    private void OnFilterClicked(object sender, EventArgs e)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        var popup = new FilterPopup(_selectedGroups, _selectedEquipment);
+        this.ShowPopup(popup);
     }
 
+    // Открытие страницы деталей упражнения
     private async void OnExerciseTapped(object sender, EventArgs e)
     {
         if ((sender as VisualElement)?.BindingContext is Exercise exercise)
             await Navigation.PushAsync(new ExerciseInfoPage(exercise));
     }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

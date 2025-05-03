@@ -12,10 +12,26 @@ namespace Setta.Models
     {
         public string ExerciseName { get; set; }
         public string MuscleGroup { get; set; }
-        public string SecondaryMuscleGroup { get; set; }
-        //public string ExerciseIcon { get; set; } 
+        public string SecondaryMuscleGroup { get; set; }    
+        public string Equipment { get; set; }             
         public bool IsLastItem { get; set; }
+
+        // Новые вычисляемые свойства
+        public IEnumerable<string> SecondaryMuscleGroups =>
+            string.IsNullOrWhiteSpace(SecondaryMuscleGroup)
+              ? Enumerable.Empty<string>()
+              : SecondaryMuscleGroup
+                  .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                  .Select(s => s.Trim());
+
+        public IEnumerable<string> EquipmentList =>
+            string.IsNullOrWhiteSpace(Equipment)
+              ? Enumerable.Empty<string>()
+              : Equipment
+                  .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                  .Select(s => s.Trim());
     }
+
 
     // Конвертер для инверсии логического значения (true - false)
     // Используется для управления видимостью элементов

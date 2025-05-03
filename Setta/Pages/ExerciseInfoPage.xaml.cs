@@ -1,36 +1,42 @@
+using System;
 using System.Collections.ObjectModel;
 using Setta.Models;
 
-namespace Setta.Pages;
-
-public partial class ExerciseInfoPage : ContentPage
+namespace Setta.Pages
 {
-    // Свойства для привязки
-    public string ExerciseName { get; private set; }
-    public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; private set; }
-
-    // Параметрless-конструктор нужен для XAML
-    public ExerciseInfoPage()
+    public partial class ExerciseInfoPage : ContentPage
     {
-        InitializeComponent();
-    }
+        // Свойства для привязки
+        public string ExerciseName { get; private set; }
+        public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; private set; }
 
-    // Ваш конструктор, принимающий выбранное упражнение
-    public ExerciseInfoPage(Exercise exercise) : this()
-    {
-        // Заполняем свойства
-        ExerciseName = exercise.ExerciseName;                      
-        MuscleGroups = new ObservableCollection<MuscleGroupFilter>
+        // Новые коллекции для вторичных мышц и оборудования
+        public ObservableCollection<string> SecondaryMuscleGroups { get; private set; }
+        public ObservableCollection<string> EquipmentList { get; private set; }
+
+        public ExerciseInfoPage()
         {
-            new MuscleGroupFilter(exercise.MuscleGroup, true)     
-        };
+            InitializeComponent();
+        }
 
-        // Устанавливаем BindingContext уже после инициализации
-        BindingContext = this;
-    }
+        // Конструктор, принимающий выбранное упражнение
+        public ExerciseInfoPage(Exercise exercise) : this()
+        {
+            ExerciseName = exercise.ExerciseName;
+            MuscleGroups = new ObservableCollection<MuscleGroupFilter>
+        { new(exercise.MuscleGroup, true) };
 
-    private async void OnBackTapped(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("..");
+            SecondaryMuscleGroups =
+              new ObservableCollection<string>(exercise.SecondaryMuscleGroups);
+            EquipmentList =
+              new ObservableCollection<string>(exercise.EquipmentList);
+
+            BindingContext = this;
+        }
+
+        private async void OnBackTapped(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

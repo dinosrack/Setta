@@ -10,47 +10,99 @@ namespace Setta.ViewModels
 {
     public class FilterPageViewModel
     {
-        // Список фильтров для отображения
-        public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; }
+        // Жёстко заданный порядок отображения групп мышц
+        private static readonly List<string> _muscleGroupOrder = new()
+        {
+            "Трапеции",
+            "Передние дельты",
+            "Боковые дельты",
+            "Задние дельты",
+            "Грудь",
+            "Верх спины",
+            "Бицепсы",
+            "Трицепсы",
+            "Предплечья",
+            "Пресс",
+            "Низ спины",
+            "Ягодицы",
+            "Квадрицепсы",
+            "Бицепсы бедра",
+            "Икры",
+        };
 
-        // Команды для кнопок
+        // Жёстко заданный порядок отображения оборудования
+        private static readonly List<string> _equipmentOrder = new()
+        {
+            "Штанга",
+            "Гантели",
+            "Изогнутый гриф",
+            "Тренажер",
+            "Тренажер Смита",
+            "Кроссовер",
+            "Собственный вес",
+        };
+
+        public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; }
+        public ObservableCollection<MuscleGroupFilter> EquipmentFilters { get; }
+
         public ICommand ApplyCommand { get; }
         public ICommand ResetCommand { get; }
 
-        public FilterPageViewModel(IEnumerable<string> selected)
+        public FilterPageViewModel(IEnumerable<string> selectedGroups,
+                                   IEnumerable<string> selectedEquipment)
         {
-            // Получаем все уникальные группы из ExerciseData
-            var allGroups = ExerciseData.Exercises
+            // Отбираем только те группы мышц, которые есть в данных
+            var presentGroups = ExerciseData.Exercises
                 .Select(e => e.MuscleGroup)
                 .Distinct()
-                .OrderBy(g => g);
+                .ToHashSet();
 
             MuscleGroups = new ObservableCollection<MuscleGroupFilter>(
-                allGroups.Select(g => new MuscleGroupFilter(g, selected.Contains(g)))
+                _muscleGroupOrder
+                    .Where(g => presentGroups.Contains(g))
+                    .Select(g => new MuscleGroupFilter(g, selectedGroups.Contains(g)))
             );
 
-            // Лямбда-подписка на асинхронный метод
+            // Отбираем только то оборудование, которое есть в данных
+            var presentEquipment = ExerciseData.Exercises
+                .SelectMany(e => e.EquipmentList)
+                .Distinct()
+                .ToHashSet();
+
+            EquipmentFilters = new ObservableCollection<MuscleGroupFilter>(
+                _equipmentOrder
+                    .Where(eq => presentEquipment.Contains(eq))
+                    .Select(eq => new MuscleGroupFilter(eq, selectedEquipment.Contains(eq)))
+            );
+
             ApplyCommand = new Command(async () => await OnApplyAsync());
             ResetCommand = new Command(OnReset);
         }
 
-        // Асинхронный метод применения фильтров и закрытия страницы
         public async Task OnApplyAsync()
         {
-            var chosen = MuscleGroups
+            var chosenGroups = MuscleGroups
                 .Where(f => f.IsSelected)
                 .Select(f => f.Name)
                 .ToList();
 
-            // отправляем результат
-            MessagingCenter.Send(this, "FiltersApplied", chosen);
+            var chosenEquipment = EquipmentFilters
+                .Where(f => f.IsSelected)
+                .Select(f => f.Name)
+                .ToList();
+
+            MessagingCenter.Send(this,
+                "FiltersApplied",
+                Tuple.Create(chosenGroups, chosenEquipment));
         }
 
-        // Сброс всех фильтров
         private void OnReset()
         {
-            foreach (var filter in MuscleGroups)
-                filter.IsSelected = false;
+            foreach (var f in MuscleGroups)
+                f.IsSelected = false;
+
+            foreach (var f in EquipmentFilters)
+                f.IsSelected = false;
         }
     }
 }

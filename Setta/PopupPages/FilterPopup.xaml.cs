@@ -7,19 +7,18 @@ public partial class FilterPopup : Popup
 {
     readonly FilterPageViewModel _vm;
 
-    public FilterPopup(IEnumerable<string> selectedGroups)
+    // теперь конструктор принимает два списка
+    public FilterPopup(IEnumerable<string> selectedGroups,
+                       IEnumerable<string> selectedEquipment)
     {
         InitializeComponent();
-        _vm = new FilterPageViewModel(selectedGroups);
+        _vm = new FilterPageViewModel(selectedGroups, selectedEquipment);
         BindingContext = _vm;
     }
 
     async void OnApplyTapped(object sender, EventArgs e)
     {
-        // вызываем Apply из VM Ч он шлЄт MessagingCenter
         await _vm.OnApplyAsync();
-
-        // и закрываем попап
         Close();
     }
 }

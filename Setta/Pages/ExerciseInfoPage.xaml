@@ -32,7 +32,7 @@
     <ScrollView>
         <StackLayout Padding="20,0,20,20">
 
-            <!-- Раздел: Название упражнения -->
+            <!-- Название упражнения -->
             <Label
                 Text="Название"
                 Style="{StaticResource SecondaryLabel}" />
@@ -43,7 +43,7 @@
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                     Padding="10"
                     Margin="0,5"
-                    HeightRequest="50">
+                    MinimumHeightRequest="50">
                 <Grid ColumnDefinitions="Auto,10,*">
                     <Image
                           Source="exercise.svg"
@@ -55,13 +55,12 @@
                           Text="{Binding ExerciseName}"
                           VerticalOptions="Center"
                           HorizontalOptions="Fill"
-                          LineBreakMode="TailTruncation"
-                          MaxLines="1" />
+                          LineBreakMode="WordWrap"
+                          MaxLines="2" />
                 </Grid>
             </Border>
 
-
-            <!-- Раздел: Основная группа мышц -->
+            <!-- Основная группа мышц -->
             <Label
                 Text="Основная группа мышц"
                 Style="{StaticResource SecondaryLabel}"
@@ -89,6 +88,67 @@
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
 
+            <!-- Второстепенная группа мышц -->
+            <VerticalStackLayout
+                        Margin="0,10,0,0"
+                        IsVisible="{Binding SecondaryMuscleGroups,
+                        Converter={StaticResource EnumerableNotEmptyConverter}}">
+
+                <Label
+                      Text="Второстепенная группа мышц"
+                      Style="{StaticResource SecondaryLabel}" />
+
+                <FlexLayout
+                      BindableLayout.ItemsSource="{Binding SecondaryMuscleGroups}"
+                      Wrap="Wrap"
+                      Direction="Row"
+                      JustifyContent="Start"
+                      AlignItems="Start"
+                      Margin="0,5,0,0">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement},Dark={StaticResource DarkElement}}"
+                                Padding="10,5"
+                                Margin="0,0,5,0"
+                                HorizontalOptions="Start">
+                                <Label
+                                      Text="{Binding .}"
+                                      FontFamily="RubikRegular"
+                                      VerticalOptions="Center"/>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+            </VerticalStackLayout>
+
+
+            <!-- Оборудование -->
+            <Label
+                  Text="Оборудование"
+                  Style="{StaticResource SecondaryLabel}"
+                  Margin="0,10,0,0"
+                  IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}"/>
+            
+            <FlexLayout
+                  BindableLayout.ItemsSource="{Binding EquipmentList}"
+                  Wrap="Wrap" Direction="Row"
+                  Margin="0,5,0,0"
+                  IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeShape="RoundRectangle 10"
+                                  BackgroundColor="{AppThemeBinding Light={StaticResource LightElement},Dark={StaticResource DarkElement}}"
+                                  Padding="10,5">
+                            <Label Text="{Binding .}"
+                                   FontFamily="RubikRegular"
+                                   VerticalOptions="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
 
         </StackLayout>
     </ScrollView>
