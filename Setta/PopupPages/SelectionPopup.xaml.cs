@@ -40,9 +40,14 @@ public partial class SelectionPopup : Popup
                 Margin = new Thickness(0, 5, 5, 0),
                 FontFamily = "RubikRegular",
                 BackgroundColor = GetBackgroundColor(item),
-                TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Start
             };
+
+            // Задаём TextColor через AppThemeBinding
+            button.SetAppThemeColor(
+                Button.TextColorProperty,
+                (Color)Application.Current.Resources["LightText"],
+                (Color)Application.Current.Resources["DarkText"]);
 
             FlexLayout.SetBasis(button, FlexBasis.Auto);
 
@@ -52,6 +57,7 @@ public partial class SelectionPopup : Popup
             ItemsLayout.Children.Add(button);
         }
     }
+
 
 
     void OnItemTapped(string item)

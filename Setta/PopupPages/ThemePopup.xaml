@@ -21,8 +21,7 @@
             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
             <VerticalStackLayout>
-
-                <BoxView 
+                <BoxView
                     HeightRequest="4"
                     WidthRequest="40"
                     CornerRadius="10"
@@ -36,31 +35,27 @@
                     HorizontalOptions="Start"
                     Margin="0,0,0,10" />
 
-                <VerticalStackLayout>
+                <RadioButton
+                    Content="Светлая"
+                    GroupName="Theme"
+                    Value="Light"
+                    CheckedChanged="OnCheckedChanged"
+                    Margin="0,0,0,5" />
 
-                    <RadioButton
-                        Content="Светлая"
-                        GroupName="Theme"
-                        Value="Light"
-                        CheckedChanged="OnCheckedChanged"
-                        Margin="0,0,0,5" />
+                <RadioButton
+                    Content="Темная"
+                    GroupName="Theme"
+                    Value="Dark"
+                    CheckedChanged="OnCheckedChanged"
+                    Margin="0,0,0,5" />
 
-                    <RadioButton
-                        Content="Темная"
-                        GroupName="Theme"
-                        Value="Dark"
-                        CheckedChanged="OnCheckedChanged"
-                        Margin="0,0,0,5" />
+                <RadioButton
+                    Content="Системная"
+                    GroupName="Theme"
+                    Value="Auto"
+                    CheckedChanged="OnCheckedChanged"
+                    Margin="0" />
 
-                    <RadioButton
-                        Content="Системная"
-                        GroupName="Theme"
-                        Value="Auto"
-                        CheckedChanged="OnCheckedChanged"
-                        Margin="0,0,0,0" />
-
-                </VerticalStackLayout>
-                
             </VerticalStackLayout>
         </Border>
     </Grid>

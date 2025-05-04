@@ -3,106 +3,146 @@ using Setta.PopupPages;
 using Setta.Services;
 using Setta.ViewModels;
 using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 
-namespace Setta.Pages;
-
-public partial class EditExercisePage : ContentPage
+namespace Setta.Pages
 {
-    private Exercise _exercise;
-
-    public EditExercisePage(Exercise exercise)
+    public partial class EditExercisePage : ContentPage
     {
-        InitializeComponent();
-        _exercise = exercise;
+        private readonly Exercise _exercise;
 
-        // Заполняем поля
-        ExerciseNameEntry.Text = _exercise.ExerciseName;
-        PrimaryMuscleLabel.Text = _exercise.MuscleGroup;
-        SecondaryMuscleLabel.Text = string.IsNullOrWhiteSpace(_exercise.SecondaryMuscleGroup) ? "Выберите группу" : _exercise.SecondaryMuscleGroup;
-        EquipmentLabel.Text = _exercise.Equipment;
-    }
-
-    async void OnPrimaryMuscleTapped(object sender, EventArgs e)
-    {
-        var popup = new SelectionPopup(
-            "Основная группа",
-            FilterPageViewModel.GetAvailableMuscleGroups(),
-            new[] { PrimaryMuscleLabel.Text },
-            isMultiSelect: false);
-
-        var result = await this.ShowPopupAsync(popup) as List<string>;
-        if (result?.Any() == true)
-            PrimaryMuscleLabel.Text = result.First();
-    }
-
-    async void OnSecondaryMusclesTapped(object sender, EventArgs e)
-    {
-        var current = string.IsNullOrWhiteSpace(SecondaryMuscleLabel.Text) || SecondaryMuscleLabel.Text.StartsWith("Выберите")
-            ? Array.Empty<string>()
-            : SecondaryMuscleLabel.Text.Split(", ", StringSplitOptions.RemoveEmptyEntries);
-
-        var popup = new SelectionPopup(
-            "Второстепенная группа",
-            FilterPageViewModel.GetAvailableMuscleGroups(),
-            current,
-            isMultiSelect: true);
-
-        var result = await this.ShowPopupAsync(popup) as List<string>;
-        if (result != null)
+        public EditExercisePage(Exercise exercise)
         {
-            SecondaryMuscleLabel.Text = result.Any()
-                ? string.Join(", ", result)
-                : "Выберите группу";
+            InitializeComponent();
+            _exercise = exercise;
+
+            // Заполняем поля
+            ExerciseNameEntry.Text = _exercise.ExerciseName;
+            PrimaryMuscleLabel.Text = _exercise.MuscleGroup;
+            SecondaryMuscleLabel.Text = string.IsNullOrWhiteSpace(_exercise.SecondaryMuscleGroup)
+                ? "Выберите группу"
+                : _exercise.SecondaryMuscleGroup;
+            EquipmentLabel.Text = _exercise.Equipment;
         }
-    }
 
-    async void OnEquipmentTapped(object sender, EventArgs e)
-    {
-        var popup = new SelectionPopup(
-            "Оборудование",
-            FilterPageViewModel.GetAvailableEquipment(),
-            new[] { EquipmentLabel.Text },
-            isMultiSelect: false);
-
-        var result = await this.ShowPopupAsync(popup) as List<string>;
-        if (result?.Any() == true)
-            EquipmentLabel.Text = result.First();
-    }
-
-    async void OnSaveClicked(object sender, EventArgs e)
-    {
-        _exercise.ExerciseName = ExerciseNameEntry.Text?.Trim();
-        _exercise.MuscleGroup = PrimaryMuscleLabel.Text;
-        _exercise.Equipment = EquipmentLabel.Text;
-        _exercise.SecondaryMuscleGroup = SecondaryMuscleLabel.Text.StartsWith("Выберите") ? "" : SecondaryMuscleLabel.Text;
-
-        // Сохраняем изменения в базе данных
-        await ExerciseDatabaseService.UpdateExerciseAsync(_exercise);
-
-        // Отправляем сообщение о том, что упражнение было обновлено
-        MessagingCenter.Send(this, "ExerciseUpdated", _exercise);
-
-        // Возвращаемся на страницу ExerciseInfoPage
-        await Navigation.PopAsync();
-    }
-
-    async void OnDeleteClicked(object sender, EventArgs e)
-    {
-        var popup = new DeleteExercisePopup();
-        var result = await this.ShowPopupAsync(popup) as bool?;
-
-        if (result == true)
+        async void OnPrimaryMuscleTapped(object sender, EventArgs e)
         {
-            await ExerciseDatabaseService.DeleteExerciseAsync(_exercise);
-            MessagingCenter.Send(this, "ExerciseDeleted", _exercise);
+            var popup = new SelectionPopup(
+                "Основная группа",
+                FilterPageViewModel.GetAvailableMuscleGroups(),
+                new[] { PrimaryMuscleLabel.Text },
+                isMultiSelect: false);
 
-            // Удаляем обе страницы
-            await Shell.Current.Navigation.PopToRootAsync();
+            var result = await this.ShowPopupAsync(popup) as List<string>;
+            if (result?.Any() == true)
+                PrimaryMuscleLabel.Text = result.First();
         }
-    }
 
-    async void OnBackTapped(object sender, EventArgs e)
-    {
-        await Navigation.PopAsync();
+        async void OnSecondaryMusclesTapped(object sender, EventArgs e)
+        {
+            var current = string.IsNullOrWhiteSpace(SecondaryMuscleLabel.Text) ||
+                          SecondaryMuscleLabel.Text.StartsWith("Выберите")
+                ? Array.Empty<string>()
+                : SecondaryMuscleLabel.Text.Split(", ", StringSplitOptions.RemoveEmptyEntries);
+
+            var popup = new SelectionPopup(
+                "Второстепенная группа",
+                FilterPageViewModel.GetAvailableMuscleGroups(),
+                current,
+                isMultiSelect: true);
+
+            var result = await this.ShowPopupAsync(popup) as List<string>;
+            if (result != null)
+                SecondaryMuscleLabel.Text = result.Any()
+                    ? string.Join(", ", result)
+                    : "Выберите группу";
+        }
+
+        async void OnEquipmentTapped(object sender, EventArgs e)
+        {
+            var popup = new SelectionPopup(
+                "Оборудование",
+                FilterPageViewModel.GetAvailableEquipment(),
+                new[] { EquipmentLabel.Text },
+                isMultiSelect: false);
+
+            var result = await this.ShowPopupAsync(popup) as List<string>;
+            if (result?.Any() == true)
+                EquipmentLabel.Text = result.First();
+        }
+
+        async void OnSaveClicked(object sender, EventArgs e)
+        {
+            bool hasError = false;
+
+            // Валидация названия
+            if (string.IsNullOrWhiteSpace(ExerciseNameEntry.Text))
+            {
+                NameErrorLabel.IsVisible = true;
+                hasError = true;
+            }
+            else
+            {
+                NameErrorLabel.IsVisible = false;
+            }
+
+            // Валидация основной группы мышц
+            if (string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text) ||
+                PrimaryMuscleLabel.Text == "Выберите группу")
+            {
+                PrimaryMuscleErrorLabel.IsVisible = true;
+                hasError = true;
+            }
+            else
+            {
+                PrimaryMuscleErrorLabel.IsVisible = false;
+            }
+
+            // Валидация оборудования
+            if (string.IsNullOrWhiteSpace(EquipmentLabel.Text) ||
+                EquipmentLabel.Text == "Выберите оборудование")
+            {
+                EquipmentErrorLabel.IsVisible = true;
+                hasError = true;
+            }
+            else
+            {
+                EquipmentErrorLabel.IsVisible = false;
+            }
+
+            if (hasError)
+                return;
+
+            // Сохранение изменений
+            _exercise.ExerciseName = ExerciseNameEntry.Text.Trim();
+            _exercise.MuscleGroup = PrimaryMuscleLabel.Text;
+            _exercise.SecondaryMuscleGroup = SecondaryMuscleLabel.Text.StartsWith("Выберите")
+                ? string.Empty
+                : SecondaryMuscleLabel.Text;
+            _exercise.Equipment = EquipmentLabel.Text;
+
+            await ExerciseDatabaseService.UpdateExerciseAsync(_exercise);
+            MessagingCenter.Send(this, "ExerciseUpdated", _exercise);
+            await Navigation.PopAsync();
+        }
+
+        async void OnDeleteClicked(object sender, EventArgs e)
+        {
+            var popup = new DeleteExercisePopup();
+            var result = await this.ShowPopupAsync(popup) as bool?;
+
+            if (result == true)
+            {
+                await ExerciseDatabaseService.DeleteExerciseAsync(_exercise);
+                MessagingCenter.Send(this, "ExerciseDeleted", _exercise);
+                await Shell.Current.Navigation.PopToRootAsync();
+            }
+        }
+
+        async void OnBackTapped(object sender, EventArgs e)
+        {
+            await Navigation.PopAsync();
+        }
     }
 }
