@@ -3,151 +3,159 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:Setta.Models"
-    x:Class="Setta.Pages.ExerciseInfoPage">
+    x:Class="Setta.Pages.ExerciseInfoPage"
+    BackgroundColor="{StaticResource BackgroundColor}"
+    Padding="20">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
     </Shell.BackButtonBehavior>
 
-    <Shell.TitleView>
-        <Grid ColumnDefinitions="*,Auto" Padding="5" Margin="0,-10,0,0">
-            <Label
-                  Text="Об упражнении"
-                  Style="{StaticResource HeadlineLabel}"
-                  VerticalOptions="Center"/>
+    <Grid RowDefinitions="*,Auto">
 
-            <Label
-                  Grid.Column="1"
-                  Text="Назад"
-                  VerticalOptions="Center"
-                  HorizontalOptions="End"
-                  Padding="0,0,20,0">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnBackTapped" />
-                </Label.GestureRecognizers>
-            </Label>
-        </Grid>
-    </Shell.TitleView>
+        <!-- Содержимое страницы -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
 
-    <ScrollView>
-        <StackLayout Padding="20,0,20,20">
+                <!-- Заголовок и кнопка Назад -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                    <Label
+                        Text="Об упражнении"
+                        Style="{StaticResource HeadlineLabel}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="1"
+                        Text="Назад"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Padding="0,0,20,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackTapped" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
 
-            <!-- Название упражнения -->
-            <Label
-                Text="Название"
-                Style="{StaticResource SecondaryLabel}" />
-
-            <!-- Рамка с иконкой и названием упражнения -->
-            <Border
+                <!-- Название -->
+                <Label
+                    Text="Название"
+                    Style="{StaticResource SecondaryLabel}" />
+                <Border
                     StrokeShape="RoundRectangle 10"
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                     Padding="10"
-                    Margin="0,5"
+                    Margin="0,10,0,20"
                     MinimumHeightRequest="50">
-                <Grid ColumnDefinitions="Auto,10,*">
-                    <Image
-                          Source="exercise.svg"
-                          WidthRequest="20"
-                          HeightRequest="20"
-                          VerticalOptions="Center"/>
-                    <Label
-                          Grid.Column="2"
-                          Text="{Binding ExerciseName}"
-                          VerticalOptions="Center"
-                          HorizontalOptions="Fill"
-                          LineBreakMode="WordWrap"
-                          MaxLines="2" />
-                </Grid>
-            </Border>
+                    <Grid ColumnDefinitions="Auto,10,*">
+                        <Image
+                            Source="exercise.svg"
+                            WidthRequest="20"
+                            HeightRequest="20"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="2"
+                            Text="{Binding ExerciseName}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Fill"
+                            LineBreakMode="WordWrap"
+                            MaxLines="2" />
+                    </Grid>
+                </Border>
 
-            <!-- Основная группа мышц -->
-            <Label Text="Основная группа мышц"
-                   Style="{StaticResource SecondaryLabel}"
-                   Margin="0,10,0,0" />
-
-            <FlexLayout JustifyContent="Start"
-                        Margin="0,5,0,0">
-                <Border StrokeShape="RoundRectangle 10"
+                <!-- Основная группа мышц -->
+                <Label
+                    Text="Основная группа мышц"
+                    Style="{StaticResource SecondaryLabel}" />
+                <FlexLayout
+                    JustifyContent="Start"
+                    Margin="0,10,0,20">
+                    <Border
+                        StrokeShape="RoundRectangle 10"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                         Padding="10,5"
                         HorizontalOptions="Start">
-                    <Label Text="{Binding MuscleGroup}"
-                           FontFamily="RubikRegular"
-                           VerticalOptions="Center" />
-                </Border>
-            </FlexLayout>
+                        <Label
+                            Text="{Binding MuscleGroup}"
+                            FontFamily="RubikRegular"
+                            VerticalOptions="Center" />
+                    </Border>
+                </FlexLayout>
 
-            <!-- Второстепенная группа мышц -->
-            <VerticalStackLayout
-                        Margin="0,10,0,0"
-                        IsVisible="{Binding SecondaryMuscleGroups,
-                        Converter={StaticResource EnumerableNotEmptyConverter}}">
-
+                <!-- Второстепенные группы мышц -->
                 <Label
-                      Text="Второстепенная группа мышц"
-                      Style="{StaticResource SecondaryLabel}" />
-
+                    Text="Второстепенная группа мышц"
+                    Style="{StaticResource SecondaryLabel}"
+                    IsVisible="{Binding SecondaryMuscleGroups, Converter={StaticResource EnumerableNotEmptyConverter}}" />
                 <FlexLayout
-                      BindableLayout.ItemsSource="{Binding SecondaryMuscleGroups}"
-                      Wrap="Wrap"
-                      Direction="Row"
-                      JustifyContent="Start"
-                      AlignItems="Start"
-                      Margin="0,5,0,0">
+                    BindableLayout.ItemsSource="{Binding SecondaryMuscleGroups}"
+                    Wrap="Wrap"
+                    Direction="Row"
+                    JustifyContent="Start"
+                    AlignItems="Start"
+                    Margin="0,10,0,20"
+                    IsVisible="{Binding SecondaryMuscleGroups, Converter={StaticResource EnumerableNotEmptyConverter}}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Border
                                 StrokeShape="RoundRectangle 10"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement},Dark={StaticResource DarkElement}}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                                 Padding="10,5"
-                                Margin="0,0,5,0"
+                                Margin="0,0,5,5"
                                 HorizontalOptions="Start">
                                 <Label
-                                      Text="{Binding .}"
-                                      FontFamily="RubikRegular"
-                                      VerticalOptions="Center"/>
+                                    Text="{Binding .}"
+                                    FontFamily="RubikRegular"
+                                    VerticalOptions="Center" />
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <!-- Оборудование -->
+                <Label
+                    Text="Оборудование"
+                    Style="{StaticResource SecondaryLabel}"
+                    Margin="0,0,0,10"
+                    IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}" />
+                <FlexLayout
+                    BindableLayout.ItemsSource="{Binding EquipmentList}"
+                    Wrap="Wrap"
+                    Direction="Row"
+                    Margin="0,0,0,20"
+                    IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                StrokeShape="RoundRectangle 10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                                Padding="10,5"
+                                Margin="0,0,5,5"
+                                HorizontalOptions="Start">
+                                <Label
+                                    Text="{Binding .}"
+                                    FontFamily="RubikRegular"
+                                    VerticalOptions="Center" />
                             </Border>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </FlexLayout>
 
             </VerticalStackLayout>
+        </ScrollView>
 
+        <!-- Кнопка редактирования -->
+        <Grid
+            Grid.Row="1"
+            Margin="0,20,0,0">
+            <Button
+                Text="Редактировать"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                HeightRequest="50"
+                CornerRadius="8"
+                IsVisible="{Binding IsFromDatabase}"
+                Clicked="OnEditClicked"/>
+        </Grid>
 
-            <!-- Оборудование -->
-            <Label
-                  Text="Оборудование"
-                  Style="{StaticResource SecondaryLabel}"
-                  Margin="0,10,0,0"
-                  IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}"/>
-            
-            <FlexLayout
-                  BindableLayout.ItemsSource="{Binding EquipmentList}"
-                  Wrap="Wrap" Direction="Row"
-                  Margin="0,5,0,0"
-                  IsVisible="{Binding EquipmentList, Converter={StaticResource EnumerableNotEmptyConverter}}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                        <Border StrokeShape="RoundRectangle 10"
-                                  BackgroundColor="{AppThemeBinding Light={StaticResource LightElement},Dark={StaticResource DarkElement}}"
-                                  Padding="10,5">
-                            <Label Text="{Binding .}"
-                                   FontFamily="RubikRegular"
-                                   VerticalOptions="Center"/>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </FlexLayout>
+    </Grid>
 
-            <Button Text="Редактировать"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                    TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
-                    HeightRequest="50"
-                    Margin="0,20,0,0"
-                    IsVisible="{Binding IsFromDatabase}"
-                    VerticalOptions="EndAndExpand"
-                    Clicked="OnEditClicked"/>
-            
-        </StackLayout>
-    </ScrollView>
 </ContentPage>

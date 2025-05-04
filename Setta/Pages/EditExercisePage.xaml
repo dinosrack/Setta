@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Setta.Pages.EditExercisePage"
-             BackgroundColor="{StaticResource BackgroundColor}">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Setta.Pages.EditExercisePage"
+    BackgroundColor="{StaticResource BackgroundColor}"
+    Padding="20">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
@@ -10,18 +12,22 @@
 
     <Grid RowDefinitions="*,Auto">
 
+        <!-- Основное содержимое -->
         <ScrollView Grid.Row="0">
-            <VerticalStackLayout Padding="20,0,20,20" Spacing="10">
+            <VerticalStackLayout Spacing="0">
 
-                <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0">
-                    <Label Text="Правки в упражнении"
-                           Style="{StaticResource HeadlineLabel}"
-                           VerticalOptions="Center" />
-                    <Label Grid.Column="1"
-                           Text="Назад"
-                           VerticalOptions="Center"
-                           HorizontalOptions="End"
-                           Padding="0,0,10,0">
+                <!-- Заголовок -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                    <Label
+                        Text="Правки в упражнении"
+                        Style="{StaticResource HeadlineLabel}"
+                        VerticalOptions="Center" />
+                    <Label
+                        Grid.Column="1"
+                        Text="Назад"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Padding="0,0,10,0">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnBackTapped" />
                         </Label.GestureRecognizers>
@@ -29,61 +35,89 @@
                 </Grid>
 
                 <!-- Название -->
-                <Label Text="Название" Style="{StaticResource SecondaryLabel}" />
-                <Frame HasShadow="False" Padding="10,5" CornerRadius="10"
-                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                       HeightRequest="50">
-                    <Entry x:Name="ExerciseNameEntry"
-                           FontSize="16"
-                           BackgroundColor="Transparent"
-                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
-                           Placeholder="Введите название" />
+                <Label
+                    Text="Название"
+                    Style="{StaticResource SecondaryLabel}" />
+                <Frame
+                    HasShadow="False"
+                    Padding="10,5"
+                    CornerRadius="10"
+                    Margin="0,10,0,20"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    HeightRequest="50">
+                    <Entry
+                        x:Name="ExerciseNameEntry"
+                        FontSize="16"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                        Placeholder="Введите название" />
                 </Frame>
 
-                <!-- Основная группа -->
-                <Label Text="Основная группа мышц" Style="{StaticResource SecondaryLabel}" Margin="0,10,0,0"/>
-                <Frame x:Name="PrimaryMuscleFrame" Padding="15,5" CornerRadius="10"
-                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                       HeightRequest="50">
-                    <Label x:Name="PrimaryMuscleLabel"
-                           FontSize="16"
-                           VerticalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           Text="Выберите группу"
-                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"/>
+                <!-- Основная группа мышц -->
+                <Label
+                    Text="Основная группа мышц"
+                    Style="{StaticResource SecondaryLabel}" />
+                <Frame
+                    x:Name="PrimaryMuscleFrame"
+                    Padding="15,5"
+                    CornerRadius="10"
+                    Margin="0,10,0,20"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    HeightRequest="50">
+                    <Label
+                        x:Name="PrimaryMuscleLabel"
+                        FontSize="16"
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        Text="Выберите группу"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPrimaryMuscleTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
 
-                <!-- Второстепенные группы -->
-                <Label Text="Второстепенные группы мышц" Style="{StaticResource SecondaryLabel}" Margin="0,10,0,0"/>
-                <Frame x:Name="SecondaryMuscleFrame" Padding="15,5" CornerRadius="10"
-                       MinimumHeightRequest="50"
-                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
-                    <Label x:Name="SecondaryMuscleLabel"
-                           FontSize="16"
-                           VerticalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           LineBreakMode="WordWrap"
-                           Text="Выберите группу"
-                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"/>
+                <!-- Второстепенные группы мышц -->
+                <Label
+                    Text="Второстепенные группы мышц"
+                    Style="{StaticResource SecondaryLabel}" />
+                <Frame
+                    x:Name="SecondaryMuscleFrame"
+                    Padding="15,5"
+                    CornerRadius="10"
+                    Margin="0,10,0,20"
+                    MinimumHeightRequest="50"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                    <Label
+                        x:Name="SecondaryMuscleLabel"
+                        FontSize="16"
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        LineBreakMode="WordWrap"
+                        Text="Выберите группу"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnSecondaryMusclesTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
 
                 <!-- Оборудование -->
-                <Label Text="Оборудование" Style="{StaticResource SecondaryLabel}" Margin="0,10,0,0"/>
-                <Frame x:Name="EquipmentFrame" Padding="15,5" CornerRadius="10"
-                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                       HeightRequest="50">
-                    <Label x:Name="EquipmentLabel"
-                           FontSize="16"
-                           VerticalTextAlignment="Center"
-                           VerticalOptions="Center"
-                           Text="Выберите оборудование"
-                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"/>
+                <Label
+                    Text="Оборудование"
+                    Style="{StaticResource SecondaryLabel}" />
+                <Frame
+                    x:Name="EquipmentFrame"
+                    Padding="15,5"
+                    CornerRadius="10"
+                    Margin="0,10,0,20"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    HeightRequest="50">
+                    <Label
+                        x:Name="EquipmentLabel"
+                        FontSize="16"
+                        VerticalTextAlignment="Center"
+                        VerticalOptions="Center"
+                        Text="Выберите оборудование"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnEquipmentTapped" />
                     </Frame.GestureRecognizers>
@@ -92,21 +126,28 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Кнопки -->
-        <Grid Grid.Row="1" Padding="20,10" ColumnDefinitions="*,*" ColumnSpacing="10">
-            <Button Text="Удалить"
-                    BackgroundColor="{StaticResource Red}"
-                    TextColor="White"
-                    CornerRadius="8"
-                    HeightRequest="50"
-                    Clicked="OnDeleteClicked" />
-            <Button Text="Применить"
-                    Grid.Column="1"
-                    BackgroundColor="{StaticResource Important}"
-                    TextColor="White"
-                    CornerRadius="8"
-                    HeightRequest="50"
-                    Clicked="OnSaveClicked" />
+        <!-- Кнопки внизу страницы -->
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="10"
+            Margin="0,20,0,0">
+            <Button
+                Text="Удалить"
+                BackgroundColor="{StaticResource Red}"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50"
+                Clicked="OnDeleteClicked" />
+            <Button
+                Grid.Column="1"
+                Text="Применить"
+                BackgroundColor="{StaticResource Important}"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50"
+                Clicked="OnSaveClicked" />
         </Grid>
+
     </Grid>
 </ContentPage>

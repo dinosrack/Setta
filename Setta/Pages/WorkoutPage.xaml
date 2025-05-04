@@ -2,9 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Setta.Pages.WorkoutPage">
-    <Shell.TitleView>
-        <Grid Padding="5">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Заголовок -->
             <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
-        </Grid>
-    </Shell.TitleView>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

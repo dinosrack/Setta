@@ -5,61 +5,56 @@
     xmlns:models="clr-namespace:Setta.Models"
     x:Class="Setta.Pages.ExercisesPage">
 
-    <Shell.TitleView>
-        <Grid Padding="5">
-            <Label Text="Упражнения" Style="{StaticResource HeadlineLabel}" />
-        </Grid>
-    </Shell.TitleView>
-
     <ContentPage.Resources>
         <ResourceDictionary>
             <models:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*" Padding="20,0,20,20">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20">
 
-        <Grid Grid.Row="0"
+        <!-- Заголовок -->
+        <Label Grid.Row="0"
+               Text="Упражнения"
+               Style="{StaticResource HeadlineLabel}"
+               Margin="0,0,0,20" />
+
+        <!-- Поисковая строка и кнопки -->
+        <Grid Grid.Row="1"
               ColumnDefinitions="*,Auto,Auto"
               HeightRequest="40"
-              VerticalOptions="Start">
+              Margin="0,0,0,20">
 
             <Frame Grid.Column="0"
-                    CornerRadius="10"
-                    Padding="10,0"
-                    HeightRequest="40"
-                    HorizontalOptions="Fill">
-                
+                   CornerRadius="10"
+                   Padding="10,0"
+                   HeightRequest="40"
+                   HorizontalOptions="Fill">
                 <Grid ColumnDefinitions="Auto,10,*" VerticalOptions="Center" HeightRequest="40">
-                    
                     <Image Source="search.svg"
-                            WidthRequest="20"
-                            HeightRequest="20"
-                            VerticalOptions="Center" />
-                    
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           VerticalOptions="Center" />
                     <Entry Grid.Column="2"
-                            Placeholder="Поиск"
-                            Text="{Binding SearchQuery}"/>
+                           Placeholder="Поиск"
+                           Text="{Binding SearchQuery}" />
                 </Grid>
             </Frame>
 
             <Frame Grid.Column="1"
-                    CornerRadius="10"
-                    HeightRequest="40"
-                    WidthRequest="40"
-                    Margin="10,0,0,0"
-                    VerticalOptions="Center">
-                
+                   CornerRadius="10"
+                   HeightRequest="40"
+                   WidthRequest="40"
+                   Margin="10,0,0,0"
+                   VerticalOptions="Center">
                 <Frame.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Tapped="OnFilterClicked"
-                        NumberOfTapsRequired="1" />
+                    <TapGestureRecognizer Tapped="OnFilterClicked" />
                 </Frame.GestureRecognizers>
                 <Image Source="filter.svg"
-                          HeightRequest="20"
-                          WidthRequest="20"
-                          HorizontalOptions="Center"
-                          VerticalOptions="Center" />
+                       HeightRequest="20"
+                       WidthRequest="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
             </Frame>
 
             <Frame Grid.Column="2"
@@ -70,34 +65,28 @@
                    Background="{StaticResource Important}"
                    VerticalOptions="Center">
                 <Frame.GestureRecognizers>
-                    <TapGestureRecognizer
-                          Tapped="OnAddExerciseClicked"
-                          NumberOfTapsRequired="1" />
+                    <TapGestureRecognizer Tapped="OnAddExerciseClicked" />
                 </Frame.GestureRecognizers>
-
                 <Image Source="plus.svg"
-                         HeightRequest="20"
-                         WidthRequest="20"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center" />
+                       HeightRequest="20"
+                       WidthRequest="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
             </Frame>
         </Grid>
 
+        <!-- Список упражнений -->
         <CollectionView
-                      Grid.Row="1"
-                      ItemsSource="{Binding Exercises}"
-                      SelectionMode="None"
-                      Margin="0,10,0,0">
+            Grid.Row="2"
+            ItemsSource="{Binding Exercises}"
+            SelectionMode="None">
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid RowDefinitions="Auto,Auto" Padding="0,5">
-
                         <StackLayout Grid.Row="0" Spacing="2">
                             <StackLayout.GestureRecognizers>
-                                <TapGestureRecognizer
-                                      Tapped="OnExerciseTapped"
-                                      NumberOfTapsRequired="1" />
+                                <TapGestureRecognizer Tapped="OnExerciseTapped" />
                             </StackLayout.GestureRecognizers>
 
                             <Label Text="{Binding ExerciseName}" FontSize="16" />
@@ -105,13 +94,13 @@
                         </StackLayout>
 
                         <BoxView
-                                  Grid.Row="1"
-                                  HeightRequest="1"
-                                  Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                                  HorizontalOptions="Fill"
-                                  Margin="0,10,0,0"
-                                  CornerRadius="10"
-                                  IsVisible="{Binding IsLastItem, Converter={StaticResource InverseBoolConverter}}" />
+                            Grid.Row="1"
+                            HeightRequest="1"
+                            Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                            HorizontalOptions="Fill"
+                            Margin="0,10,0,0"
+                            CornerRadius="10"
+                            IsVisible="{Binding IsLastItem, Converter={StaticResource InverseBoolConverter}}" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

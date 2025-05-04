@@ -6,18 +6,21 @@
     x:Class="Setta.PopupPages.DeleteExercisePopup"
     Color="Transparent">
 
-    <Grid HorizontalOptions="Center" VerticalOptions="Center">
+    <Grid
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
         <Border
             StrokeShape="RoundRectangle 10"
             Padding="20"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
-            <VerticalStackLayout Spacing="10">
+            <VerticalStackLayout
+                Spacing="20">
                 <!-- Заголовок -->
                 <Label
                     Text="Удаление"
                     Style="{StaticResource HeadlineLabel}"
-                    HorizontalOptions="Center"/>
+                    HorizontalOptions="Center" />
 
                 <!-- Сообщение -->
                 <Label
@@ -27,20 +30,22 @@
                     LineBreakMode="WordWrap" />
 
                 <!-- Кнопки действия -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
                     <Button
                         Grid.Column="0"
                         Text="Отмена"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                         TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
-                        Clicked="OnCancelClicked"/>
+                        Clicked="OnCancelClicked" />
 
                     <Button
                         Grid.Column="1"
                         Text="Да, удалить"
                         BackgroundColor="{StaticResource Red}"
                         TextColor="White"
-                        Clicked="OnConfirmClicked"/>
+                        Clicked="OnConfirmClicked" />
                 </Grid>
             </VerticalStackLayout>
         </Border>

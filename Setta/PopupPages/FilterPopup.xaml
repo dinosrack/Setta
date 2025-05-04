@@ -9,7 +9,9 @@
     VerticalOptions="End"
     HorizontalOptions="Fill">
 
-    <Grid HorizontalOptions="Center" VerticalOptions="End">
+    <Grid
+        HorizontalOptions="Fill"
+        VerticalOptions="End">
         <Border
             StrokeShape="RoundRectangle 10,10,0,0"
             Padding="20"
@@ -17,111 +19,106 @@
             VerticalOptions="End"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
-            <VerticalStackLayout Spacing="10">
-
+            <VerticalStackLayout Spacing="0">
                 <!-- Ресурсы конвертера -->
                 <VerticalStackLayout.Resources>
                     <ResourceDictionary>
-                        <models:BoolToColorConverter x:Key="SelectedColorConverter"/>
+                        <models:BoolToColorConverter x:Key="SelectedColorConverter" />
                     </ResourceDictionary>
                 </VerticalStackLayout.Resources>
 
+                <!-- Перетаскиватель -->
                 <BoxView
                     HeightRequest="4"
                     WidthRequest="40"
                     CornerRadius="10"
                     HorizontalOptions="Center"
+                    Margin="0,0,0,20"
                     BackgroundColor="{StaticResource Secondary}" />
 
                 <!-- Заголовок -->
                 <Label
-                      Text="Фильтры"
-                      Style="{StaticResource HeadlineLabel}"
-                      Margin="0"/>
+                    Text="Фильтры"
+                    Style="{StaticResource HeadlineLabel}"
+                    Margin="0,0,0,20" />
 
                 <!-- Основная группа мышц -->
                 <Label
                     Text="Основная группа мышц"
-                    Style="{StaticResource SecondaryLabel}"/>
-
-                <!-- Список фильтров -->
-                <ScrollView>
+                    Style="{StaticResource SecondaryLabel}"
+                    Margin="0,0,0,10" />
+                <ScrollView
+                    Margin="0,0,0,20">
                     <FlexLayout
                         BindableLayout.ItemsSource="{Binding MuscleGroups}"
                         Wrap="Wrap"
                         Direction="Row"
                         JustifyContent="Start"
-                        AlignItems="Start"
-                        Margin="0,-10,0,0">
+                        AlignItems="Start">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <Button
                                     Text="{Binding Name}"
                                     Command="{Binding ToggleCommand}"
                                     BackgroundColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
-                                    Margin="0,5,5,0"
+                                    Margin="0,0,5,5"
                                     Padding="10,5"
                                     FontFamily="RubikRegular"
                                     HorizontalOptions="Start"
-                                    FlexLayout.Basis="Auto"/>
+                                    FlexLayout.Basis="Auto" />
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
                 </ScrollView>
 
-                <!--  Заголовок  -->
+                <!-- Оборудование -->
                 <Label
                     Text="Оборудование"
                     Style="{StaticResource SecondaryLabel}"
-                    Margin="0,10,0,0"/>
-
-                <!-- Список фильтров -->
-                <ScrollView>
+                    Margin="0,0,0,10" />
+                <ScrollView
+                    Margin="0,0,0,20">
                     <FlexLayout
-                          BindableLayout.ItemsSource="{Binding EquipmentFilters}"
-                          Wrap="Wrap"
-                          Direction="Row"
-                          JustifyContent="Start"
-                          AlignItems="Start"
-                          Margin="0,-10,0,0">
+                        BindableLayout.ItemsSource="{Binding EquipmentFilters}"
+                        Wrap="Wrap"
+                        Direction="Row"
+                        JustifyContent="Start"
+                        AlignItems="Start">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate>
                                 <Button
                                     Text="{Binding Name}"
                                     Command="{Binding ToggleCommand}"
                                     BackgroundColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
-                                    Margin="0,5,5,0"
+                                    Margin="0,0,5,5"
                                     Padding="10,5"
                                     FontFamily="RubikRegular"
                                     HorizontalOptions="Start"
-                                    FlexLayout.Basis="Auto"/>
+                                    FlexLayout.Basis="Auto" />
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
                 </ScrollView>
 
-
                 <!-- Кнопки действия -->
-                <Grid 
-                        ColumnDefinitions="*,*"
-                        ColumnSpacing="10"
-                        HorizontalOptions="Fill"
-                        Margin="0,10,0,0">
-
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="10">
                     <Button
                         Grid.Column="0"
                         Text="Сбросить"
                         Command="{Binding ResetCommand}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement},Dark={StaticResource DarkElement}}"
-                        HorizontalOptions="Fill"/>
-
+                        HeightRequest="50"
+                        HorizontalOptions="Fill" />
                     <Button
                         Grid.Column="1"
                         Text="Применить"
                         Clicked="OnApplyTapped"
                         BackgroundColor="{StaticResource Important}"
                         TextColor="{StaticResource DarkText}"
-                        HorizontalOptions="Fill"/>
+                        HeightRequest="50"
+                        HorizontalOptions="Fill" />
                 </Grid>
             </VerticalStackLayout>
         </Border>

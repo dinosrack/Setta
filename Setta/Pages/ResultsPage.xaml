@@ -2,10 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Setta.Pages.ResultsPage">
-    <Shell.TitleView>
-        <Grid Padding="5">
-            <Label Text="Результаты"
-                   Style="{StaticResource HeadlineLabel}" />
-        </Grid>
-    </Shell.TitleView>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Заголовок -->
+            <Label Text="Результаты" Style="{StaticResource HeadlineLabel}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

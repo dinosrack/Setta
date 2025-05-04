@@ -9,7 +9,9 @@
     Color="Transparent"
     Opened="OnPopupOpened">
 
-    <Grid HorizontalOptions="Fill" VerticalOptions="End">
+    <Grid
+        HorizontalOptions="Fill"
+        VerticalOptions="End">
 
         <Border
             StrokeShape="RoundRectangle 10,10,0,0"
@@ -18,23 +20,48 @@
             VerticalOptions="End"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
 
-            <VerticalStackLayout Spacing="10">
-                <BoxView HeightRequest="4"
-                         WidthRequest="40"
-                         CornerRadius="10"
-                         HorizontalOptions="Center"
-                         BackgroundColor="{StaticResource Secondary}" />
+            <VerticalStackLayout>
+
+                <BoxView 
+                    HeightRequest="4"
+                    WidthRequest="40"
+                    CornerRadius="10"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource Secondary}"
+                    Margin="0,0,0,10" />
 
                 <Label
-                      Text="Тема"
-                      Style="{StaticResource HeadlineLabel}"
-                      Margin="0"/>
+                    Text="Тема"
+                    Style="{StaticResource HeadlineLabel}"
+                    HorizontalOptions="Start"
+                    Margin="0,0,0,10" />
 
-                <RadioButton Content="Светлая" GroupName="Theme" Value="Light" CheckedChanged="OnCheckedChanged"/>
-                <RadioButton Content="Темная" GroupName="Theme" Value="Dark" CheckedChanged="OnCheckedChanged"/>
-                <RadioButton Content="Системная" GroupName="Theme" Value="Auto" CheckedChanged="OnCheckedChanged"/>
+                <VerticalStackLayout>
+
+                    <RadioButton
+                        Content="Светлая"
+                        GroupName="Theme"
+                        Value="Light"
+                        CheckedChanged="OnCheckedChanged"
+                        Margin="0,0,0,5" />
+
+                    <RadioButton
+                        Content="Темная"
+                        GroupName="Theme"
+                        Value="Dark"
+                        CheckedChanged="OnCheckedChanged"
+                        Margin="0,0,0,5" />
+
+                    <RadioButton
+                        Content="Системная"
+                        GroupName="Theme"
+                        Value="Auto"
+                        CheckedChanged="OnCheckedChanged"
+                        Margin="0,0,0,0" />
+
+                </VerticalStackLayout>
+                
             </VerticalStackLayout>
-
         </Border>
     </Grid>
 </toolkit:Popup>
