@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Maui.Views;
 using System.Linq;
+using Setta.Services;
 
 namespace Setta.Pages;
 
@@ -54,10 +55,10 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         InitializeComponent();
         BindingContext = this;
 
-        _allExercises = new ObservableCollection<Exercise>(ExerciseData.Exercises);
-        Exercises = new ObservableCollection<Exercise>(_allExercises);
+        BindingContext = this;
+        _ = LoadExercisesAsync();
 
-        // Подписка на выбранные фильтры (группы + оборудование)
+        // Подписка на выбранные фильтры
         MessagingCenter.Subscribe<FilterPageViewModel, Tuple<List<string>, List<string>>>(this, "FiltersApplied",
             (_, tuple) =>
             {
@@ -65,12 +66,35 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
                 _selectedEquipment = tuple.Item2;
                 ApplyFilters();
             });
+
+        // Подписка на новое упражнение
+        MessagingCenter.Subscribe<AddExercisePage, Exercise>(this, "ExerciseAdded", async (_, _) =>
+        {
+            await LoadExercisesAsync();
+        });
+    }
+
+    private async Task LoadExercisesAsync()
+    {
+        var excelExercises = ExerciseData.Exercises;
+        var dbExercises = await ExerciseDatabaseService.GetExercisesAsync();
+
+        // Сортировка по убыванию ID
+        var sortedDbExercises = dbExercises
+            .OrderByDescending(e => e.Id)
+            .ToList();
+
+        // Объединяем: сначала пользовательские, затем Excel
+        var all = sortedDbExercises.Concat(excelExercises).ToList();
+
+        _allExercises = new ObservableCollection<Exercise>(all);
+        ApplyFilters();
     }
 
     // Общая логика фильтрации по группам, оборудованию и тексту
     private void ApplyFilters()
     {
-        var source = ExerciseData.Exercises.AsEnumerable();
+        var source = _allExercises.AsEnumerable();
 
         if (_selectedGroups.Any())
             source = source.Where(e => _selectedGroups.Contains(e.MuscleGroup));
@@ -99,6 +123,12 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         var popup = new FilterPopup(_selectedGroups, _selectedEquipment);
         this.ShowPopup(popup);
     }
+
+    private async void OnAddExerciseClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AddExercisePage());
+    }
+
 
     // Открытие страницы деталей упражнения
     private async void OnExerciseTapped(object sender, EventArgs e)

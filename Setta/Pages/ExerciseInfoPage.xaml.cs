@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Setta.Models;
+using Microsoft.Maui.Controls;
 
 namespace Setta.Pages
 {
@@ -8,9 +9,7 @@ namespace Setta.Pages
     {
         // Свойства для привязки
         public string ExerciseName { get; private set; }
-        public ObservableCollection<MuscleGroupFilter> MuscleGroups { get; private set; }
-
-        // Новые коллекции для вторичных мышц и оборудования
+        public string MuscleGroup { get; private set; }
         public ObservableCollection<string> SecondaryMuscleGroups { get; private set; }
         public ObservableCollection<string> EquipmentList { get; private set; }
 
@@ -23,13 +22,10 @@ namespace Setta.Pages
         public ExerciseInfoPage(Exercise exercise) : this()
         {
             ExerciseName = exercise.ExerciseName;
-            MuscleGroups = new ObservableCollection<MuscleGroupFilter>
-        { new(exercise.MuscleGroup, true) };
+            MuscleGroup = exercise.MuscleGroup;
 
-            SecondaryMuscleGroups =
-              new ObservableCollection<string>(exercise.SecondaryMuscleGroups);
-            EquipmentList =
-              new ObservableCollection<string>(exercise.EquipmentList);
+            SecondaryMuscleGroups = new ObservableCollection<string>(exercise.SecondaryMuscleGroups);
+            EquipmentList = new ObservableCollection<string>(exercise.EquipmentList);
 
             BindingContext = this;
         }

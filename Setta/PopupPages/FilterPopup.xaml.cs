@@ -7,7 +7,6 @@ public partial class FilterPopup : Popup
 {
     readonly FilterPageViewModel _vm;
 
-    // теперь конструктор принимает два списка
     public FilterPopup(IEnumerable<string> selectedGroups,
                        IEnumerable<string> selectedEquipment)
     {

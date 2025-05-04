@@ -79,6 +79,31 @@ namespace Setta.ViewModels
             ResetCommand = new Command(OnReset);
         }
 
+        public static List<string> GetAvailableMuscleGroups()
+        {
+            var presentGroups = ExerciseData.Exercises
+                .Select(e => e.MuscleGroup)
+                .Distinct()
+                .ToHashSet();
+
+            return _muscleGroupOrder
+                .Where(g => presentGroups.Contains(g))
+                .ToList();
+        }
+
+        public static List<string> GetAvailableEquipment()
+        {
+            var presentEquipment = ExerciseData.Exercises
+                .SelectMany(e => e.EquipmentList)
+                .Distinct()
+                .ToHashSet();
+
+            return _equipmentOrder
+                .Where(eq => presentEquipment.Contains(eq))
+                .ToList();
+        }
+
+
         public async Task OnApplyAsync()
         {
             var chosenGroups = MuscleGroups

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,13 +11,16 @@ namespace Setta.Models
     // Модель данных для упражнения
     public class Exercise
     {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
         public string ExerciseName { get; set; }
         public string MuscleGroup { get; set; }
-        public string SecondaryMuscleGroup { get; set; }    
-        public string Equipment { get; set; }             
+        public string SecondaryMuscleGroup { get; set; }
+        public string Equipment { get; set; }
         public bool IsLastItem { get; set; }
 
-        // Новые вычисляемые свойства
+        [Ignore]
         public IEnumerable<string> SecondaryMuscleGroups =>
             string.IsNullOrWhiteSpace(SecondaryMuscleGroup)
               ? Enumerable.Empty<string>()
@@ -24,6 +28,7 @@ namespace Setta.Models
                   .Split(',', StringSplitOptions.RemoveEmptyEntries)
                   .Select(s => s.Trim());
 
+        [Ignore]
         public IEnumerable<string> EquipmentList =>
             string.IsNullOrWhiteSpace(Equipment)
               ? Enumerable.Empty<string>()

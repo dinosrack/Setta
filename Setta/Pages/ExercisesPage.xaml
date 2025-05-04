@@ -39,7 +39,7 @@
                     
                     <Entry Grid.Column="2"
                             Placeholder="Поиск"
-                            Text="{Binding SearchQuery}" />
+                            Text="{Binding SearchQuery}"/>
                 </Grid>
             </Frame>
 
@@ -63,18 +63,23 @@
             </Frame>
 
             <Frame Grid.Column="2"
-                    CornerRadius="10"
-                    HeightRequest="40"
-                    WidthRequest="40"
-                    Margin="10,0,0,0"
-                    Background="{StaticResource Important}"
-                    VerticalOptions="Center">
-                
-                <ImageButton Source="plus.svg"
-                            HeightRequest="20"
-                            WidthRequest="20"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center" />
+                   CornerRadius="10"
+                   HeightRequest="40"
+                   WidthRequest="40"
+                   Margin="10,0,0,0"
+                   Background="{StaticResource Important}"
+                   VerticalOptions="Center">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer
+                          Tapped="OnAddExerciseClicked"
+                          NumberOfTapsRequired="1" />
+                </Frame.GestureRecognizers>
+
+                <Image Source="plus.svg"
+                         HeightRequest="20"
+                         WidthRequest="20"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center" />
             </Frame>
         </Grid>
 
