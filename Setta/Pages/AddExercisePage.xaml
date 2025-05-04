@@ -41,7 +41,7 @@
                 </Frame>
                 <Label x:Name="NameErrorLabel"
                        Text="Выбедите хотя бы 1 символ"
-                       TextColor="{StaticResource RedText}"
+                       TextColor="{StaticResource Red}"
                        FontSize="Small"
                        IsVisible="False" />
 
@@ -62,7 +62,7 @@
                 </Frame>
                 <Label x:Name="PrimaryMuscleErrorLabel"
                        Text="Выберите основную группу мышц"
-                       TextColor="{StaticResource RedText}"
+                       TextColor="{StaticResource Red}"
                        FontSize="Small"
                        IsVisible="False" />
 
@@ -101,7 +101,7 @@
                 </Frame>
                 <Label x:Name="EquipmentErrorLabel"
                        Text="Выберите хотя бы одно оборудование"
-                       TextColor="{StaticResource RedText}"
+                       TextColor="{StaticResource Red}"
                        FontSize="Small"
                        IsVisible="False" />
 
