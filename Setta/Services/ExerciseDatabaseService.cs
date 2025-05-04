@@ -30,4 +30,16 @@ public class ExerciseDatabaseService
         await InitAsync();
         return await _database.Table<Exercise>().ToListAsync();
     }
+
+    public static async Task UpdateExerciseAsync(Exercise exercise)
+    {
+        await InitAsync();
+        await _database.UpdateAsync(exercise);
+    }
+
+    public static async Task DeleteExerciseAsync(Exercise exercise)
+    {
+        await InitAsync();
+        await _database.DeleteAsync(exercise);
+    }
 }

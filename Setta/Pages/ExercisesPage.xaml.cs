@@ -55,7 +55,6 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         InitializeComponent();
         BindingContext = this;
 
-        BindingContext = this;
         _ = LoadExercisesAsync();
 
         // Подписка на выбранные фильтры
@@ -70,14 +69,31 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         // Подписка на новое упражнение
         MessagingCenter.Subscribe<AddExercisePage, Exercise>(this, "ExerciseAdded", async (_, _) =>
         {
-            await LoadExercisesAsync();
+            await LoadExercisesAsync(); // Обновляем упражнения после добавления
+        });
+
+        // Подписка на обновление упражнения
+        MessagingCenter.Subscribe<EditExercisePage, Exercise>(this, "ExerciseUpdated", async (_, _) =>
+        {
+            await LoadExercisesAsync(); // Обновляем упражнения после изменения
+        });
+
+        // Подписка на удаление упражнения
+        MessagingCenter.Subscribe<EditExercisePage, Exercise>(this, "ExerciseDeleted", async (_, _) =>
+        {
+            await LoadExercisesAsync(); // Обновляем упражнения после удаления
         });
     }
 
     private async Task LoadExercisesAsync()
     {
         var excelExercises = ExerciseData.Exercises;
+
         var dbExercises = await ExerciseDatabaseService.GetExercisesAsync();
+
+        // Устанавливаем флаг для упражнений из базы данных
+        foreach (var ex in dbExercises)
+            ex.IsFromDatabase = true;
 
         // Сортировка по убыванию ID
         var sortedDbExercises = dbExercises
@@ -90,6 +106,7 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         _allExercises = new ObservableCollection<Exercise>(all);
         ApplyFilters();
     }
+
 
     // Общая логика фильтрации по группам, оборудованию и тексту
     private void ApplyFilters()

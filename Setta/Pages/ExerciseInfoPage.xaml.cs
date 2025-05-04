@@ -1,38 +1,45 @@
-using System;
-using System.Collections.ObjectModel;
-using Setta.Models;
 using Microsoft.Maui.Controls;
+using Setta.Models;
 
 namespace Setta.Pages
 {
     public partial class ExerciseInfoPage : ContentPage
     {
-        // Свойства для привязки
-        public string ExerciseName { get; private set; }
-        public string MuscleGroup { get; private set; }
-        public ObservableCollection<string> SecondaryMuscleGroups { get; private set; }
-        public ObservableCollection<string> EquipmentList { get; private set; }
+        private Exercise _exercise;
 
-        public ExerciseInfoPage()
+        public ExerciseInfoPage(Exercise exercise)
         {
             InitializeComponent();
+            _exercise = exercise;
+            BindingContext = _exercise;
+
+            MessagingCenter.Subscribe<EditExercisePage, Exercise>(this, "ExerciseUpdated", (_, updatedExercise) =>
+            {
+                _exercise.ExerciseName = updatedExercise.ExerciseName;
+                _exercise.MuscleGroup = updatedExercise.MuscleGroup;
+                _exercise.SecondaryMuscleGroup = updatedExercise.SecondaryMuscleGroup;
+                _exercise.Equipment = updatedExercise.Equipment;
+
+                // Принудительно обновляем BindingContext, если нет INotifyPropertyChanged
+                BindingContext = null;
+                BindingContext = _exercise;
+            });
         }
 
-        // Конструктор, принимающий выбранное упражнение
-        public ExerciseInfoPage(Exercise exercise) : this()
+        private async void OnEditClicked(object sender, EventArgs e)
         {
-            ExerciseName = exercise.ExerciseName;
-            MuscleGroup = exercise.MuscleGroup;
-
-            SecondaryMuscleGroups = new ObservableCollection<string>(exercise.SecondaryMuscleGroups);
-            EquipmentList = new ObservableCollection<string>(exercise.EquipmentList);
-
-            BindingContext = this;
+            await Navigation.PushAsync(new EditExercisePage(_exercise));
         }
 
         private async void OnBackTapped(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync("..");
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<EditExercisePage, Exercise>(this, "ExerciseUpdated");
         }
     }
 }

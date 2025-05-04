@@ -49,7 +49,8 @@ namespace Setta.Models
                     ExerciseName = name,
                     MuscleGroup = primary,
                     SecondaryMuscleGroup = secondary,
-                    Equipment = equip
+                    Equipment = equip,
+                    IsFromDatabase = false
                 });
             }
             return list;

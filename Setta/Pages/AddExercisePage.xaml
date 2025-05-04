@@ -13,7 +13,7 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="20,0,20,20" Spacing="10">
 
-                <Grid ColumnDefinitions="*,Auto">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,5,0,0">
                     <Label Text="Новое упражнение"
                            Style="{StaticResource HeadlineLabel}"
                            VerticalOptions="Center" />

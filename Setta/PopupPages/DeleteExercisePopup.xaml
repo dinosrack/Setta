@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="Setta.PopupPages.DeleteExercisePopup"
+    Color="Transparent">
+
+    <Grid HorizontalOptions="Center" VerticalOptions="Center">
+        <Border
+            StrokeShape="RoundRectangle 10"
+            Padding="20"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+
+            <VerticalStackLayout Spacing="10">
+                <!-- Заголовок -->
+                <Label
+                    Text="Удаление"
+                    Style="{StaticResource HeadlineLabel}"
+                    HorizontalOptions="Center"/>
+
+                <!-- Сообщение -->
+                <Label
+                    Text="Вы действительно уверены в этом?"
+                    Style="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="WordWrap" />
+
+                <!-- Кнопки действия -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button
+                        Grid.Column="0"
+                        Text="Отмена"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                        Clicked="OnCancelClicked"/>
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Да, удалить"
+                        BackgroundColor="{StaticResource Red}"
+                        TextColor="White"
+                        Clicked="OnConfirmClicked"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</toolkit:Popup>
