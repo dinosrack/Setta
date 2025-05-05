@@ -70,7 +70,8 @@
                         FontSize="16"
                         BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
-                        Placeholder="Введите название" />
+                        Placeholder="Введите название"
+                        MaxLength="50"/>
                 </Frame>
 
                 <Label
@@ -81,17 +82,53 @@
                     Margin="0,-10,0,20"
                     IsVisible="False" />
 
+                <!-- Упражнения -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Text="Список упражнений"
+                        Style="{StaticResource SecondaryLabel}"
+                        Grid.Column="1"
+                        Margin="0,0,0,10" />
+                    <Label
+                        Text="*"
+                        Style="{StaticResource SecondaryLabel}"
+                        TextColor="{StaticResource Red}"
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="0,-5,5,0" />
+                </Grid>
+
+                <Button
+                        Text="Добавить упражнение"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                        HeightRequest="50"
+                        Margin="0,0,0,20"/>
+
+                <Label
+                    x:Name="ExercisesErrorLabel"
+                    Text="Шаблон должен содержать не менее 1 упражнения"
+                    TextColor="{StaticResource Red}"
+                    FontSize="Small"
+                    Margin="0,-10,0,20"
+                    IsVisible="False" />
+
+                <!-- Создание шаблона -->
+                <Button
+                        Text="Создать шаблон"
+                        BackgroundColor="{StaticResource Important}"
+                        TextColor="White"
+                        HeightRequest="50"/>
             </VerticalStackLayout>
         </ScrollView>
-
-        <!-- Кнопка создания -->
-        <Grid Grid.Row="1" Margin="0,20,0,0">
-            <Button
-                Text="Создать шаблон"
-                BackgroundColor="{StaticResource Important}"
-                TextColor="White"
-                HeightRequest="50"/>
-        </Grid>
-
     </Grid>
 </ContentPage>

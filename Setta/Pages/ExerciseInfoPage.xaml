@@ -52,8 +52,7 @@
                             Text="{Binding ExerciseName}"
                             VerticalOptions="Center"
                             HorizontalOptions="Fill"
-                            LineBreakMode="WordWrap"
-                            MaxLines="2" />
+                            LineBreakMode="WordWrap"/>
                     </Grid>
                 </Border>
 

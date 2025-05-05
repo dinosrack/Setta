@@ -70,7 +70,8 @@
                         FontSize="16"
                         BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
-                        Placeholder="Введите название" />
+                        Placeholder="Введите название"
+                        MaxLength="100"/>
                 </Frame>
                 <Label
                     x:Name="NameErrorLabel"
