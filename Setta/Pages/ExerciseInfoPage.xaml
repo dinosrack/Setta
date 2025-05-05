@@ -5,7 +5,8 @@
     xmlns:models="clr-namespace:Setta.Models"
     x:Class="Setta.Pages.ExerciseInfoPage"
     BackgroundColor="{StaticResource BackgroundColor}"
-    Padding="20">
+    Padding="20"
+    Shell.TabBarIsVisible="False">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />

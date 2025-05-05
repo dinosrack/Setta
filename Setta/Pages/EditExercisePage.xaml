@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Setta.Pages.EditExercisePage"
     BackgroundColor="{StaticResource BackgroundColor}"
-    Padding="20">
+    Padding="20"
+    Shell.TabBarIsVisible="False">
 
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
