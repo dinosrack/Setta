@@ -6,4 +6,9 @@ public partial class TemplatePage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    private async void OnAddTemplateClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new AddTemplatePage());
+    }
 }
