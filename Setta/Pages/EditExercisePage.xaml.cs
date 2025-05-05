@@ -4,12 +4,14 @@ using Setta.Services;
 using Setta.ViewModels;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Storage;
 
 namespace Setta.Pages
 {
     public partial class EditExercisePage : ContentPage
     {
+        private const string PlaceholderUnselectedMuscle = "Не выбрана";
+        private const string PlaceholderUnselectedEquipment = "Не выбрано";
+
         private readonly Exercise _exercise;
 
         public EditExercisePage(Exercise exercise)
@@ -17,21 +19,35 @@ namespace Setta.Pages
             InitializeComponent();
             _exercise = exercise;
 
-            // Заполняем поля
             ExerciseNameEntry.Text = _exercise.ExerciseName;
-            PrimaryMuscleLabel.Text = _exercise.MuscleGroup;
-            SecondaryMuscleLabel.Text = string.IsNullOrWhiteSpace(_exercise.SecondaryMuscleGroup)
-                ? "Выберите группу"
+
+            PrimaryMuscleLabel.Text =
+                string.IsNullOrWhiteSpace(_exercise.MuscleGroup)
+                ? PlaceholderUnselectedMuscle
+                : _exercise.MuscleGroup;
+
+            SecondaryMuscleLabel.Text =
+                string.IsNullOrWhiteSpace(_exercise.SecondaryMuscleGroup)
+                ? PlaceholderUnselectedMuscle
                 : _exercise.SecondaryMuscleGroup;
-            EquipmentLabel.Text = _exercise.Equipment;
+
+            EquipmentLabel.Text =
+                string.IsNullOrWhiteSpace(_exercise.Equipment)
+                ? PlaceholderUnselectedEquipment
+                : _exercise.Equipment;
         }
 
         async void OnPrimaryMuscleTapped(object sender, EventArgs e)
         {
+            var isPlaceholder = PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
+            var initial = isPlaceholder
+                ? Array.Empty<string>()
+                : new[] { PrimaryMuscleLabel.Text };
+
             var popup = new SelectionPopup(
                 "Основная группа",
                 FilterPageViewModel.GetAvailableMuscleGroups(),
-                new[] { PrimaryMuscleLabel.Text },
+                initial,
                 isMultiSelect: false);
 
             var result = await this.ShowPopupAsync(popup) as List<string>;
@@ -41,8 +57,8 @@ namespace Setta.Pages
 
         async void OnSecondaryMusclesTapped(object sender, EventArgs e)
         {
-            var current = string.IsNullOrWhiteSpace(SecondaryMuscleLabel.Text) ||
-                          SecondaryMuscleLabel.Text.StartsWith("Выберите")
+            var isPlaceholder = SecondaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
+            var current = isPlaceholder
                 ? Array.Empty<string>()
                 : SecondaryMuscleLabel.Text.Split(", ", StringSplitOptions.RemoveEmptyEntries);
 
@@ -54,17 +70,24 @@ namespace Setta.Pages
 
             var result = await this.ShowPopupAsync(popup) as List<string>;
             if (result != null)
+            {
                 SecondaryMuscleLabel.Text = result.Any()
                     ? string.Join(", ", result)
-                    : "Выберите группу";
+                    : PlaceholderUnselectedMuscle;
+            }
         }
 
         async void OnEquipmentTapped(object sender, EventArgs e)
         {
+            var isPlaceholder = EquipmentLabel.Text == PlaceholderUnselectedEquipment;
+            var initial = isPlaceholder
+                ? Array.Empty<string>()
+                : new[] { EquipmentLabel.Text };
+
             var popup = new SelectionPopup(
                 "Оборудование",
                 FilterPageViewModel.GetAvailableEquipment(),
-                new[] { EquipmentLabel.Text },
+                initial,
                 isMultiSelect: false);
 
             var result = await this.ShowPopupAsync(popup) as List<string>;
@@ -76,7 +99,6 @@ namespace Setta.Pages
         {
             bool hasError = false;
 
-            // Валидация названия
             if (string.IsNullOrWhiteSpace(ExerciseNameEntry.Text))
             {
                 NameErrorLabel.IsVisible = true;
@@ -87,9 +109,7 @@ namespace Setta.Pages
                 NameErrorLabel.IsVisible = false;
             }
 
-            // Валидация основной группы мышц
-            if (string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text) ||
-                PrimaryMuscleLabel.Text == "Выберите группу")
+            if (PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle)
             {
                 PrimaryMuscleErrorLabel.IsVisible = true;
                 hasError = true;
@@ -99,9 +119,7 @@ namespace Setta.Pages
                 PrimaryMuscleErrorLabel.IsVisible = false;
             }
 
-            // Валидация оборудования
-            if (string.IsNullOrWhiteSpace(EquipmentLabel.Text) ||
-                EquipmentLabel.Text == "Выберите оборудование")
+            if (EquipmentLabel.Text == PlaceholderUnselectedEquipment)
             {
                 EquipmentErrorLabel.IsVisible = true;
                 hasError = true;
@@ -114,10 +132,10 @@ namespace Setta.Pages
             if (hasError)
                 return;
 
-            // Сохранение изменений
+            // Сохраняем изменения в модели
             _exercise.ExerciseName = ExerciseNameEntry.Text.Trim();
             _exercise.MuscleGroup = PrimaryMuscleLabel.Text;
-            _exercise.SecondaryMuscleGroup = SecondaryMuscleLabel.Text.StartsWith("Выберите")
+            _exercise.SecondaryMuscleGroup = SecondaryMuscleLabel.Text == PlaceholderUnselectedMuscle
                 ? string.Empty
                 : SecondaryMuscleLabel.Text;
             _exercise.Equipment = EquipmentLabel.Text;
@@ -131,7 +149,6 @@ namespace Setta.Pages
         {
             var popup = new DeleteExercisePopup();
             var result = await this.ShowPopupAsync(popup) as bool?;
-
             if (result == true)
             {
                 await ExerciseDatabaseService.DeleteExerciseAsync(_exercise);

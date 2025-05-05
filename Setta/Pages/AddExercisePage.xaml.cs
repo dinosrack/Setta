@@ -12,6 +12,9 @@ namespace Setta.Pages
 {
     public partial class AddExercisePage : ContentPage
     {
+        private const string PlaceholderUnselectedMuscle = "Не выбрана";
+        private const string PlaceholderUnselectedEquipment = "Не выбрано";
+
         public AddExercisePage()
         {
             InitializeComponent();
@@ -19,12 +22,16 @@ namespace Setta.Pages
 
         async void OnPrimaryMuscleTapped(object sender, EventArgs e)
         {
+            var isPlaceholder = string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text)
+                                || PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
+            var initial = isPlaceholder
+                ? Array.Empty<string>()
+                : new[] { PrimaryMuscleLabel.Text };
+
             var popup = new SelectionPopup(
                 "Основная группа",
-                FilterPageViewModel.GetAvailableMuscleGroups(),  // порядок + из Excel
-                string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text) || PrimaryMuscleLabel.Text == "Выберите..."
-                    ? Array.Empty<string>()
-                    : new[] { PrimaryMuscleLabel.Text },
+                FilterPageViewModel.GetAvailableMuscleGroups(),
+                initial,
                 isMultiSelect: false);
 
             var result = await this.ShowPopupAsync(popup) as List<string>;
@@ -37,7 +44,7 @@ namespace Setta.Pages
         async void OnSecondaryMusclesTapped(object sender, EventArgs e)
         {
             var isPlaceholder = string.IsNullOrWhiteSpace(SecondaryMuscleLabel.Text)
-                                || SecondaryMuscleLabel.Text.StartsWith("Выберите");
+                                || SecondaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
 
             var selected = isPlaceholder
                 ? Array.Empty<string>()
@@ -50,13 +57,32 @@ namespace Setta.Pages
                 isMultiSelect: true);
 
             var result = await this.ShowPopupAsync(popup) as List<string>;
-
-            // Обновляем текст только если пользователь явно нажал "Применить"
             if (result != null)
             {
                 SecondaryMuscleLabel.Text = result.Any()
                     ? string.Join(", ", result)
-                    : "Выберите группу";
+                    : PlaceholderUnselectedMuscle;
+            }
+        }
+
+        async void OnEquipmentTapped(object sender, EventArgs e)
+        {
+            var isPlaceholder = string.IsNullOrWhiteSpace(EquipmentLabel.Text)
+                                || EquipmentLabel.Text == PlaceholderUnselectedEquipment;
+            var initial = isPlaceholder
+                ? Array.Empty<string>()
+                : new[] { EquipmentLabel.Text };
+
+            var popup = new SelectionPopup(
+                "Оборудование",
+                FilterPageViewModel.GetAvailableEquipment(),
+                initial,
+                isMultiSelect: false);
+
+            var result = await this.ShowPopupAsync(popup) as List<string>;
+            if (result?.Any() == true)
+            {
+                EquipmentLabel.Text = result.First();
             }
         }
 
@@ -74,7 +100,8 @@ namespace Setta.Pages
                 NameErrorLabel.IsVisible = false;
             }
 
-            if (string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text) || PrimaryMuscleLabel.Text == "Выберите группу")
+            if (string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text)
+                || PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle)
             {
                 PrimaryMuscleErrorLabel.IsVisible = true;
                 hasError = true;
@@ -84,7 +111,8 @@ namespace Setta.Pages
                 PrimaryMuscleErrorLabel.IsVisible = false;
             }
 
-            if (string.IsNullOrWhiteSpace(EquipmentLabel.Text) || EquipmentLabel.Text == "Выберите оборудование")
+            if (string.IsNullOrWhiteSpace(EquipmentLabel.Text)
+                || EquipmentLabel.Text == PlaceholderUnselectedEquipment)
             {
                 EquipmentErrorLabel.IsVisible = true;
                 hasError = true;
@@ -97,40 +125,22 @@ namespace Setta.Pages
             if (hasError)
                 return;
 
-            // Отфильтровываем фиктивный текст, если пользователь не выбрал второстепенные группы
             var secondaryText = SecondaryMuscleLabel.Text;
-            var isSecondaryValid = !string.IsNullOrWhiteSpace(secondaryText) && !secondaryText.StartsWith("Выберите");
+            var isSecondaryValid = !string.IsNullOrWhiteSpace(secondaryText)
+                                   && secondaryText != PlaceholderUnselectedMuscle;
 
             var newExercise = new Exercise
             {
                 ExerciseName = ExerciseNameEntry.Text.Trim(),
                 MuscleGroup = PrimaryMuscleLabel.Text,
-                SecondaryMuscleGroup = isSecondaryValid ? secondaryText : "",
+                SecondaryMuscleGroup = isSecondaryValid ? secondaryText : string.Empty,
                 Equipment = EquipmentLabel.Text
             };
 
             await ExerciseDatabaseService.AddExerciseAsync(newExercise);
 
             MessagingCenter.Send(this, "ExerciseAdded", newExercise);
-
             await Navigation.PopAsync();
-        }
-
-        async void OnEquipmentTapped(object sender, EventArgs e)
-        {
-            var popup = new SelectionPopup(
-                "Оборудование",
-                FilterPageViewModel.GetAvailableEquipment(),
-                string.IsNullOrWhiteSpace(EquipmentLabel.Text) || EquipmentLabel.Text == "Выберите..."
-                    ? Array.Empty<string>()
-                    : new[] { EquipmentLabel.Text },
-                isMultiSelect: false);
-
-            var result = await this.ShowPopupAsync(popup) as List<string>;
-            if (result?.Any() == true)
-            {
-                EquipmentLabel.Text = result.First();
-            }
         }
 
         async void OnBackTapped(object sender, EventArgs e)

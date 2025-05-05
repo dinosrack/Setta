@@ -34,14 +34,34 @@
                 </Grid>
 
                 <!-- Название -->
-                <Label
-                    Text="Название"
-                    Style="{StaticResource SecondaryLabel}" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Text="Название"
+                        Style="{StaticResource SecondaryLabel}"
+                        Grid.Column="1"
+                        Margin="0,0,0,10" />
+                    <Label
+                        Text="*"
+                        Style="{StaticResource SecondaryLabel}"
+                        TextColor="{StaticResource Red}"
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="0,-5,5,0" />
+                </Grid>
                 <Frame
                     HasShadow="False"
                     Padding="10,5"
                     CornerRadius="10"
-                    Margin="0,10,0,20"
+                    Margin="0,0,0,20"
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                     HeightRequest="50">
                     <Entry
@@ -53,34 +73,69 @@
                 </Frame>
                 <Label
                     x:Name="NameErrorLabel"
-                    Text="Выведите хотя бы 1 символ"
+                    Text="Название должно содержать не менее 1 символа"
                     TextColor="{StaticResource Red}"
                     FontSize="Small"
                     Margin="0,-10,0,20"
                     IsVisible="False" />
 
                 <!-- Основная группа мышц -->
-                <Label
-                    Text="Основная группа мышц"
-                    Style="{StaticResource SecondaryLabel}" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Text="Основная группа мышц"
+                        Style="{StaticResource SecondaryLabel}"
+                        Grid.Column="1"
+                        Margin="0,0,0,10" />
+                    <Label
+                        Text="*"
+                        Style="{StaticResource SecondaryLabel}"
+                        TextColor="{StaticResource Red}"
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="0,-5,5,0" />
+                </Grid>
                 <Frame
                     x:Name="PrimaryMuscleFrame"
                     Padding="15,5"
                     CornerRadius="10"
-                    Margin="0,10,0,20"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                    HeightRequest="50">
-                    <Label
-                        x:Name="PrimaryMuscleLabel"
-                        FontSize="16"
-                        VerticalTextAlignment="Center"
-                        VerticalOptions="Center"
-                        Text="Выберите группу"
-                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                    Margin="0,0,0,20"
+                    HeightRequest="50"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            x:Name="PrimaryMuscleLabel"
+                            Grid.Column="0"
+                            FontSize="16"
+                            VerticalTextAlignment="Center"
+                            VerticalOptions="Center"
+                            Text="Не выбрана"
+                            TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+
+                        <Image
+                            Grid.Column="1"
+                            Source="arrowdown.svg"
+                            WidthRequest="16"
+                            HeightRequest="16"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            Margin="10,0,0,0" />
+                    </Grid>
+
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPrimaryMuscleTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
+
                 <Label
                     x:Name="PrimaryMuscleErrorLabel"
                     Text="Выберите основную группу мышц"
@@ -91,7 +146,7 @@
 
                 <!-- Второстепенные группы мышц -->
                 <Label
-                    Text="Второстепенные группы мышц"
+                    Text="Второстепенная группа мышц"
                     Style="{StaticResource SecondaryLabel}" />
                 <Frame
                     x:Name="SecondaryMuscleFrame"
@@ -100,40 +155,91 @@
                     Margin="0,10,0,20"
                     MinimumHeightRequest="50"
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
-                    <Label
-                        x:Name="SecondaryMuscleLabel"
-                        FontSize="16"
-                        VerticalTextAlignment="Center"
-                        VerticalOptions="Center"
-                        LineBreakMode="WordWrap"
-                        Text="Выберите группу"
-                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            x:Name="SecondaryMuscleLabel"
+                            Grid.Column="0"
+                            FontSize="16"
+                            VerticalTextAlignment="Center"
+                            VerticalOptions="Center"
+                            LineBreakMode="WordWrap"
+                            Text="Не выбрана"
+                            TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+
+                        <Image
+                            Grid.Column="1"
+                            Source="arrowdown.svg"
+                            WidthRequest="16"
+                            HeightRequest="16"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            Margin="10,0,0,0" />
+                    </Grid>
+
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnSecondaryMusclesTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
 
-                <Label
-                    Text="Оборудование"
-                    Style="{StaticResource SecondaryLabel}" />
+
+                <!-- Оборудование -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Text="Оборудование"
+                        Style="{StaticResource SecondaryLabel}"
+                        Grid.Column="1"
+                        Margin="0,0,0,10" />
+                    <Label
+                        Text="*"
+                        Style="{StaticResource SecondaryLabel}"
+                        TextColor="{StaticResource Red}"
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="0,-5,5,0" />
+                </Grid>
                 <Frame
                     x:Name="EquipmentFrame"
                     Padding="15,5"
                     CornerRadius="10"
-                    Margin="0,10,0,20"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                    HeightRequest="50">
-                    <Label
-                        x:Name="EquipmentLabel"
-                        FontSize="16"
-                        VerticalTextAlignment="Center"
-                        VerticalOptions="Center"
-                        Text="Выберите оборудование"
-                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                    Margin="0,0,0,20"
+                    HeightRequest="50"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            x:Name="EquipmentLabel"
+                            Grid.Column="0"
+                            FontSize="16"
+                            VerticalTextAlignment="Center"
+                            VerticalOptions="Center"
+                            Text="Не выбрано"
+                            TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+
+                        <Image
+                            Grid.Column="1"
+                            Source="arrowdown.svg"
+                            WidthRequest="16"
+                            HeightRequest="16"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            Margin="10,0,0,0" />
+                    </Grid>
+
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnEquipmentTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
+
                 <Label
                     x:Name="EquipmentErrorLabel"
                     Text="Выберите оборудование"

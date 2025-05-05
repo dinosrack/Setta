@@ -16,7 +16,7 @@
                 <Border
                     StrokeShape="RoundRectangle 10"
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                    Padding="10"
+                    Padding="15,5"
                     HeightRequest="50">
 
                     <Border.GestureRecognizers>
@@ -26,7 +26,7 @@
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <Image Source="theme.svg" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
                         <Label Grid.Column="1" Text="Тема" VerticalOptions="Center" />
-                        <Image Source="arrowright.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
+                        <Image Source="arrowdown.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
                     </Grid>
                 </Border>
             </VerticalStackLayout>
