@@ -6,75 +6,41 @@ using System.Collections.ObjectModel;
 
 namespace Setta.Pages;
 
-public partial class AddTemplatePage : ContentPage
+public partial class EditTemplatePage : ContentPage
 {
+    private WorkoutTemplate _template;
     private ObservableCollection<ExerciseInTemplate> _selectedExercises = new();
 
-    public AddTemplatePage()
+    public EditTemplatePage(WorkoutTemplate template)
     {
         InitializeComponent();
+        _template = template;
+
+        LoadData();
     }
 
-    private async void OnBackTapped(object sender, EventArgs e)
+    private void LoadData()
     {
-        await Navigation.PopAsync();
-    }
+        TemplateNameEntry.Text = _template.Name;
 
-    private void UpdateExerciseListUI()
-    {
-        SelectedExercisesView.ItemsSource = _selectedExercises;
-        SelectedExercisesView.IsVisible = _selectedExercises.Any();
-    }
+        var parsed = System.Text.Json.JsonSerializer.Deserialize<List<TemplateExercise>>(_template.ExercisesJson);
 
-    private async void OnAddExercisesClicked(object sender, EventArgs e)
-    {
-        // Ограничение на количество упражнений
-        if (_selectedExercises.Count >= 7)
+        _selectedExercises.Clear();
+        foreach (var item in parsed)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 шаблон."));
-            return;
+            _selectedExercises.Add(new ExerciseInTemplate
+            {
+                Exercise = new Exercise
+                {
+                    ExerciseName = item.Name,
+                    MuscleGroup = item.MuscleGroup
+                },
+                Sets = new ObservableCollection<ExerciseSet>(item.Sets)
+            });
         }
 
-        // Удалим предыдущую подписку на всякий случай
-        MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
-
-        // Подписка на выбранные упражнения
-        MessagingCenter.Subscribe<AddExerciseToTemplatePage, List<Exercise>>(this,
-            "ExercisesSelected", (_, list) =>
-            {
-                MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
-
-                if (list == null || list.Count == 0)
-                    return;
-
-                foreach (var ex in list)
-                {
-                    if (ex == null || ex.ExerciseName == null)
-                        continue;
-
-                    if (_selectedExercises.Any(e => e.Exercise.ExerciseName == ex.ExerciseName))
-                        continue;
-
-                    if (_selectedExercises.Count >= 7)
-                    {
-                        this.ShowPopup(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 шаблон."));
-                        break;
-                    }
-
-                    _selectedExercises.Add(new ExerciseInTemplate
-                    {
-                        Exercise = ex,
-                        Sets = new ObservableCollection<ExerciseSet>()
-                    });
-                }
-
-                UpdateExerciseListUI();
-                ExercisesErrorLabel.IsVisible = false;
-            });
-
-        // Передаём уже выбранные упражнения
-        var alreadySelected = _selectedExercises.Select(e => e.Exercise).ToList();
-        await Navigation.PushAsync(new AddExerciseToTemplatePage(alreadySelected));
+        SelectedExercisesView.ItemsSource = _selectedExercises;
+        SelectedExercisesView.IsVisible = _selectedExercises.Any();
     }
 
     private async void OnExerciseTapped(object sender, EventArgs e)
@@ -92,7 +58,8 @@ public partial class AddTemplatePage : ContentPage
 
             if (result is null)
             {
-                _selectedExercises.Remove(selected); // Явное удаление
+                // Удаление
+                _selectedExercises.Remove(selected);
             }
             else if (result is ExerciseInTemplate updated)
             {
@@ -100,11 +67,64 @@ public partial class AddTemplatePage : ContentPage
                 _selectedExercises[index] = updated;
             }
 
-            UpdateExerciseListUI();
+            SelectedExercisesView.IsVisible = _selectedExercises.Any();
         }
     }
 
-    private async void OnCreateTemplateClicked(object sender, EventArgs e)
+    private async void OnAddExercisesClicked(object sender, EventArgs e)
+    {
+        // Проверка лимита до открытия страницы выбора
+        if (_selectedExercises.Count >= 7)
+        {
+            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 шаблон."));
+            return;
+        }
+
+        // Отменим подписку, если она уже была
+        MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
+
+        // Подписка на выбранные упражнения
+        MessagingCenter.Subscribe<AddExerciseToTemplatePage, List<Exercise>>(this,
+            "ExercisesSelected", (_, list) =>
+            {
+                MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
+
+                if (list == null || list.Count == 0)
+                    return;
+
+                foreach (var ex in list)
+                {
+                    if (_selectedExercises.Any(e => e.Exercise.ExerciseName == ex.ExerciseName))
+                        continue;
+
+                    if (_selectedExercises.Count >= 7)
+                    {
+                        this.ShowPopup(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 шаблон."));
+                        break;
+                    }
+
+                    _selectedExercises.Add(new ExerciseInTemplate
+                    {
+                        Exercise = ex,
+                        Sets = new ObservableCollection<ExerciseSet>()
+                    });
+                }
+
+                SelectedExercisesView.IsVisible = _selectedExercises.Any();
+            });
+
+        // Передаём уже выбранные упражнения
+        var alreadySelected = _selectedExercises.Select(e => e.Exercise).ToList();
+        await Navigation.PushAsync(new AddExerciseToTemplatePage(alreadySelected));
+    }
+
+
+    private async void OnBackTapped(object sender, EventArgs e)
+    {
+        await Navigation.PopAsync();
+    }
+
+    private async void OnSaveClicked(object sender, EventArgs e)
     {
         var name = TemplateNameEntry.Text?.Trim();
         bool hasError = false;
@@ -146,6 +166,7 @@ public partial class AddTemplatePage : ContentPage
             }
         }
 
+        _template.Name = name;
         var list = _selectedExercises.Select(e => new TemplateExercise
         {
             Name = e.Exercise.ExerciseName,
@@ -153,16 +174,22 @@ public partial class AddTemplatePage : ContentPage
             Sets = e.Sets.ToList()
         }).ToList();
 
-        var json = System.Text.Json.JsonSerializer.Serialize(list);
-
-        var template = new WorkoutTemplate
-        {
-            Name = name,
-            ExercisesJson = json
-        };
-
-        await TemplateDatabaseService.AddTemplateAsync(template);
-        MessagingCenter.Send(this, "TemplateCreated", template);
+        _template.ExercisesJson = System.Text.Json.JsonSerializer.Serialize(list);
+        await TemplateDatabaseService.UpdateTemplateAsync(_template);
+        MessagingCenter.Send(this, "TemplateUpdatedOrDeleted", true);
         await Navigation.PopAsync();
+    }
+
+    private async void OnDeleteClicked(object sender, EventArgs e)
+    {
+        var popup = new DeleteItemPopup();
+        var confirmed = await this.ShowPopupAsync(popup);
+
+        if (confirmed is bool result && result)
+        {
+            await TemplateDatabaseService.DeleteTemplateAsync(_template);
+            MessagingCenter.Send(this, "TemplateUpdatedOrDeleted", true);
+            await Navigation.PopAsync();
+        }
     }
 }

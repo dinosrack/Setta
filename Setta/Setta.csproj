@@ -65,13 +65,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="PopupPages\DeleteItemPopup.xaml.cs">
+	    <DependentUpon>DeleteItemPopup.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="PopupPages\ErrorsTemplatesPopup.xaml.cs">
+	    <DependentUpon>ErrorsTemplatesPopup.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Pages\AddExercisePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\AddExerciseToTemplatePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\AddTemplatePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\EditExercisePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\EditTemplatePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ExerciseInfoPage.xaml">
@@ -92,10 +107,16 @@
 	  <MauiXaml Update="Pages\WorkoutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="PopupPages\DeleteExercisePopup.xaml">
+	  <MauiXaml Update="PopupPages\DeleteItemPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="PopupPages\ErrorsTemplatesPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="PopupPages\FilterPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="PopupPages\ProgressInExercisesPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="PopupPages\SelectionPopup.xaml">

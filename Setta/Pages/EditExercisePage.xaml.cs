@@ -147,7 +147,7 @@ namespace Setta.Pages
 
         async void OnDeleteClicked(object sender, EventArgs e)
         {
-            var popup = new DeleteExercisePopup();
+            var popup = new DeleteItemPopup();
             var result = await this.ShowPopupAsync(popup) as bool?;
             if (result == true)
             {

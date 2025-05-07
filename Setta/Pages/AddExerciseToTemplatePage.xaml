@@ -1,0 +1,123 @@
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Setta.ViewModels"
+    xmlns:models="clr-namespace:Setta.Models"
+    x:Class="Setta.Pages.AddExerciseToTemplatePage"
+    Shell.TabBarIsVisible="False"
+    Padding="20">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <models:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <viewmodels:AddExerciseToTemplateViewModel />
+    </ContentPage.BindingContext>
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- Заголовок -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+            <Label Text="Упражнения" Style="{StaticResource HeadlineLabel}" VerticalOptions="Center" />
+            <Label Text="Назад"
+                   Grid.Column="1"
+                   Padding="0,0,10,0"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+        <!-- Поиск + фильтр -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" HeightRequest="40" Margin="0,0,0,20">
+            <Frame Grid.Column="0"
+                   CornerRadius="10"
+                   Padding="10,0"
+                   HeightRequest="40"
+                   HorizontalOptions="Fill"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                <Grid ColumnDefinitions="Auto,10,*" VerticalOptions="Center">
+                    <Image Source="search.svg"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           VerticalOptions="Center" />
+                    <Entry Grid.Column="2"
+                           Placeholder="Поиск"
+                           Text="{Binding SearchQuery}"
+                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                           BackgroundColor="Transparent" />
+                </Grid>
+            </Frame>
+
+            <Frame Grid.Column="1"
+                   CornerRadius="10"
+                   HeightRequest="40"
+                   WidthRequest="40"
+                   Margin="10,0,0,0"
+                   VerticalOptions="Center"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnFilterClicked" />
+                </Frame.GestureRecognizers>
+                <Image Source="filter.svg"
+                       HeightRequest="20"
+                       WidthRequest="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Frame>
+        </Grid>
+
+        <!-- Список упражнений -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Exercises}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid RowDefinitions="Auto,Auto" Padding="0,5">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ToggleCommand}" CommandParameter="{Binding}" />
+                        </Grid.GestureRecognizers>
+
+                        <Grid Row="0" ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Exercise.ExerciseName}" />
+                                <Label Text="{Binding Exercise.MuscleGroup}" Style="{StaticResource SecondarySmallLabel}" />
+                            </VerticalStackLayout>
+
+                            <CheckBox IsChecked="{Binding IsSelected}"
+                                      Grid.Column="1"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="End" />
+                        </Grid>
+
+                        <BoxView Grid.Row="1"
+                                 HeightRequest="1"
+                                 Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                                 HorizontalOptions="Fill"
+                                 Margin="0,10,0,0"
+                                 CornerRadius="10"
+                                 IsVisible="{Binding IsLastItem, Converter={StaticResource InverseBoolConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Кнопка подтвердить -->
+        <Button Grid.Row="3"
+                Text="Добавить"
+                HeightRequest="50"
+                BackgroundColor="{StaticResource Important}"
+                TextColor="White"
+                Clicked="OnAddClicked"
+                Margin="0,20,0,0"/>
+    </Grid>
+</ContentPage>

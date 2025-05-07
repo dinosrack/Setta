@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Setta.Pages.TemplatePage"
+             x:Name="PageRoot"
              Padding="20">
 
     <Grid>
@@ -15,18 +16,58 @@
                     Text="У вас еще нет шаблонов"
                     x:Name="NoTemplateLabel"
                     Style="{StaticResource SecondaryLabel}"
-                    HorizontalOptions="Center" />
+                    HorizontalOptions="Center"
+                    IsVisible="False"/>
+
+                <CollectionView
+                    x:Name="TemplatesView"
+                    IsVisible="False">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                Padding="10"
+                                Margin="0,0,0,10"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                                CornerRadius="10"
+                                HasShadow="False">
+
+                                <Grid ColumnDefinitions="*,Auto" Padding="5,0,0,0">
+
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference PageRoot}, Path=TemplateTapCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.GestureRecognizers>
+
+                                    <!-- Название шаблона + упражнения -->
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="{Binding Name}"/>
+                                        <Label Text="{Binding ExerciseNames}" Style="{StaticResource SecondarySmallLabel}" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Стрелка -->
+                                    <Image Source="arrowright.svg"
+                                           WidthRequest="16"
+                                           HeightRequest="16"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="End"
+                                           Grid.Column="1"
+                                           Margin="10,0,0,0"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
 
                 <Button
-                Text="Создать шаблон"
-                BackgroundColor="{StaticResource Important}"
-                TextColor="White"
-                HeightRequest="50"
-                Clicked="OnAddTemplateClicked"/>
+                    Text="Создать шаблон"
+                    BackgroundColor="{StaticResource Important}"
+                    TextColor="White"
+                    HeightRequest="50"
+                    Clicked="OnAddTemplateClicked"/>
 
             </VerticalStackLayout>
         </ScrollView>
-
     </Grid>
-
 </ContentPage>

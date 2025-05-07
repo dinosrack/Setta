@@ -68,7 +68,6 @@
                     BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
                     <Entry
                         x:Name="ExerciseNameEntry"
-                        FontSize="16"
                         BackgroundColor="Transparent"
                         TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
                         Placeholder="Введите название"
@@ -78,7 +77,6 @@
                     x:Name="NameErrorLabel"
                     Text="Название должно содержать не менее 1 символа"
                     TextColor="{StaticResource Red}"
-                    FontSize="Small"
                     Margin="0,-10,0,20"
                     IsVisible="False" />
 
@@ -117,7 +115,6 @@
                         <Label
                             x:Name="PrimaryMuscleLabel"
                             Grid.Column="0"
-                            FontSize="16"
                             VerticalTextAlignment="Center"
                             VerticalOptions="Center"
                             Text="Не выбрана"
@@ -140,7 +137,6 @@
                     x:Name="PrimaryMuscleErrorLabel"
                     Text="Выберите основную группу мышц"
                     TextColor="{StaticResource Red}"
-                    FontSize="Small"
                     Margin="0,-10,0,20"
                     IsVisible="False" />
 
@@ -161,7 +157,6 @@
                         <Label
                             x:Name="SecondaryMuscleLabel"
                             Grid.Column="0"
-                            FontSize="16"
                             VerticalTextAlignment="Center"
                             VerticalOptions="Center"
                             LineBreakMode="WordWrap"
@@ -220,7 +215,6 @@
                         <Label
                             x:Name="EquipmentLabel"
                             Grid.Column="0"
-                            FontSize="16"
                             VerticalTextAlignment="Center"
                             VerticalOptions="Center"
                             Text="Не выбрано"
@@ -245,7 +239,6 @@
                     x:Name="EquipmentErrorLabel"
                     Text="Выберите оборудование"
                     TextColor="{StaticResource Red}"
-                    FontSize="Small"
                     Margin="0,-10,0,20"
                     IsVisible="False" />
 

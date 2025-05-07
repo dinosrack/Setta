@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="Setta.PopupPages.ProgressInExercisesPopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:converters="clr-namespace:Setta.Converters"
+    Color="Transparent"
+    VerticalOptions="End"
+    HorizontalOptions="Fill">
+
+    <toolkit:Popup.Resources>
+        <ResourceDictionary>
+            <converters:SetIndexConverter x:Key="SetIndexConverter" />
+        </ResourceDictionary>
+    </toolkit:Popup.Resources>
+
+    <Border
+        StrokeShape="RoundRectangle 20"
+        Padding="20"
+        BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+
+        <VerticalStackLayout Spacing="20">
+
+            <BoxView
+                    HeightRequest="4"
+                    WidthRequest="40"
+                    CornerRadius="10"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource Secondary}" />
+
+            <!-- Заголовок -->
+            <Label Text="{Binding Exercise.ExerciseName}" Style="{StaticResource HeadlineLabel}" />
+            <Label Text="{Binding Exercise.MuscleGroup}" Style="{StaticResource SecondaryLabel}" Margin="0,-10,0,0"/>
+
+            <!-- Список подходов -->
+            <CollectionView x:Name="SetsView" ItemsSource="{Binding Sets}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0,5"
+                  ColumnSpacing="20"
+                  ColumnDefinitions="Auto,Auto,Auto,*,Auto"
+                  VerticalOptions="Center">
+
+                            <!-- Номер подхода -->
+                            <Frame Grid.Column="0"
+                                   Padding="0"
+                                   CornerRadius="10"
+                                   HasShadow="False"
+                                   WidthRequest="40"
+                                   HeightRequest="40"
+                                   VerticalOptions="Center"
+                                   BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                                <Label Text="{Binding Path=., Converter={StaticResource SetIndexConverter}, ConverterParameter={x:Reference SetsView}}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                            </Frame>
+
+                            <!-- Вес -->
+                            <StackLayout Grid.Column="1"
+                                         Orientation="Horizontal"
+                                         Spacing="10"
+                                         VerticalOptions="Center">
+                                <Frame Padding="0"
+                                       CornerRadius="10"
+                                       HasShadow="False"
+                                       WidthRequest="50"
+                                       HeightRequest="40"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                                    <Entry Text="{Binding Weight}"
+                                           Placeholder="0"
+                                           Keyboard="Numeric"
+                                           MaxLength="3"
+                                           HorizontalTextAlignment="Center"
+                                           BackgroundColor="Transparent"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+                                <Label Text="кг"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SecondaryLabel}" />
+                            </StackLayout>
+
+                            <!-- Повторы -->
+                            <StackLayout Grid.Column="2"
+                                         Orientation="Horizontal"
+                                         Spacing="10"
+                                         VerticalOptions="Center">
+                                <Frame Padding="0"
+                                       CornerRadius="10"
+                                       HasShadow="False"
+                                       WidthRequest="50"
+                                       HeightRequest="40"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
+                                    <Entry Text="{Binding Reps}"
+                                           Placeholder="0"
+                                           Keyboard="Numeric"
+                                           MaxLength="2"
+                                           HorizontalTextAlignment="Center"
+                                           BackgroundColor="Transparent"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+                                <Label Text="повторы"
+                                       VerticalOptions="Center"
+                                       Style="{StaticResource SecondaryLabel}" />
+                            </StackLayout>
+
+                            <!-- Spacer (растягивающая пустота) -->
+                            <BoxView Grid.Column="3" />
+
+                            <!-- Удалить -->
+                            <ImageButton Grid.Column="4"
+                                         Source="delete.svg"
+                                         Clicked="OnDeleteSet"
+                                         WidthRequest="20"
+                                         HeightRequest="20"
+                                         BackgroundColor="Transparent"
+                                         VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+            <!-- Добавить подход -->
+            <Button Text="Добавить подход"
+                    HeightRequest="50"
+                    Clicked="OnAddSet"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}" />
+
+            <!-- Кнопки сохранить / удалить -->
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10">
+                <Button Text="Удалить"
+                        BackgroundColor="{StaticResource Red}"
+                        HeightRequest="50"
+                        HorizontalOptions="FillAndExpand"
+                        Clicked="OnDeleteExercise"
+                        Grid.Column="0"/>
+
+                <Button Text="Сохранить"
+                        BackgroundColor="{StaticResource Important}"
+                        HeightRequest="50"
+                        HorizontalOptions="FillAndExpand"
+                        Clicked="OnSaveExercise"
+                        Grid.Column="1"/>
+            </Grid>
+
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

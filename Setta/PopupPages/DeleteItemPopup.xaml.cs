@@ -2,11 +2,11 @@ using CommunityToolkit.Maui.Views;
 
 namespace Setta.PopupPages
 {
-    public partial class DeleteExercisePopup : Popup
+    public partial class DeleteItemPopup : Popup
     {
         public Action OnConfirmAction { get; set; }
 
-        public DeleteExercisePopup()
+        public DeleteItemPopup()
         {
             InitializeComponent();
         }

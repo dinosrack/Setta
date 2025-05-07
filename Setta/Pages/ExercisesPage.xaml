@@ -83,18 +83,32 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid RowDefinitions="Auto,Auto" Padding="0,5">
-                        <StackLayout Grid.Row="0" Spacing="2">
+                    <Grid Padding="0,10" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+
+                        <!-- Контент -->
+                        <StackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
                             <StackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnExerciseTapped" />
                             </StackLayout.GestureRecognizers>
 
-                            <Label Text="{Binding ExerciseName}" FontSize="16" />
+                            <Label Text="{Binding ExerciseName}" />
                             <Label Text="{Binding MuscleGroup}" Style="{StaticResource SecondarySmallLabel}" />
                         </StackLayout>
 
+                        <!-- Иконка -->
+                        <Image
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Source="arrowright.svg"
+                            WidthRequest="16"
+                            HeightRequest="16"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"/>
+
+                        <!-- Разделитель -->
                         <BoxView
                             Grid.Row="1"
+                            Grid.ColumnSpan="2"
                             HeightRequest="1"
                             Color="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                             HorizontalOptions="Fill"
