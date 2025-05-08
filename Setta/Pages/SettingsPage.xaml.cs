@@ -18,4 +18,10 @@ public partial class SettingsPage : ContentPage
         await this.ShowPopupAsync(popup);
     });
 
+    public Command Feedback => new Command(async () =>
+    {
+        var popup = new FeedbackPopup();
+        await this.ShowPopupAsync(popup);
+    });
+
 }

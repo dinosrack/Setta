@@ -31,6 +31,28 @@
                 </Border>
             </VerticalStackLayout>
 
+            <!-- Раздел: Помощь -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Помощь" Style="{StaticResource SecondaryLabel}" />
+
+                <Border
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    Padding="15,5"
+                    HeightRequest="50">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Feedback}" />
+                    </Border.GestureRecognizers>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Image Source="feedback.svg" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" Margin="0,0,10,0"/>
+                        <Label Grid.Column="1" Text="Обратная связь" VerticalOptions="Center" />
+                        <Image Source="arrowdown.svg" Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="16" HeightRequest="16"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

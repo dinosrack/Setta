@@ -1,0 +1,72 @@
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="Setta.PopupPages.FeedbackPopup"
+    VerticalOptions="End"
+    HorizontalOptions="Fill"
+    Color="Transparent">
+
+    <Grid
+        HorizontalOptions="Fill"
+        VerticalOptions="End">
+
+        <Border
+            StrokeShape="RoundRectangle 10,10,0,0"
+            Padding="20"
+            HorizontalOptions="Fill"
+            VerticalOptions="End"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
+
+            <VerticalStackLayout Spacing="20">
+
+                <BoxView
+                    HeightRequest="4"
+                    WidthRequest="40"
+                    CornerRadius="10"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource Secondary}" />
+
+                <Label
+                    Text="Обратная связь"
+                    Style="{StaticResource HeadlineLabel}"
+                    HorizontalOptions="Start" />
+
+                <Label
+                    Text="Вы можете связаться с разработчиком, чтобы оставить отзыв, сообщить об ошибке или предложить новую функцию."
+                    Style="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                    LineBreakMode="WordWrap"
+                    HorizontalOptions="Start"
+                    HorizontalTextAlignment="Start" />
+
+                <!-- Кнопка в центре -->
+                <Border
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="#229ED9"
+                    Padding="15,5"
+                    HeightRequest="50"
+                    HorizontalOptions="Fill">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTelegramTapped" />
+                    </Border.GestureRecognizers>
+
+                    <Grid ColumnDefinitions="Auto,Auto"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center">
+                        <Image Source="telegram.svg"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               VerticalOptions="Center"
+                               Margin="0,0,10,0"/>
+                        <Label Grid.Column="1"
+                                Text="Telegram"
+                                VerticalOptions="Center"
+                                TextColor="White"
+                                FontFamily="RubikMedium"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</toolkit:Popup>
