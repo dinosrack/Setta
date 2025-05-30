@@ -12,9 +12,6 @@ namespace Setta.Pages
         public WorkoutInfoPage(int workoutId)
         {
             InitializeComponent();
-            var vm = new WorkoutInfoPageViewModel(workoutId);
-            vm.RequestClose += (s, e) => ClosePage();
-            BindingContext = vm;
         }
 
         private async void OnBackTapped(object sender, EventArgs e)

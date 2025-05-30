@@ -4,81 +4,15 @@
              x:Class="Setta.Pages.WorkoutPage"
              Padding="20">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <DataTemplate x:Key="WorkoutDateHeaderTemplate">
-                <Label Text="{Binding DateHeader}"
-                   TextColor="{StaticResource Secondary}"
-                   FontSize="15"
-                   Margin="0,20,0,8"
-                   FontFamily="RubikRegular" />
-            </DataTemplate>
-            <!-- ... другие ресурсы ... -->
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <VerticalStackLayout Spacing="20">
-        <!-- Заголовок -->
         <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
 
-        <!-- Кнопка -->
         <Button Text="Начать тренировку"
                 HeightRequest="50"
                 Clicked="OnAddWorkoutClicked"
                 BackgroundColor="{StaticResource Important}"
                 TextColor="White" />
 
-        <!-- Список тренировок -->
-        <CollectionView ItemsSource="{Binding WorkoutGroups}"
-                IsVisible="{Binding IsWorkoutListNotEmpty}"
-                GroupHeaderTemplate="{StaticResource WorkoutDateHeaderTemplate}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame
-            Margin="0,0,0,10"
-            Padding="0"
-            CornerRadius="14"
-            BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-            HasShadow="False"
-            BorderColor="{Binding BorderColor}">
-                        <Grid ColumnDefinitions="6,*,Auto" Padding="0,0,0,0" HeightRequest="72" VerticalOptions="Center">
-                            <!-- Зеленая линия слева -->
-                            <BoxView Grid.Column="0"
-                         WidthRequest="6"
-                         CornerRadius="4"
-                         VerticalOptions="FillAndExpand"
-                         BackgroundColor="{Binding LineColor}" />
-                            <!-- Основная информация -->
-                            <VerticalStackLayout Grid.Column="1" Spacing="3" Padding="16,12,0,12">
-                                <Label Text="{Binding Title}"
-                           FontAttributes="Bold"
-                           FontSize="17"
-                           TextColor="White" />
-                                <!-- Только для завершенной тренировки: строка с деталями -->
-                                <Label IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}"
-                           Text="{Binding Details}" 
-                           FontSize="14"
-                           TextColor="#E0E0E0"
-                           Margin="0,2,0,0"/>
-                            </VerticalStackLayout>
-                            <!-- Время/статус -->
-                            <Label Grid.Column="2"
-                       Padding="0,0,20,0"
-                       VerticalOptions="Start"
-                       HorizontalOptions="End"
-                       Text="{Binding RightText}"
-                       FontSize="14"
-                       TextColor="{StaticResource Secondary}"
-                       VerticalTextAlignment="Center"
-                       />
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-
-        </CollectionView>
-
-        <!-- Текст если нет тренировок -->
         <Label Text="В дневнике еще нет записей тренировок"
                IsVisible="{Binding IsWorkoutListEmpty}"
                HorizontalOptions="Center"

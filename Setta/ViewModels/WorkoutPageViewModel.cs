@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Setta.Models;
 using System.Linq;
-using System.Windows.Input;
 using System.ComponentModel;
 using Setta.Services;
 using System.Runtime.CompilerServices;
@@ -25,29 +24,29 @@ namespace Setta.ViewModels
     {
         private WorkoutDatabaseService _db;
 
-        public ObservableCollection<WorkoutGroup> GroupedWorkouts { get; set; } = new();
+        public ObservableCollection<WorkoutGroup> WorkoutGroups { get; set; } = new();
 
-        private bool _isEmpty;
-        public bool IsEmpty
+        private bool _isWorkoutListEmpty;
+        public bool IsWorkoutListEmpty
         {
-            get => _isEmpty;
+            get => _isWorkoutListEmpty;
             set
             {
-                if (_isEmpty != value)
+                if (_isWorkoutListEmpty != value)
                 {
-                    _isEmpty = value;
+                    _isWorkoutListEmpty = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsWorkoutListNotEmpty));
                 }
             }
         }
+        public bool IsWorkoutListNotEmpty => !IsWorkoutListEmpty;
 
         public WorkoutPageViewModel()
         {
-            // Инициализация сервиса БД (убери, если используешь DI)
             string dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
             _db = new WorkoutDatabaseService(dbPath);
 
-            // Загрузка тренировок при создании ViewModel
             Task.Run(async () => await LoadWorkoutsAsync());
         }
 
@@ -56,19 +55,17 @@ namespace Setta.ViewModels
             var allWorkouts = await _db.GetAllWorkoutsAsync();
 
             var grouped = allWorkouts
-                .GroupBy(w => w.StartDate.ToString("d MMMM yyyy", new CultureInfo("ru-RU")))
+                .GroupBy(w => w.Date.ToString("d MMMM yyyy", new CultureInfo("ru-RU")))
                 .OrderByDescending(g => g.Key)
                 .Select(g => new WorkoutGroup(g.Key, g))
                 .ToList();
 
-            GroupedWorkouts.Clear();
+            WorkoutGroups.Clear();
             foreach (var group in grouped)
-                GroupedWorkouts.Add(group);
+                WorkoutGroups.Add(group);
 
-            IsEmpty = GroupedWorkouts.Count == 0;
+            IsWorkoutListEmpty = WorkoutGroups.Count == 0;
         }
-
-        // Для обновления после добавления/удаления тренировок вызови LoadWorkoutsAsync()
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
