@@ -22,36 +22,44 @@
                         Margin="0,20,0,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,0,0,10"
-               Padding="16"
-               CornerRadius="16"
-               BackgroundColor="{Binding CardBackgroundColor}"
-               HasShadow="False">
-                        <VerticalStackLayout Spacing="6">
-                            <!-- Дата и статус -->
-                            <HorizontalStackLayout>
-                                <Label Text="{Binding DateString}" 
-                           FontAttributes="Bold" 
-                           FontSize="16"
-                           TextColor="{Binding DateTextColor}" />
-                                <Label Text="{Binding StatusText}" 
-                           Margin="16,0,0,0"
-                           TextColor="{Binding StatusTextColor}" />
-                            </HorizontalStackLayout>
-                            <!-- Основная строка: например, название тренировки -->
-                            <Label Text="{Binding Title}" 
+                    <Frame
+            Margin="0,0,0,10"
+            Padding="0"
+            CornerRadius="14"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+            HasShadow="False"
+            BorderColor="{Binding BorderColor}">
+                        <Grid ColumnDefinitions="6,*,Auto" Padding="0,0,0,0" HeightRequest="72" VerticalOptions="Center">
+                            <!-- Зеленая линия слева -->
+                            <BoxView Grid.Column="0"
+                         WidthRequest="6"
+                         CornerRadius="4"
+                         VerticalOptions="FillAndExpand"
+                         BackgroundColor="{Binding LineColor}" />
+                            <!-- Основная информация -->
+                            <VerticalStackLayout Grid.Column="1" Spacing="3" Padding="16,12,0,12">
+                                <Label Text="{Binding Title}"
+                           FontAttributes="Bold"
+                           FontSize="17"
+                           TextColor="White" />
+                                <!-- Только для завершенной тренировки: строка с деталями -->
+                                <Label IsVisible="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}"
+                           Text="{Binding Details}" 
+                           FontSize="14"
+                           TextColor="#E0E0E0"
+                           Margin="0,2,0,0"/>
+                            </VerticalStackLayout>
+                            <!-- Время/статус -->
+                            <Label Grid.Column="2"
+                       Padding="0,0,20,0"
+                       VerticalOptions="Start"
+                       HorizontalOptions="End"
+                       Text="{Binding RightText}"
                        FontSize="14"
-                       TextColor="{Binding TitleColor}" />
-                            <!-- Детали: вес, время, и т.д. -->
-                            <HorizontalStackLayout Spacing="12">
-                                <Label Text="{Binding TotalWeight}" 
-                           FontSize="12"
-                           TextColor="{Binding DetailColor}" />
-                                <Label Text="{Binding Duration}" 
-                           FontSize="12"
-                           TextColor="{Binding DetailColor}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
+                       TextColor="{StaticResource Secondary}"
+                       VerticalTextAlignment="Center"
+                       />
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

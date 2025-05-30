@@ -168,7 +168,7 @@ namespace Setta.ViewModels
             _workout.IsActive = false;
             _workout.EndTime = DateTime.Now;
             _workout.TotalWeight = TotalWeight;
-            _workout.TotalDuration = (int)(_workout.EndTime.Value - _workout.StartTime).TotalMinutes;
+            _workout.TotalDuration = $"{(int)(_workout.EndTime.Value - _workout.StartTime).TotalMinutes} мин";
             SaveExercises();
 
             OnPropertyChanged(nameof(IsActive));

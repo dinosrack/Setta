@@ -8,14 +8,17 @@ namespace Setta.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public DateTime Date { get; set; } // Дата тренировки
-        public bool IsActive { get; set; } // Активная или завершенная
+        public DateTime Date { get; set; }
+        public bool IsActive { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public int TotalWeight { get; set; } // Общий вес (кг)
-        public int TotalDuration { get; set; } // Длительность в минутах
+        public int TotalWeight { get; set; }
+        public string TemplateName { get; set; }
+        public string ExercisesJson { get; set; }  
+        public string TotalDuration { get; set; } 
 
-        // Список упражнений в сериализованном виде (с подходами)
-        public string ExercisesJson { get; set; }
+        // ДЛЯ удобства: вычисляемое свойство для продолжительности тренировки
+        [Ignore]
+        public TimeSpan Duration => EndTime.HasValue ? EndTime.Value - StartTime : TimeSpan.Zero;
     }
 }
