@@ -12,6 +12,13 @@
                 <!-- Заголовок -->
                 <Label Text="Шаблоны" Style="{StaticResource HeadlineLabel}"/>
 
+                <Button
+                    Text="Создать шаблон"
+                    BackgroundColor="{StaticResource Important}"
+                    TextColor="White"
+                    HeightRequest="50"
+                    Clicked="OnAddTemplateClicked"/>
+
                 <Label
                     Text="У вас еще нет шаблонов"
                     x:Name="NoTemplateLabel"
@@ -59,13 +66,6 @@
                     </CollectionView.ItemTemplate>
 
                 </CollectionView>
-
-                <Button
-                    Text="Создать шаблон"
-                    BackgroundColor="{StaticResource Important}"
-                    TextColor="White"
-                    HeightRequest="50"
-                    Clicked="OnAddTemplateClicked"/>
 
             </VerticalStackLayout>
         </ScrollView>

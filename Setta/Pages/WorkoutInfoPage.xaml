@@ -1,0 +1,128 @@
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Setta.Pages.WorkoutInfoPage"
+    Padding="20"
+    Shell.TabBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="20">
+        <!-- Заголовок и Назад -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <Label Text="Тренировка"
+                   Style="{StaticResource HeadlineLabel}"
+                   VerticalOptions="Center"/>
+            <Label Grid.Column="1"
+                   Text="Назад"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End"
+                   Padding="0,0,10,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+        <!-- Статус -->
+        <Frame Grid.Row="1"
+               IsVisible="{Binding IsActive}"
+               BackgroundColor="{StaticResource Important}"
+               CornerRadius="10"
+               Padding="0"
+               HeightRequest="30"
+               HorizontalOptions="Fill">
+            <Label Text="В процессе" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White"/>
+        </Frame>
+        
+        <!-- Здесь элементы для завершённой тренировки (IsNotActive) -->
+        <VerticalStackLayout Grid.Row="1" 
+                         IsVisible="{Binding IsNotActive}" 
+                         Spacing="10" 
+                         Margin="0,0,0,20">
+            <Label Text="{Binding Workout.Date, StringFormat='Дата: {0:dd MMMM yyyy}'}" Style="{StaticResource SecondaryLabel}"/>
+            <Label Text="{Binding Workout.TotalWeight, StringFormat='Общий вес: {0} кг'}" Style="{StaticResource SecondaryLabel}"/>
+            <Label Text="{Binding Workout.TotalDuration, StringFormat='Длительность: {0}'}" Style="{StaticResource SecondaryLabel}"/>
+        </VerticalStackLayout>
+
+        <!-- Список упражнений и кнопки -->
+        <VerticalStackLayout Grid.Row="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label
+                    Text="*"
+                    Style="{StaticResource SecondaryLabel}"
+                    TextColor="{StaticResource Red}"
+                    Grid.Column="0"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Margin="0,-5,5,0" />
+
+                <Label
+                    Text="Список упражнений"
+                    Style="{StaticResource SecondaryLabel}"    
+                    Grid.Column="1"
+                    Margin="0,0,0,10" />
+            </Grid>
+            <CollectionView
+    ItemsSource="{Binding Exercises}"
+    x:Name="SelectedExercisesView"
+    Margin="0,0,0,20"
+    IsVisible="{Binding Exercises.Count, Converter={StaticResource EnumerableNotEmptyConverter}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                Padding="10"
+                Margin="0,0,0,10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                HasShadow="False"
+                CornerRadius="10">
+
+                            <Grid ColumnDefinitions="*,Auto"
+                      RowDefinitions="Auto,Auto"
+                      Padding="5,0,0,0">
+
+                                <Label Text="{Binding Exercise.ExerciseName}" Grid.Row="0" Grid.Column="0" />
+                                <Label Text="{Binding Exercise.MuscleGroup}" Style="{StaticResource SecondarySmallLabel}" Grid.Row="1" Grid.Column="0" />
+                                <Image Source="arrowdown.svg"
+                           WidthRequest="16"
+                           HeightRequest="16"
+                           VerticalOptions="Center"
+                           HorizontalOptions="End"
+                           Grid.RowSpan="2"
+                           Grid.Column="1"/>
+
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnExerciseTapped" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+            <Button Text="Добавить упражнение"
+                    IsVisible="{Binding IsActive}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    Command="{Binding AddExerciseCommand}"/>
+            
+            <Button Text="Завершить тренировку"
+                    IsVisible="{Binding IsActive}"
+                    Command="{Binding CompleteOrCancelCommand}"
+                    BackgroundColor="{StaticResource Important}"
+                    HeightRequest="50"
+                    Margin="0,20,0,0"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

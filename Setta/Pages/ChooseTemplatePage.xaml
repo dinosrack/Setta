@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Setta.Pages.ChooseTemplatePage"
+    xmlns:local="clr-namespace:Setta.Converters"
+    Padding="20"
+    Shell.TabBarIsVisible="False">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Шапка: Заголовок и кнопка Назад -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+            <Label Text="Выбор шаблона"
+                   Style="{StaticResource HeadlineLabel}"
+                   VerticalOptions="Center" />
+            <Label Grid.Column="1"
+                   Text="Назад"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End"
+                   Padding="0,0,10,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+
+        <!-- Основной контент -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20">
+
+                <CollectionView ItemsSource="{Binding Templates}" SelectionMode="Single" SelectedItem="{Binding SelectedTemplate}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                                Margin="0,0,0,10"
+                                CornerRadius="10"
+                                HasShadow="False">
+
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.SelectTemplateCommand}" CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                
+                                <Grid ColumnDefinitions="*,Auto" Padding="0,0,-20,0">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold"/>
+                                        <Label Text="{Binding ExerciseNames}" Style="{StaticResource SecondarySmallLabel}" />
+                                    </VerticalStackLayout>
+                                    <RadioButton
+                                        Grid.Column="1"
+                                        IsChecked="{Binding ., 
+                                        Converter={StaticResource SelectedTemplateConverter}, 
+                                        ConverterParameter={Binding Source={x:Reference PageRoot}, 
+                                        Path=BindingContext.SelectedTemplate}}"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+
+                <Button Text="Выбрать"
+                        HeightRequest="50"
+                        Command="{Binding ConfirmCommand}" />
+
+                <Label Text="{Binding SelectedTemplate.Name}" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

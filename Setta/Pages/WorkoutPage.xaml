@@ -1,14 +1,93 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Setta.Pages.WorkoutPage">
+             xmlns:local="clr-namespace:Setta.Converters"
+             x:Class="Setta.Pages.WorkoutPage"
+             Padding="20">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:StatusToBorderColorConverter x:Key="StatusToBorderColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-            <!-- Заголовок -->
-            <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Заголовок -->
+        <Label Grid.Row="0"
+               Text="Тренировки"
+               Style="{StaticResource HeadlineLabel}"
+               Margin="0,0,0,20"/>
+        <!-- Кнопка -->
+        <Button Grid.Row="1"
+                Text="Начать тренировку"
+                Clicked="OnAddWorkoutClicked"
+                HeightRequest="50"
+                TextColor="White"
+                BackgroundColor="{StaticResource Important}"
+                CornerRadius="10"
+                FontAttributes="Bold"
+                Margin="0,0,0,20"/>
+        <!-- Список тренировок или заглушка -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding GroupedWorkouts}"
+                        IsVisible="{Binding IsWorkoutListNotEmpty}"
+                        IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Date}"
+                           Style="{StaticResource SecondaryLabel}" 
+                           FontSize="18"
+                           Margin="0,20,0,10"/>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+            Stroke="{Binding Status, Converter={StaticResource StatusToBorderColorConverter}}"
+            StrokeThickness="2"
+            StrokeShape="RoundRectangle 10"
+            BackgroundColor="{StaticResource CardBackground}"
+            Margin="0,0,0,16"
+            Padding="0">
+                        <Grid ColumnDefinitions="40,*,Auto" Padding="0" HeightRequest="70" VerticalOptions="Center">
+                            <!-- Вертикальная полоска -->
+                            <BoxView Grid.Column="0"
+                         WidthRequest="4"
+                         HeightRequest="40"
+                         Margin="0,10,0,10"
+                         CornerRadius="10"
+                         BackgroundColor="{StaticResource Important}"
+                         HorizontalOptions="Center"
+                         VerticalOptions="Center"/>
+                            <!-- Текст тренировки -->
+                            <StackLayout Grid.Column="1"
+                             VerticalOptions="Center"
+                             Spacing="2"
+                             Padding="14,0">
+                                <Label Text="Тренировка"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+                            </StackLayout>
+                            <!-- Время тренировки -->
+                            <Label Grid.Column="2"
+                       Text="{Binding DisplayTime}"
+                       FontSize="14"
+                       TextColor="{StaticResource Secondary}"
+                       VerticalOptions="Center"
+                       Margin="0,0,16,0"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        </CollectionView>
+        <!-- Заглушка если нет тренировок -->
+        <Label Grid.Row="2"
+               Text="В дневнике еще нет записей тренировок"
+               IsVisible="{Binding IsWorkoutListEmpty}"
+               HorizontalOptions="Center"
+               VerticalOptions="CenterAndExpand"
+               Style="{StaticResource SecondaryLabel}"
+               Margin="0,20,0,0"/>
+    </Grid>
 </ContentPage>

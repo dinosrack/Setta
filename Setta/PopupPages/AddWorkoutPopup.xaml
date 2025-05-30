@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="Setta.PopupPages.AddWorkoutPopup"
+    Color="Transparent"
+    VerticalOptions="End"
+    HorizontalOptions="Fill">
+    <Grid VerticalOptions="End" 
+          HorizontalOptions="Fill">
+        
+        <Border
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
+            StrokeShape="RoundRectangle 10,10,0,0"
+            Padding="20"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
+            
+            <VerticalStackLayout Spacing="20">
+                <BoxView
+                    HeightRequest="4"
+                    WidthRequest="40"
+                    CornerRadius="10"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource Secondary}" />
+
+                <Label Text="Запись тренировки" Style="{StaticResource HeadlineLabel}"/>
+
+                <Frame
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    CornerRadius="10"
+                    Padding="15,5"
+                    HasShadow="False">
+                    
+                    <Grid ColumnDefinitions="Auto,5,*">
+                        <Image Source="calendar.svg"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               VerticalOptions="Center" />
+                        <DatePicker
+                            Grid.Column="2"
+                            x:Name="WorkoutDatePicker"
+                            Date="{Binding SelectedDate}"
+                            Format="dd MMMM yyyy"
+                            TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                            BackgroundColor="Transparent"/>
+                    </Grid>
+                </Frame>
+
+                <Button Text="Пустая тренировка" 
+                        Clicked="OnEmptyClicked"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"/>
+                
+                <Button Text="Использовать шаблон" 
+                        Clicked="OnTemplateClicked"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</toolkit:Popup>
