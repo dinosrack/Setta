@@ -52,7 +52,7 @@ public partial class WorkoutPage : ContentPage
             await db.SaveWorkoutAsync(workout);
 
             // ѕосле добавлени€ об€зательно обнови список
-            await RefreshWorkouts();
+            await ViewModel.LoadWorkoutsAsync();
 
             // ќткрываем страницу с Id новой тренировки
             await Navigation.PushAsync(new WorkoutInfoPage(workout.Id));
@@ -69,16 +69,5 @@ public partial class WorkoutPage : ContentPage
     {
         base.OnAppearing();
         await ViewModel.LoadWorkoutsAsync();
-    }
-
-    private async Task RefreshWorkouts()
-    {
-        var workouts = await _db.GetWorkoutsAsync();
-        ViewModel.Workouts.Clear();
-        foreach (var w in workouts)
-            ViewModel.Workouts.Add(w);
-
-        OnPropertyChanged(nameof(ViewModel.IsWorkoutListEmpty));
-        OnPropertyChanged(nameof(ViewModel.IsWorkoutListNotEmpty));
     }
 }

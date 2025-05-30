@@ -15,7 +15,8 @@ namespace Setta.Models
         public int TotalWeight { get; set; }
         public string TemplateName { get; set; }
         public string ExercisesJson { get; set; }  
-        public string TotalDuration { get; set; } 
+        public string TotalDuration { get; set; }
+        public DateTime StartDate { get; set; }
 
         // ДЛЯ удобства: вычисляемое свойство для продолжительности тренировки
         [Ignore]

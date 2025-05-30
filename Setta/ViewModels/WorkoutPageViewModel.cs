@@ -1,59 +1,77 @@
 ﻿using System.Collections.ObjectModel;
 using Setta.Models;
-using Setta.Pages;
 using System.Linq;
 using System.Windows.Input;
 using System.ComponentModel;
 using Setta.Services;
 using System.Runtime.CompilerServices;
+using System.Globalization;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Setta.ViewModels
 {
+    // Класс для группировки тренировок по датам
+    public class WorkoutGroup : ObservableCollection<Workout>
+    {
+        public string Date { get; set; }
+        public WorkoutGroup(string date, IEnumerable<Workout> workouts) : base(workouts)
+        {
+            Date = date;
+        }
+    }
+
     public class WorkoutPageViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<Workout> Workouts { get; set; } = new();
-        public ObservableCollection<WorkoutGroup> WorkoutGroups { get; set; } = new();
+        private WorkoutDatabaseService _db;
 
-        public bool IsWorkoutListEmpty => Workouts.Count == 0;
-        public bool IsWorkoutListNotEmpty => !IsWorkoutListEmpty;
+        public ObservableCollection<WorkoutGroup> GroupedWorkouts { get; set; } = new();
 
-        // Добавь сюда метод загрузки
-        public async Task LoadWorkoutsAsync()
+        private bool _isEmpty;
+        public bool IsEmpty
         {
-            WorkoutGroups.Clear();
-
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
-            var db = new WorkoutDatabaseService(dbPath);
-            var workouts = await db.GetWorkoutsAsync();
-
-            // Маппинг Workout → WorkoutCardViewModel
-            var cards = workouts
-                .OrderByDescending(x => x.StartTime)
-                .Select(w => new WorkoutCardViewModel(w))
-                .ToList();
-
-            // Группировка по дате (без времени)
-            var grouped = cards
-                .GroupBy(w => w.StartTime.Date)
-                .OrderByDescending(g => g.Key);
-
-            foreach (var group in grouped)
+            get => _isEmpty;
+            set
             {
-                string dateHeader = group.Key.ToString("dd MMMM yyyy");
-                WorkoutGroups.Add(new WorkoutGroup(dateHeader, group));
+                if (_isEmpty != value)
+                {
+                    _isEmpty = value;
+                    OnPropertyChanged();
+                }
             }
-
-            OnPropertyChanged(nameof(WorkoutGroups));
-            // Текст "нет тренировок"
-            OnPropertyChanged(nameof(IsWorkoutListEmpty));
-            OnPropertyChanged(nameof(IsWorkoutListNotEmpty));
         }
 
+        public WorkoutPageViewModel()
+        {
+            // Инициализация сервиса БД (убери, если используешь DI)
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
+            _db = new WorkoutDatabaseService(dbPath);
+
+            // Загрузка тренировок при создании ViewModel
+            Task.Run(async () => await LoadWorkoutsAsync());
+        }
+
+        public async Task LoadWorkoutsAsync()
+        {
+            var allWorkouts = await _db.GetAllWorkoutsAsync();
+
+            var grouped = allWorkouts
+                .GroupBy(w => w.StartDate.ToString("d MMMM yyyy", new CultureInfo("ru-RU")))
+                .OrderByDescending(g => g.Key)
+                .Select(g => new WorkoutGroup(g.Key, g))
+                .ToList();
+
+            GroupedWorkouts.Clear();
+            foreach (var group in grouped)
+                GroupedWorkouts.Add(group);
+
+            IsEmpty = GroupedWorkouts.Count == 0;
+        }
+
+        // Для обновления после добавления/удаления тренировок вызови LoadWorkoutsAsync()
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-
 }

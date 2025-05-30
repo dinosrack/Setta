@@ -24,6 +24,11 @@ namespace Setta.Services
                 return _database.UpdateAsync(workout);
         }
 
+        public Task<List<Workout>> GetAllWorkoutsAsync()
+        {
+            return _database.Table<Workout>().ToListAsync();
+        }
+
         public Task<List<Workout>> GetWorkoutsAsync()
         {
             return _database.Table<Workout>().ToListAsync();

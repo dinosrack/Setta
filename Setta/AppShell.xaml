@@ -22,10 +22,6 @@
             ContentTemplate="{DataTemplate pages:ExercisesPage}" />
 
         <ShellContent 
-            Icon="results.svg"
-            ContentTemplate="{DataTemplate pages:ResultsPage}" />
-
-        <ShellContent 
             Icon="settings.svg"
             ContentTemplate="{DataTemplate pages:SettingsPage}" />
     </TabBar>
