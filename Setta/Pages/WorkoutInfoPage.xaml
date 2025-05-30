@@ -6,10 +6,6 @@
     Padding="20"
     Shell.TabBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <!-- BindingContext будет устанавливаться из code-behind через конструктор -->
-    </ContentPage.BindingContext>
-
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
     </Shell.BackButtonBehavior>
@@ -30,29 +26,6 @@
                 </Label.GestureRecognizers>
             </Label>
         </Grid>
-
-        <!-- Статус и время -->
-        <VerticalStackLayout Grid.Row="1" Spacing="10">
-            <Frame IsVisible="{Binding IsActive}"
-                   BackgroundColor="{StaticResource Green}"
-                   CornerRadius="10"
-                   Padding="0"
-                   HeightRequest="30"
-                   HorizontalOptions="Fill">
-                <Label Text="В процессе" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White"/>
-            </Frame>
-            <Label IsVisible="{Binding IsNotActive}"
-                   Text="{Binding DateTimePeriod}"
-                   Style="{StaticResource SecondaryLabel}"/>
-            <Grid IsVisible="{Binding IsNotActive}" ColumnDefinitions="*,*">
-                <Frame Padding="0" CornerRadius="10" BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}">
-                    <Label Text="{Binding TotalWeight, StringFormat='{0} кг'}" HorizontalOptions="Center"/>
-                </Frame>
-                <Frame Padding="0" CornerRadius="10" BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}" Grid.Column="1">
-                    <Label Text="{Binding TotalDuration}" HorizontalOptions="Center"/>
-                </Frame>
-            </Grid>
-        </VerticalStackLayout>
 
         <!-- Список упражнений -->
         <VerticalStackLayout Grid.Row="2" Spacing="10">
@@ -100,9 +73,6 @@
                                        Grid.RowSpan="2"
                                        Grid.Column="1"/>
                                 <!-- По тапу редактируем подходы только если тренировка активна -->
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnExerciseTapped" />
-                                </Grid.GestureRecognizers>
                             </Grid>
                         </Frame>
                     </DataTemplate>

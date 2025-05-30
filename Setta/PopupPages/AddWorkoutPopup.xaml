@@ -49,11 +49,9 @@
                 </Frame>
 
                 <Button Text="Пустая тренировка" 
-                        Clicked="OnEmptyClicked"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"/>
                 
                 <Button Text="Использовать шаблон" 
-                        Clicked="OnTemplateClicked"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"/>
             </VerticalStackLayout>
         </Border>

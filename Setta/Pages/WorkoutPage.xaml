@@ -9,7 +9,6 @@
 
         <Button Text="Начать тренировку"
                 HeightRequest="50"
-                Clicked="OnAddWorkoutClicked"
                 BackgroundColor="{StaticResource Important}"
                 TextColor="White" />
 
