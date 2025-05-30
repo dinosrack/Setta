@@ -68,7 +68,7 @@ public partial class WorkoutPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await RefreshWorkouts();
+        await ViewModel.LoadWorkoutsAsync();
     }
 
     private async Task RefreshWorkouts()

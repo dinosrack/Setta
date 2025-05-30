@@ -3,21 +3,36 @@ using Setta.Models;
 using Setta.Pages;
 using System.Linq;
 using System.Windows.Input;
+using System.ComponentModel;
+using Setta.Services;
+using System.Runtime.CompilerServices;
 
 namespace Setta.ViewModels
 {
-    public class WorkoutPageViewModel : BindableObject
+    public class WorkoutPageViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Workout> Workouts { get; set; } = new();
 
-        public bool IsWorkoutListEmpty => !Workouts.Any();
-        public bool IsWorkoutListNotEmpty => Workouts.Any();
+        public bool IsWorkoutListEmpty => Workouts.Count == 0;
+        public bool IsWorkoutListNotEmpty => !IsWorkoutListEmpty;
 
-        public ICommand OpenWorkoutCommand => new Command<Workout>(async (workout) =>
+        // Добавь сюда метод загрузки
+        public async Task LoadWorkoutsAsync()
         {
-            if (workout != null)
-                await Shell.Current.Navigation.PushAsync(new WorkoutInfoPage(workout.Id));
-        });
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
+            var db = new WorkoutDatabaseService(dbPath);
+            var workouts = await db.GetWorkoutsAsync();
+            Workouts.Clear();
+            foreach (var w in workouts)
+                Workouts.Add(w);
+            OnPropertyChanged(nameof(IsWorkoutListEmpty));
+            OnPropertyChanged(nameof(IsWorkoutListNotEmpty));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 
 }
