@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="Setta.PopupPages.AddWorkoutPopup"
+    Color="Transparent"
+    VerticalOptions="End"
+    HorizontalOptions="Fill">
+
+    <Grid HorizontalOptions="Fill" VerticalOptions="End">
+        <Border
+            StrokeShape="RoundRectangle 10,10,0,0"
+            Padding="20"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
+            HorizontalOptions="Fill"
+            VerticalOptions="End">
+
+            <VerticalStackLayout Spacing="20">
+
+                <!-- Перетаскиватель -->
+                <BoxView
+                    HeightRequest="4"
+                    WidthRequest="40"
+                    CornerRadius="10"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{StaticResource Secondary}" />
+
+                <!-- Заголовок -->
+                <Label
+                    Text="Запись тренировки"
+                    Style="{StaticResource HeadlineLabel}" />
+
+                <!-- Дата -->
+                <Border
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                    Padding="15,5"
+                    StrokeShape="RoundRectangle 10"
+                    HorizontalOptions="Fill">
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Image
+                            Source="calendar.svg"
+                            WidthRequest="20"
+                            HeightRequest="20"
+                            VerticalOptions="Center" />
+                                <DatePicker
+                                    x:Name="WorkoutDatePicker"
+                                    Format="dd MMMM yyyy"
+                                    TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="FillAndExpand" />
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Кнопки -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button
+                        Grid.Column="0"
+                        Text="Новая"
+                        Command="{Binding EmptyWorkoutCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                        HeightRequest="50"
+                        HorizontalOptions="Fill" />
+                    <Button
+                        Grid.Column="1"
+                        Text="Из шаблона"
+                        Command="{Binding UseTemplateCommand}"
+                        BackgroundColor="{StaticResource Important}"
+                        TextColor="White"
+                        HeightRequest="50"
+                        HorizontalOptions="Fill" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</toolkit:Popup>
