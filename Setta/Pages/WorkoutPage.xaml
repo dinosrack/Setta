@@ -4,49 +4,65 @@
              x:Class="Setta.Pages.WorkoutPage"
              Padding="20">
 
-
-    <Grid RowDefinitions="Auto,Auto,*">
+    <VerticalStackLayout Spacing="20">
         <!-- Заголовок -->
-        <Label Grid.Row="0"
-               Text="Тренировки"
-               Style="{StaticResource HeadlineLabel}"
-               Margin="0,0,0,20"/>
+        <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
+
         <!-- Кнопка -->
-        <Button Grid.Row="1"
-                Text="Начать тренировку"
-                Clicked="OnAddWorkoutClicked"
+        <Button Text="Начать тренировку"
                 HeightRequest="50"
-                TextColor="White"
+                Clicked="OnAddWorkoutClicked"
                 BackgroundColor="{StaticResource Important}"
-                CornerRadius="10"
-                FontAttributes="Bold"
-                Margin="0,0,0,20"/>
-        <!-- Список тренировок или заглушка -->
-        <CollectionView ItemsSource="{Binding Workouts}" IsVisible="{Binding IsWorkoutListNotEmpty}">
-            <!-- Можно добавить Grouping по датам и красивые элементы как в макетах -->
+                TextColor="White" />
+
+        <!-- Список тренировок -->
+        <CollectionView ItemsSource="{Binding Workouts}"
+                        IsVisible="{Binding IsWorkoutListNotEmpty}"
+                        VerticalOptions="FillAndExpand"
+                        Margin="0,20,0,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,0,0,10" CornerRadius="12">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Date, StringFormat='{0:dd MMMM yyyy}'}" FontAttributes="Bold" FontSize="18" />
-                            <Label Text="{Binding Info}" />
-                            <!-- Здесь можно добавить отображение времени, веса и т.д. -->
+                    <Frame Margin="0,0,0,10"
+               Padding="16"
+               CornerRadius="16"
+               BackgroundColor="{Binding CardBackgroundColor}"
+               HasShadow="False">
+                        <VerticalStackLayout Spacing="6">
+                            <!-- Дата и статус -->
+                            <HorizontalStackLayout>
+                                <Label Text="{Binding DateString}" 
+                           FontAttributes="Bold" 
+                           FontSize="16"
+                           TextColor="{Binding DateTextColor}" />
+                                <Label Text="{Binding StatusText}" 
+                           Margin="16,0,0,0"
+                           TextColor="{Binding StatusTextColor}" />
+                            </HorizontalStackLayout>
+                            <!-- Основная строка: например, название тренировки -->
+                            <Label Text="{Binding Title}" 
+                       FontSize="14"
+                       TextColor="{Binding TitleColor}" />
+                            <!-- Детали: вес, время, и т.д. -->
+                            <HorizontalStackLayout Spacing="12">
+                                <Label Text="{Binding TotalWeight}" 
+                           FontSize="12"
+                           TextColor="{Binding DetailColor}" />
+                                <Label Text="{Binding Duration}" 
+                           FontSize="12"
+                           TextColor="{Binding DetailColor}" />
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={x:Reference Name=PageRoot}, Path=BindingContext.OpenWorkoutCommand}" CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
         </CollectionView>
 
-        <!-- Заглушка если нет тренировок -->
-        <Label Grid.Row="2"
-               Text="В дневнике еще нет записей тренировок"
+        <!-- Текст если нет тренировок -->
+        <Label Text="В дневнике еще нет записей тренировок"
                IsVisible="{Binding IsWorkoutListEmpty}"
                HorizontalOptions="Center"
-               VerticalOptions="CenterAndExpand"
                Style="{StaticResource SecondaryLabel}"
                Margin="0,20,0,0"/>
-    </Grid>
+    </VerticalStackLayout>
 </ContentPage>
