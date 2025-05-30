@@ -15,10 +15,13 @@ namespace Setta.ViewModels
         public Color LineColor { get; set; }
         public Color BorderColor { get; set; }
         public bool IsActive { get; set; }
+        public DateTime StartTime { get; set; }
 
         public WorkoutCardViewModel(Workout workout)
         {
             Title = string.IsNullOrWhiteSpace(workout.TemplateName) ? "Тренировка" : workout.TemplateName;
+
+            StartTime = workout.StartTime;
 
             if (workout.IsActive)
             {

@@ -4,6 +4,19 @@
              x:Class="Setta.Pages.WorkoutPage"
              Padding="20">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="WorkoutDateHeaderTemplate">
+                <Label Text="{Binding DateHeader}"
+                   TextColor="{StaticResource Secondary}"
+                   FontSize="15"
+                   Margin="0,20,0,8"
+                   FontFamily="RubikRegular" />
+            </DataTemplate>
+            <!-- ... другие ресурсы ... -->
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <VerticalStackLayout Spacing="20">
         <!-- Заголовок -->
         <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
@@ -16,10 +29,9 @@
                 TextColor="White" />
 
         <!-- Список тренировок -->
-        <CollectionView ItemsSource="{Binding Workouts}"
-                        IsVisible="{Binding IsWorkoutListNotEmpty}"
-                        VerticalOptions="FillAndExpand"
-                        Margin="0,20,0,0">
+        <CollectionView ItemsSource="{Binding WorkoutGroups}"
+                IsVisible="{Binding IsWorkoutListNotEmpty}"
+                GroupHeaderTemplate="{StaticResource WorkoutDateHeaderTemplate}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame
