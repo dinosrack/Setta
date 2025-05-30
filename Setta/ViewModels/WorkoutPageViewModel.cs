@@ -1,58 +1,23 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using Setta.Models;
-using Setta.Services;
-using System.Runtime.CompilerServices;
+using Setta.Pages;
+using System.Linq;
+using System.Windows.Input;
 
-public class WorkoutPageViewModel : INotifyPropertyChanged
+namespace Setta.ViewModels
 {
-    public ObservableCollection<WorkoutGroup> GroupedWorkouts { get; set; } = new();
-    public bool IsWorkoutListEmpty => !GroupedWorkouts.Any();
-    public bool IsWorkoutListNotEmpty => GroupedWorkouts.Any();
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public WorkoutPageViewModel()
+    public class WorkoutPageViewModel : BindableObject
     {
-        LoadWorkouts();
-    }
+        public ObservableCollection<Workout> Workouts { get; set; } = new();
 
-    private async void LoadWorkouts()
-    {
-        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
-        var db = new WorkoutDatabaseService(dbPath);
-        var workouts = await db.GetWorkoutsAsync();
+        public bool IsWorkoutListEmpty => !Workouts.Any();
+        public bool IsWorkoutListNotEmpty => Workouts.Any();
 
-        // Группировка по датам
-        var grouped = workouts
-            .GroupBy(w => w.Date.Date)
-            .OrderByDescending(g => g.Key)
-            .Select(g => new WorkoutGroup(
-                g.Key.ToString("d MMMM", new CultureInfo("ru-RU")), // "13 апреля"
-                g.OrderByDescending(x => x.StartTime) // порядок внутри дня: новые сверху
-            ));
-
-        GroupedWorkouts.Clear();
-        foreach (var group in grouped)
-            GroupedWorkouts.Add(group);
-
-        OnPropertyChanged(nameof(IsWorkoutListEmpty));
-        OnPropertyChanged(nameof(IsWorkoutListNotEmpty));
-    }
-
-    protected void OnPropertyChanged([CallerMemberName] string name = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    // Для группировки (дата + коллекция тренировок)
-    public class WorkoutGroup : ObservableCollection<Workout>
-    {
-        public string Date { get; set; }
-        public WorkoutGroup(string date, IEnumerable<Workout> workouts) : base(workouts)
+        public ICommand OpenWorkoutCommand => new Command<Workout>(async (workout) =>
         {
-            Date = date;
-        }
+            if (workout != null)
+                await Shell.Current.Navigation.PushAsync(new WorkoutInfoPage(workout.Id));
+        });
     }
+
 }

@@ -4,11 +4,6 @@
              x:Class="Setta.Pages.WorkoutPage"
              Padding="20">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <local:StatusToBorderColorConverter x:Key="StatusToBorderColorConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,Auto,*">
         <!-- Заголовок -->
@@ -27,60 +22,24 @@
                 FontAttributes="Bold"
                 Margin="0,0,0,20"/>
         <!-- Список тренировок или заглушка -->
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding GroupedWorkouts}"
-                        IsVisible="{Binding IsWorkoutListNotEmpty}"
-                        IsGrouped="True">
-            <CollectionView.GroupHeaderTemplate>
-                <DataTemplate>
-                    <Label Text="{Binding Date}"
-                           Style="{StaticResource SecondaryLabel}" 
-                           FontSize="18"
-                           Margin="0,20,0,10"/>
-                </DataTemplate>
-            </CollectionView.GroupHeaderTemplate>
+        <CollectionView ItemsSource="{Binding Workouts}" IsVisible="{Binding IsWorkoutListNotEmpty}">
+            <!-- Можно добавить Grouping по датам и красивые элементы как в макетах -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border
-            Stroke="{Binding Status, Converter={StaticResource StatusToBorderColorConverter}}"
-            StrokeThickness="2"
-            StrokeShape="RoundRectangle 10"
-            BackgroundColor="{StaticResource CardBackground}"
-            Margin="0,0,0,16"
-            Padding="0">
-                        <Grid ColumnDefinitions="40,*,Auto" Padding="0" HeightRequest="70" VerticalOptions="Center">
-                            <!-- Вертикальная полоска -->
-                            <BoxView Grid.Column="0"
-                         WidthRequest="4"
-                         HeightRequest="40"
-                         Margin="0,10,0,10"
-                         CornerRadius="10"
-                         BackgroundColor="{StaticResource Important}"
-                         HorizontalOptions="Center"
-                         VerticalOptions="Center"/>
-                            <!-- Текст тренировки -->
-                            <StackLayout Grid.Column="1"
-                             VerticalOptions="Center"
-                             Spacing="2"
-                             Padding="14,0">
-                                <Label Text="Тренировка"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="White"/>
-                            </StackLayout>
-                            <!-- Время тренировки -->
-                            <Label Grid.Column="2"
-                       Text="{Binding DisplayTime}"
-                       FontSize="14"
-                       TextColor="{StaticResource Secondary}"
-                       VerticalOptions="Center"
-                       Margin="0,0,16,0"/>
-                        </Grid>
-                    </Border>
+                    <Frame Margin="0,0,0,10" CornerRadius="12">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Date, StringFormat='{0:dd MMMM yyyy}'}" FontAttributes="Bold" FontSize="18" />
+                            <Label Text="{Binding Info}" />
+                            <!-- Здесь можно добавить отображение времени, веса и т.д. -->
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference Name=PageRoot}, Path=BindingContext.OpenWorkoutCommand}" CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
+
         <!-- Заглушка если нет тренировок -->
         <Label Grid.Row="2"
                Text="В дневнике еще нет записей тренировок"

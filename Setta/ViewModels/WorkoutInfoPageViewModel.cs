@@ -1,42 +1,116 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Setta.Models;
-using Setta.Services;
-using Setta.Pages;
-using System;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Diagnostics;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Controls;
+using Setta.Models;
+using Setta.Pages;
+using Setta.PopupPages;
+using Setta.Services;
 
-public class WorkoutInfoPageViewModel : INotifyPropertyChanged
+namespace Setta.ViewModels
 {
-    private readonly WorkoutDatabaseService _db;
-    private int _workoutId;
-
-    public Workout Workout { get; set; }
-    public ObservableCollection<ExerciseInTemplate> Exercises { get; set; } = new();
-
-    public bool IsActive => Workout?.Status == WorkoutStatus.Active;
-    public bool IsNotActive => Workout?.Status == WorkoutStatus.Completed;
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-    public WorkoutInfoPageViewModel(int workoutId)
+    public class WorkoutInfoPageViewModel : BindableObject
     {
-        _db = new WorkoutDatabaseService(Path.Combine(FileSystem.AppDataDirectory, "workout.db"));
-        _workoutId = workoutId;
-        _ = LoadWorkout();
+        private readonly WorkoutDatabaseService _db;
+        private Workout _workout;
 
-        // Подписка на ExercisesSelected
-        MessagingCenter.Subscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected", (sender, selected) =>
+        public ObservableCollection<ExerciseInTemplate> Exercises { get; set; } = new();
+
+        public bool IsActive => _workout.IsActive;
+        public bool IsNotActive => !_workout.IsActive;
+
+        public string DateTimePeriod
         {
-            MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
-            if (selected != null)
+            get
             {
+                if (_workout.EndTime == null) return string.Empty;
+                return $"{_workout.StartTime:HH:mm} - {_workout.EndTime:HH:mm}";
+            }
+        }
+
+        public int TotalWeight => Exercises.Sum(e => e.TotalVolume);
+
+        public string TotalDuration
+        {
+            get
+            {
+                if (_workout.EndTime == null) return "—";
+                var min = _workout.TotalDuration;
+                return $"{min} мин";
+            }
+        }
+
+        // Для биндинга на XAML
+        public ICommand AddExerciseCommand { get; }
+        public ICommand CompleteOrCancelCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand SaveCommand { get; }
+
+        public event EventHandler RequestClose; // Для завершения навигации из VM
+
+        public WorkoutInfoPageViewModel(int workoutId)
+        {
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
+            _db = new WorkoutDatabaseService(dbPath);
+            Task.Run(async () => await LoadWorkoutAsync(workoutId)).Wait();
+
+            AddExerciseCommand = new Command(OnAddExercise);
+            CompleteOrCancelCommand = new Command(OnCompleteWorkout);
+            // DeleteCommand и SaveCommand — по желанию, если потребуется.
+        }
+
+        private async Task LoadWorkoutAsync(int workoutId)
+        {
+            _workout = await _db.GetWorkoutByIdAsync(workoutId);
+
+            // Если есть упражнения — загрузим
+            if (!string.IsNullOrEmpty(_workout.ExercisesJson))
+            {
+                try
+                {
+                    var list = JsonSerializer.Deserialize<ObservableCollection<ExerciseInTemplate>>(_workout.ExercisesJson);
+                    Exercises = list ?? new ObservableCollection<ExerciseInTemplate>();
+                }
+                catch
+                {
+                    Exercises = new ObservableCollection<ExerciseInTemplate>();
+                }
+            }
+            else
+            {
+                Exercises = new ObservableCollection<ExerciseInTemplate>();
+            }
+
+            OnPropertyChanged(nameof(Exercises));
+            OnPropertyChanged(nameof(IsActive));
+            OnPropertyChanged(nameof(IsNotActive));
+            OnPropertyChanged(nameof(DateTimePeriod));
+            OnPropertyChanged(nameof(TotalWeight));
+            OnPropertyChanged(nameof(TotalDuration));
+        }
+
+        private async void OnAddExercise()
+        {
+            if (Exercises.Count >= 7)
+            {
+                await App.Current.MainPage.ShowPopupAsync(new ErrorsTemplatesPopup("Можно добавить не более 7 упражнений."));
+                return;
+            }
+
+            var alreadySelected = Exercises.Select(x => x.Exercise).ToList();
+            var page = new AddExerciseToTemplatePage(alreadySelected);
+
+            MessagingCenter.Subscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected", (sender, selected) =>
+            {
+                MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
+                if (selected == null || selected.Count == 0) return;
+
                 foreach (var ex in selected)
                 {
-                    if (Exercises.Count >= 7) break;
                     if (Exercises.Any(e => e.Exercise.ExerciseName == ex.ExerciseName)) continue;
                     Exercises.Add(new ExerciseInTemplate
                     {
@@ -44,67 +118,68 @@ public class WorkoutInfoPageViewModel : INotifyPropertyChanged
                         Sets = new ObservableCollection<ExerciseSet>()
                     });
                 }
+                OnPropertyChanged(nameof(Exercises));
+                SaveExercises();
+            });
+
+            await App.Current.MainPage.Navigation.PushAsync(page);
+        }
+
+        // Вызови этот метод после изменения Exercises
+        public async void SaveExercises()
+        {
+            _workout.ExercisesJson = JsonSerializer.Serialize(Exercises);
+            _workout.TotalWeight = TotalWeight; // Можно обновлять сразу, если нужно
+            await _db.SaveWorkoutAsync(_workout);
+
+            OnPropertyChanged(nameof(TotalWeight));
+        }
+
+        // Вызывать по тапу на упражнение для открытия попапа подходов
+        public async void EditExercise(ExerciseInTemplate selected)
+        {
+            var popup = new ProgressInExercisesPopup(selected);
+            var result = await App.Current.MainPage.ShowPopupAsync(popup);
+
+            if (popup.IsSaved == false) return;
+
+            if (result == null)
+            {
+                Exercises.Remove(selected);
+            }
+            else if (result is ExerciseInTemplate updated)
+            {
+                var idx = Exercises.IndexOf(selected);
+                if (idx >= 0)
+                    Exercises[idx] = updated;
             }
             OnPropertyChanged(nameof(Exercises));
-        });
-    }
-
-
-    private async Task LoadWorkout()
-    {
-        Workout = await _db.GetWorkoutAsync(_workoutId);
-        // TODO: Загрузить упражнения из базы (если реализовано)
-        OnPropertyChanged(nameof(Workout));
-        OnPropertyChanged(nameof(IsActive));
-        OnPropertyChanged(nameof(IsNotActive));
-    }
-
-    // КОМАНДА ДОБАВЛЕНИЯ УПРАЖНЕНИЯ
-    public Command AddExerciseCommand => new Command(OnAddExercise);
-
-    private async void OnAddExercise()
-    {
-        var alreadySelected = Exercises.Select(e => e.Exercise).ToList();
-        var page = new AddExerciseToTemplatePage(alreadySelected);
-        await Application.Current.MainPage.Navigation.PushAsync(page);
-    }
-
-    public Command CompleteOrCancelCommand => new Command(OnCompleteWorkout);
-
-    private async void OnCompleteWorkout()
-    {
-        if (Workout.Status != WorkoutStatus.Active)
-            return;
-
-        // 1. Время окончания
-        Workout.EndTime = DateTime.Now;
-
-        // 2. Длительность
-        var duration = Workout.EndTime.Value - Workout.StartTime;
-        Workout.TotalDuration = $"{(int)duration.TotalMinutes} мин {duration.Seconds} сек";
-
-        // 3. Общий вес
-        double totalWeight = 0;
-        foreach (var exercise in Exercises)
-        {
-            foreach (var set in exercise.Sets)
-            {
-                if (int.TryParse(set.Weight, out int weight) && int.TryParse(set.Reps, out int reps))
-                    totalWeight += weight * reps;
-            }
+            SaveExercises();
         }
-        Workout.TotalWeight = totalWeight;
 
-        // 4. Статус
-        Workout.Status = WorkoutStatus.Completed;
+        private async void OnCompleteWorkout()
+        {
+            if (!Exercises.Any())
+            {
+                await App.Current.MainPage.ShowPopupAsync(new ErrorsTemplatesPopup("Добавьте хотя бы одно упражнение!"));
+                return;
+            }
 
-        // 5. Сохраняем в базе
-        await _db.SaveWorkoutAsync(Workout);
+            _workout.IsActive = false;
+            _workout.EndTime = DateTime.Now;
+            _workout.TotalWeight = TotalWeight;
+            _workout.TotalDuration = (int)(_workout.EndTime.Value - _workout.StartTime).TotalMinutes;
+            SaveExercises();
 
-        // 6. Обновить UI
-        OnPropertyChanged(nameof(Workout));
-        OnPropertyChanged(nameof(IsActive));
-        OnPropertyChanged(nameof(IsNotActive));
-        OnPropertyChanged(nameof(Exercises));
+            OnPropertyChanged(nameof(IsActive));
+            OnPropertyChanged(nameof(IsNotActive));
+            OnPropertyChanged(nameof(DateTimePeriod));
+            OnPropertyChanged(nameof(TotalWeight));
+            OnPropertyChanged(nameof(TotalDuration));
+
+            await App.Current.MainPage.ShowPopupAsync(new ErrorsTemplatesPopup("Тренировка завершена!"));
+            // Можно закрыть страницу после завершения
+            RequestClose?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

@@ -1,15 +1,14 @@
 using CommunityToolkit.Maui.Views;
-using Setta.Models;
 using Setta.PopupPages;
+using Setta.Models;
+using Setta.ViewModels;
 using Setta.Services;
-using System;
-using System.IO;
 
 namespace Setta.Pages;
 
 public partial class WorkoutPage : ContentPage
 {
-    private readonly WorkoutDatabaseService _db;
+    private WorkoutDatabaseService _db;
     public WorkoutPageViewModel ViewModel { get; set; }
 
     public WorkoutPage()
@@ -26,34 +25,60 @@ public partial class WorkoutPage : ContentPage
     {
         var popup = new AddWorkoutPopup(DateTime.Today);
         var result = await this.ShowPopupAsync(popup) as Tuple<DateTime, bool>;
-        if (result == null)
-            return;
+        if (result == null) return;
 
         var date = result.Item1;
+        var useTemplate = result.Item2;
 
-        // 1. Валидация: будущая дата
-        if (date.Date > DateTime.Today)
+        if (date > DateTime.Today)
         {
             await this.ShowPopupAsync(new ErrorsTemplatesPopup("Нельзя записать тренировку в день, который не наступил."));
             return;
         }
 
-        // 2. Создаём новую тренировку
-        var workout = new Workout
+        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "workout.db");
+        var db = new WorkoutDatabaseService(dbPath);
+
+        if (!useTemplate)
         {
-            Date = date.Date,
-            StartTime = date.Date == DateTime.Today ? DateTime.Now : date.Date, // если сегодня — текущее время
-            Status = date.Date == DateTime.Today ? WorkoutStatus.Active : WorkoutStatus.Completed,
-            // остальные поля — пустые, будут добавляться по ходу (EndTime, TotalWeight, TotalDuration)
-        };
+            // Пустая тренировка
+            var workout = new Workout
+            {
+                Date = date,
+                IsActive = (date == DateTime.Today),
+                StartTime = DateTime.Now,
+                ExercisesJson = "" // пусто при создании
+            };
+            await db.SaveWorkoutAsync(workout);
 
-        await _db.SaveWorkoutAsync(workout);
+            // После добавления обязательно обнови список
+            await RefreshWorkouts();
 
-        // 3. Обновить ViewModel (чтобы тренировка появилась на главном экране)
-        ViewModel?.GroupedWorkouts.Clear();
-        ViewModel?.GetType().GetMethod("LoadWorkouts", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.Invoke(ViewModel, null);
+            // Открываем страницу с Id новой тренировки
+            await Navigation.PushAsync(new WorkoutInfoPage(workout.Id));
+        }
+        else
+        {
+            // Выбор шаблона (реализуется отдельно)
+            await Navigation.PushAsync(new ChooseTemplatePage(date));
+        }
+    }
 
-        // 4. Открываем WorkoutInfoPage (можно по id тренировки)
-        await Navigation.PushAsync(new WorkoutInfoPage(workout.Id));
+    // Обновление списка тренировок каждый раз при появлении страницы
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await RefreshWorkouts();
+    }
+
+    private async Task RefreshWorkouts()
+    {
+        var workouts = await _db.GetWorkoutsAsync();
+        ViewModel.Workouts.Clear();
+        foreach (var w in workouts)
+            ViewModel.Workouts.Add(w);
+
+        OnPropertyChanged(nameof(ViewModel.IsWorkoutListEmpty));
+        OnPropertyChanged(nameof(ViewModel.IsWorkoutListNotEmpty));
     }
 }

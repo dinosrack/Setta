@@ -1,8 +1,8 @@
 ﻿using SQLite;
 using Setta.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Setta.Services
 {
@@ -16,19 +16,6 @@ namespace Setta.Services
             _database.CreateTableAsync<Workout>().Wait();
         }
 
-        // Получить все тренировки
-        public Task<List<Workout>> GetWorkoutsAsync()
-        {
-            return _database.Table<Workout>().OrderByDescending(w => w.Date).ToListAsync();
-        }
-
-        // Получить по id
-        public Task<Workout> GetWorkoutAsync(int id)
-        {
-            return _database.Table<Workout>().Where(w => w.Id == id).FirstOrDefaultAsync();
-        }
-
-        // Сохранить новую тренировку
         public Task<int> SaveWorkoutAsync(Workout workout)
         {
             if (workout.Id == 0)
@@ -37,7 +24,16 @@ namespace Setta.Services
                 return _database.UpdateAsync(workout);
         }
 
-        // Удалить тренировку
+        public Task<List<Workout>> GetWorkoutsAsync()
+        {
+            return _database.Table<Workout>().ToListAsync();
+        }
+
+        public Task<Workout> GetWorkoutByIdAsync(int id)
+        {
+            return _database.Table<Workout>().FirstOrDefaultAsync(w => w.Id == id);
+        }
+
         public Task<int> DeleteWorkoutAsync(Workout workout)
         {
             return _database.DeleteAsync(workout);
