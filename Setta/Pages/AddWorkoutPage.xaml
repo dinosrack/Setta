@@ -99,8 +99,15 @@
                         Margin="0,0,0,20"
                         Clicked="OnAddExercisesClicked"/>
 
+                <Button Text="Использовать шаблон"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}"
+                        HeightRequest="50"
+                        Margin="0,0,0,20"
+                        Clicked="OnUseTemplateClicked"/>
+
                 <!-- Кнопки удалить и сохранить тренировку -->
-                <Grid ColumnDefinitions="*,10,*"
+                <Grid ColumnDefinitions="*,*"
                       ColumnSpacing="10"
                       HeightRequest="50">
                     

@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:models="clr-namespace:Setta.Models"
+    xmlns:converters="clr-namespace:Setta.Converters"
     x:Class="Setta.PopupPages.FilterPopup"
     Color="Transparent"
     VerticalOptions="End"
@@ -23,7 +23,7 @@
                 <!-- Ресурсы конвертера -->
                 <VerticalStackLayout.Resources>
                     <ResourceDictionary>
-                        <models:BoolToColorConverter x:Key="SelectedColorConverter" />
+                        <converters:BoolToColorConverter x:Key="SelectedColorConverter" />
                     </ResourceDictionary>
                 </VerticalStackLayout.Resources>
 

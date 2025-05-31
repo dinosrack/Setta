@@ -79,5 +79,43 @@ namespace Setta.Services
             await Init();
             await db.DeleteAsync<Workout>(id);
         }
+
+        public static async Task ApplyTemplateToWorkoutAsync(int workoutId, WorkoutTemplate template)
+        {
+            await Init();
+
+            foreach (var templateExercise in template.Exercises)
+            {
+                // Добавляем упражнение в тренировку
+                var workoutExercise = new WorkoutExercise
+                {
+                    WorkoutId = workoutId,
+                    Name = templateExercise.Name,
+                    MuscleGroup = templateExercise.MuscleGroup
+                };
+
+                await db.InsertAsync(workoutExercise);
+
+                // Получаем ID добавленного упражнения
+                int exerciseId = workoutExercise.Id;
+
+                // Добавляем подходы
+                if (templateExercise.Sets != null)
+                {
+                    foreach (var set in templateExercise.Sets)
+                    {
+                        var workoutSet = new WorkoutSet
+                        {
+                            ExerciseId = exerciseId,
+                            Reps = int.TryParse(set.Reps, out var reps) ? reps : 0,
+                            Weight = int.TryParse(set.Weight, out var weight) ? weight : 0
+                        };
+
+                        await db.InsertAsync(workoutSet);
+                    }
+                }
+            }
+        }
+
     }
 }

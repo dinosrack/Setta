@@ -28,8 +28,32 @@
 
                 <!-- Заголовок -->
                 <Label
-                    Text="Запись тренировки"
+                    Text="Новая тренировка"
                     Style="{StaticResource HeadlineLabel}" />
+
+                <Grid Margin="0,0,0,-20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Text="Дата"
+                        Style="{StaticResource SecondaryLabel}"
+                        Grid.Column="1"
+                        Margin="0,0,0,10" />
+                    <Label
+                        Text="*"
+                        Style="{StaticResource SecondaryLabel}"
+                        TextColor="{StaticResource Red}"
+                        Grid.Column="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="0,-5,5,0" />
+                </Grid>
 
                 <!-- Дата -->
                 <Border
@@ -55,22 +79,14 @@
                 </Border>
 
                 <!-- Кнопки -->
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Button
-                        Grid.Column="0"
-                        Clicked="OnEmptyWorkoutClicked"
-                        Text="Пустая"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                        HeightRequest="50"
-                        HorizontalOptions="Fill" />
-                    <Button
+                <Button
                         Grid.Column="1"
-                        Text="Из шаблона"
+                        Clicked="OnContinueClicked"
+                        Text="Продолжить"
                         BackgroundColor="{StaticResource Important}"
                         TextColor="White"
                         HeightRequest="50"
                         HorizontalOptions="Fill" />
-                </Grid>
 
             </VerticalStackLayout>
         </Border>

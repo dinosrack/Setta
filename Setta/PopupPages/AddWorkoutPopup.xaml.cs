@@ -12,7 +12,7 @@ public partial class AddWorkoutPopup : Popup
 		InitializeComponent();
 	}
 
-    private async void OnEmptyWorkoutClicked(object sender, EventArgs e)
+    private async void OnContinueClicked(object sender, EventArgs e)
     {
         var selectedDate = WorkoutDatePicker.Date;
 

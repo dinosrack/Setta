@@ -11,17 +11,35 @@ namespace Setta.Models
 
         public string Name { get; set; }
 
+        public bool IsSelected { get; set; }
+
         // JSON-представление списка упражнений
         public string ExercisesJson { get; set; }
 
-        // Вычисляемое свойство — список имён упражнений
+        // Вычисляемое свойство — список упражнений
+        public List<TemplateExercise> Exercises
+        {
+            get
+            {
+                try
+                {
+                    return JsonSerializer.Deserialize<List<TemplateExercise>>(ExercisesJson) ?? new();
+                }
+                catch
+                {
+                    return new();
+                }
+            }
+        }
+
+        // Вычисляемое свойство — строка с названиями упражнений
         public string ExerciseNames
         {
             get
             {
                 try
                 {
-                    var list = JsonSerializer.Deserialize<List<TemplateExercise>>(ExercisesJson);
+                    var list = Exercises;
                     return string.Join(", ", list.Select(e => e.Name));
                 }
                 catch

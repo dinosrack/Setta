@@ -1,0 +1,86 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Setta.Models"
+             x:Class="Setta.Pages.ChooseTemplatePage"
+             x:Name="PageRoot"
+             Padding="20">
+
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20">
+
+            <!-- Заголовок -->
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Выбор шаблона"
+                   Style="{StaticResource HeadlineLabel}"
+                   VerticalOptions="Center" />
+                <Label Text="Назад"
+                   Grid.Column="1"
+                   Padding="0,0,10,0"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <!-- Список шаблонов -->
+            <CollectionView x:Name="TemplateList"
+                        SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:WorkoutTemplate">
+                        <Frame
+                        Padding="10"
+                        Margin="0,0,0,10"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                        CornerRadius="10"
+                        HasShadow="False">
+
+                            <Grid ColumnDefinitions="*,Auto"
+                              Padding="10,5"
+                              VerticalOptions="Center"
+                              HorizontalOptions="FillAndExpand">
+
+                                <!-- Жесты -->
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                    Command="{Binding Source={x:Reference PageRoot}, Path=TemplateTapCommand}"
+                                    CommandParameter="{Binding}" />
+                                </Grid.GestureRecognizers>
+
+                                <!-- Название шаблона + упражнения -->
+                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding ExerciseNames}"
+                                       Style="{StaticResource SecondarySmallLabel}"
+                                       LineBreakMode="WordWrap" />
+                                </VerticalStackLayout>
+
+                                <!-- RadioButton -->
+                                <RadioButton Grid.Column="1"
+                                         GroupName="Templates"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="End"
+                                         Margin="10,0,-20,0"
+                                         IsChecked="{Binding IsSelected}"
+                                         CheckedChanged="OnTemplateChecked" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопка выбора -->
+            <Button Text="Выбрать"
+                BackgroundColor="{StaticResource Important}"
+                TextColor="White"
+                HeightRequest="50"
+                Clicked="OnChooseClicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

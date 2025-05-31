@@ -2,7 +2,7 @@
 using System.Globalization;
 using Microsoft.Maui.Controls;
 
-namespace Setta.Models
+namespace Setta.Converters
 {
     public class BoolToColorConverter : IValueConverter
     {

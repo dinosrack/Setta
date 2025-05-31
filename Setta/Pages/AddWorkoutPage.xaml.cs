@@ -11,13 +11,14 @@ public partial class AddWorkoutPage : ContentPage
     private ObservableCollection<ExerciseInTemplate> _selectedExercises = new();
     private Workout _workout;
 
-    public AddWorkoutPage(Workout workout)
+    public AddWorkoutPage(Workout workout, WorkoutTemplate? template = null)
     {
         InitializeComponent();
         _workout = workout;
 
         SelectedDateLabel.Text = _workout.StartDateTime.ToString("dd MMMM yyyy");
 
+        // Загружаем упражнения ТОЛЬКО из базы
         _ = LoadExistingExercisesAsync();
     }
 
@@ -141,7 +142,7 @@ public partial class AddWorkoutPage : ContentPage
             return;
         }
 
-        // Пример подсчета суммарного веса
+        // Подсчёт суммарного веса
         int totalWeight = _selectedExercises.Sum(ex =>
             ex.Sets.Where(s => int.TryParse(s.Reps, out _) && int.TryParse(s.Weight, out _))
                    .Sum(s => int.Parse(s.Reps) * int.Parse(s.Weight)));
@@ -150,8 +151,6 @@ public partial class AddWorkoutPage : ContentPage
         _workout.EndDateTime = DateTime.Now;
 
         await WorkoutDatabaseService.UpdateWorkoutAsync(_workout);
-
-        //await this.ShowPopupAsync(new ErrorsTemplatesPopup("Тренировка успешно сохранена!"));
         await Navigation.PopAsync();
     }
 
@@ -185,6 +184,31 @@ public partial class AddWorkoutPage : ContentPage
         UpdateExerciseListUI();
     }
 
+    private async void OnUseTemplateClicked(object sender, EventArgs e)
+    {
+        // Получаем все шаблоны
+        var templates = await TemplateDatabaseService.GetTemplatesAsync();
+
+        if (templates == null || templates.Count == 0)
+        {
+            await this.ShowPopupAsync(new ErrorsTemplatesPopup("У вас еще нет шаблонов."));
+            return;
+        }
+
+        var page = new ChooseTemplatePage();
+
+        page.TemplateChosen += async (s, selectedTemplate) =>
+        {
+            if (selectedTemplate == null) return;
+
+            await WorkoutDatabaseService.ApplyTemplateToWorkoutAsync(_workout.Id, selectedTemplate);
+            _selectedExercises.Clear();
+            await LoadExistingExercisesAsync();
+        };
+
+        await Navigation.PushAsync(page);
+    }
+
     private async void OnDeleteWorkoutClicked(object sender, EventArgs e)
     {
         var popup = new DeleteItemPopup();
@@ -193,7 +217,7 @@ public partial class AddWorkoutPage : ContentPage
         if (result is bool confirmed && confirmed)
         {
             await WorkoutDatabaseService.DeleteWorkoutAsync(_workout.Id);
-            await Navigation.PopAsync(); // Закрываем страницу
+            await Navigation.PopAsync();
         }
     }
 }
