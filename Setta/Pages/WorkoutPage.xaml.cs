@@ -40,8 +40,9 @@ public partial class WorkoutPage : ContentPage
         var grouped = viewItems
             .GroupBy(w => w.StartDateTime.Date)
             .OrderByDescending(g => g.Key)
-            .Select(g => new WorkoutGroup(g.Key.ToString("d MMMM", new System.Globalization.CultureInfo("ru-RU")),
-                                          g.OrderBy(w => w.StartDateTime)))
+            .Select(g => new WorkoutGroup(
+                g.Key.ToString("d MMMM", new System.Globalization.CultureInfo("ru-RU")),
+                g.OrderByDescending(w => w.StartDateTime))) 
             .ToList();
 
         WorkoutView.ItemsSource = grouped;

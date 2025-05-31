@@ -19,7 +19,7 @@ namespace Setta.Models
 
         public string SummaryText =>
             !IsActive && EndDateTime.HasValue
-                ? $"{(int)(EndDateTime.Value - StartDateTime).TotalMinutes} мин - {TotalWeight} кг"
+                ? $"{(int)(EndDateTime.Value - StartDateTime).TotalMinutes} мин | {TotalWeight} кг"
                 : "";
     }
 }

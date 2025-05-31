@@ -5,6 +5,7 @@ namespace Setta.Models
     public class ExerciseInTemplate
     {
         public Exercise Exercise { get; set; }
+        public int? WorkoutExerciseId { get; set; }
         public ObservableCollection<ExerciseSet> Sets { get; set; } = new();
 
         public int TotalVolume =>

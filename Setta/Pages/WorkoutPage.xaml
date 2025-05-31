@@ -1,43 +1,42 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:Setta.Models"
+             xmlns:converters="clr-namespace:Setta.Converters"
              x:Class="Setta.Pages.WorkoutPage"
              Padding="20"
              x:Name="PageRoot">
 
     <ContentPage.Resources>
-        <DataTemplate x:Key="WorkoutGroupHeaderTemplate">
-            <Label Text="{Binding DateDisplay}"
-                   FontAttributes="Bold"
-                   Margin="0,0,0,10"
-                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
-        </DataTemplate>
+        <ResourceDictionary>
+            <converters:NotNullConverter x:Key="NotNullConverter" />
+            <DataTemplate x:Key="WorkoutGroupHeaderTemplate">
+                <Label Text="{Binding DateDisplay}"
+                       Margin="0,0,0,10"
+                       TextColor="{StaticResource Secondary}" />
+            </DataTemplate>
+        </ResourceDictionary>
     </ContentPage.Resources>
 
-    <!-- Сетка вместо VerticalStackLayout -->
     <Grid RowDefinitions="Auto,*" RowSpacing="20">
 
-        <!-- Верхняя часть: заголовок + кнопка -->
+        <!-- Верхняя часть -->
         <VerticalStackLayout Grid.Row="0" Spacing="20">
-            <Label Text="Тренировки"
-                   Style="{StaticResource HeadlineLabel}" />
+            <Label Text="Тренировки" Style="{StaticResource HeadlineLabel}" />
 
-            <Button
-                Text="Записать тренировку"
-                BackgroundColor="{StaticResource Important}"
-                TextColor="White"
-                HeightRequest="50"
-                Clicked="OnAddWorkoutClicked" />
+            <Button Text="Записать тренировку"
+                    BackgroundColor="{StaticResource Important}"
+                    TextColor="White"
+                    HeightRequest="50"
+                    Clicked="OnAddWorkoutClicked" />
 
-            <Label
-                Text="У вас еще не записаны тренировки"
-                x:Name="NoWorkoutLabel"
-                Style="{StaticResource SecondaryLabel}"
-                HorizontalOptions="Center"
-                IsVisible="False" />
+            <Label Text="У вас еще не записаны тренировки"
+                   x:Name="NoWorkoutLabel"
+                   Style="{StaticResource SecondaryLabel}"
+                   HorizontalOptions="Center"
+                   IsVisible="False" />
         </VerticalStackLayout>
 
-        <!-- Прокручиваемый список тренировок -->
+        <!-- Список тренировок -->
         <CollectionView x:Name="WorkoutView"
                         Grid.Row="1"
                         IsVisible="False"
@@ -46,48 +45,67 @@
                         SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:WorkoutViewItem">
-                    <Border
-                        StrokeThickness="{Binding IsActive, Converter={StaticResource BoolToThickness}}"
-                        Stroke="{StaticResource Important}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                        Padding="15"
-                        Margin="0,0,0,10"
-                        StrokeShape="RoundRectangle 10"
-                        HeightRequest="70">
+                    <Border StrokeThickness="{Binding IsActive, Converter={StaticResource BoolToThickness}}"
+                            Stroke="{StaticResource Important}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
+                            Padding="15"
+                            Margin="0,0,0,10"
+                            StrokeShape="RoundRectangle 10"
+                            HeightRequest="80">
 
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={x:Reference PageRoot}, Path=WorkoutTapCommand}"
-                              CommandParameter="{Binding}" />
+                                                  CommandParameter="{Binding}" />
                         </Border.GestureRecognizers>
 
                         <Grid ColumnDefinitions="Auto,*,Auto"
-                              VerticalOptions="Center"
-                              HorizontalOptions="FillAndExpand">
+                              RowDefinitions="*"
+                              HorizontalOptions="FillAndExpand"
+                              VerticalOptions="Fill"
+                              ColumnSpacing="10">
 
-                            <BoxView WidthRequest="4"
-                                     CornerRadius="10"
+                            <!-- Вертикальная линия -->
+                            <BoxView Grid.Row="0"
+                                     Grid.Column="0"
+                                     WidthRequest="4"
+                                     Margin="0,0,0,0"
                                      Color="{StaticResource Important}"
-                                     VerticalOptions="Center"
-                                     HeightRequest="30"
-                                     Margin="0,0,10,0" />
+                                     CornerRadius="10"
+                                     VerticalOptions="Fill"
+                                     HorizontalOptions="Center" />
 
-                            <HorizontalStackLayout Grid.Column="1"
-                                                   VerticalOptions="Center"
-                                                   Spacing="10">
-                                <Label Text="Тренировка"
+                            <!-- Текстовая часть -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Grid.Row="0"
+                                                 VerticalOptions="Center"
+                                                 Spacing="5">
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="Тренировка"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                                    <Label Text="{Binding TimeDisplay}"
+                                           VerticalOptions="Center"
+                                           TextColor="{StaticResource Secondary}"
+                                           Style="{StaticResource SecondarySmallLabel}" />
+                                </HorizontalStackLayout>
+
+                                <!-- Вес (только у завершённых) -->
+                                <Label Text="{Binding SummaryText}"
+                                       IsVisible="{Binding EndDateTime, Converter={StaticResource NotNullConverter}}"
+                                       Style="{StaticResource SecondarySmallLabel}"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
-                                <Label Text="{Binding TimeDisplay}"
-                                       VerticalOptions="Center"
-                                       TextColor="{StaticResource Secondary}"
-                                       Style="{StaticResource SecondarySmallLabel}" />
-                            </HorizontalStackLayout>
+                            </VerticalStackLayout>
 
-                            <Image Grid.Column="2"
+                            <!-- Стрелка справа -->
+                            <Image Grid.Row="0"
+                                   Grid.Column="2"
                                    Source="arrowright.svg"
                                    WidthRequest="16"
                                    HeightRequest="16"
                                    VerticalOptions="Center"
+                                   HorizontalOptions="End"
                                    Margin="10,0,0,0" />
                         </Grid>
                     </Border>
