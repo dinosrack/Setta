@@ -99,12 +99,23 @@
                         Margin="0,0,0,20"
                         Clicked="OnAddExercisesClicked"/>
 
-                <!-- Кнопка сохранить тренировку -->
-                <Button Text="Сохранить тренировку"
-                        BackgroundColor="{StaticResource Important}"
-                        TextColor="White"
-                        HeightRequest="50"
-                        Clicked="OnSaveWorkoutClicked"/>
+                <!-- Кнопки удалить и сохранить тренировку -->
+                <Grid ColumnDefinitions="*,10,*"
+                      ColumnSpacing="10"
+                      HeightRequest="50">
+                    
+                    <Button Text="Удалить"
+                            BackgroundColor="{StaticResource Red}"
+                            TextColor="White"
+                            Clicked="OnDeleteWorkoutClicked"
+                            Grid.Column="0" />
+
+                    <Button Text="Сохранить"
+                            BackgroundColor="{StaticResource Important}"
+                            TextColor="White"
+                            Clicked="OnSaveWorkoutClicked"
+                            Grid.Column="2" />
+                </Grid>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

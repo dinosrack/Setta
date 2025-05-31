@@ -16,25 +16,6 @@ public partial class AddWorkoutPopup : Popup
     {
         var selectedDate = WorkoutDatePicker.Date;
 
-        var allWorkouts = await WorkoutDatabaseService.GetWorkoutsAsync();
-
-        // Проверка на активную тренировку
-        if (allWorkouts.Any(w => w.EndDateTime == null))
-        {
-            await Application.Current.MainPage.ShowPopupAsync(
-                new ErrorsTemplatesPopup("Нельзя начать новую тренировку, пока есть активная."));
-            return;
-        }
-
-        // Подсчёт тренировок на выбранную дату
-        int countForDate = allWorkouts.Count(w => w.StartDateTime.Date == selectedDate.Date);
-        if (countForDate >= 2)
-        {
-            await Application.Current.MainPage.ShowPopupAsync(
-                new ErrorsTemplatesPopup("Вы можете записать не более 2 тренировок за 1 день."));
-            return;
-        }
-
         var workout = new Workout
         {
             StartDateTime = selectedDate.Date.Add(DateTime.Now.TimeOfDay),

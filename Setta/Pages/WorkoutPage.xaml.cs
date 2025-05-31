@@ -8,13 +8,31 @@ namespace Setta.Pages;
 
 public partial class WorkoutPage : ContentPage
 {
-	public WorkoutPage()
-	{
-		InitializeComponent();
-	}
+    public WorkoutPage()
+    {
+        InitializeComponent();
+    }
 
     private async void OnAddWorkoutClicked(object sender, EventArgs e)
     {
+        var selectedDate = DateTime.Today;
+        var allWorkouts = await WorkoutDatabaseService.GetWorkoutsAsync();
+
+        // ѕроверка на активную тренировку
+        if (allWorkouts.Any(w => w.EndDateTime == null))
+        {
+            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Ќельз€ начать новую тренировку, пока есть активна€."));
+            return;
+        }
+
+        // ѕроверка на количество тренировок в выбранный день
+        int countForDate = allWorkouts.Count(w => w.StartDateTime.Date == selectedDate);
+        if (countForDate >= 2)
+        {
+            await this.ShowPopupAsync(new ErrorsTemplatesPopup("¬ы можете записать не более 2 тренировок за 1 день."));
+            return;
+        }
+
         var popup = new AddWorkoutPopup();
         await this.ShowPopupAsync(popup);
     }
@@ -42,7 +60,7 @@ public partial class WorkoutPage : ContentPage
             .OrderByDescending(g => g.Key)
             .Select(g => new WorkoutGroup(
                 g.Key.ToString("d MMMM", new System.Globalization.CultureInfo("ru-RU")),
-                g.OrderByDescending(w => w.StartDateTime))) 
+                g.OrderByDescending(w => w.StartDateTime)))
             .ToList();
 
         WorkoutView.ItemsSource = grouped;

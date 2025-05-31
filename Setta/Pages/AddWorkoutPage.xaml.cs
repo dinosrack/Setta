@@ -185,4 +185,15 @@ public partial class AddWorkoutPage : ContentPage
         UpdateExerciseListUI();
     }
 
+    private async void OnDeleteWorkoutClicked(object sender, EventArgs e)
+    {
+        var popup = new DeleteItemPopup();
+        var result = await this.ShowPopupAsync(popup);
+
+        if (result is bool confirmed && confirmed)
+        {
+            await WorkoutDatabaseService.DeleteWorkoutAsync(_workout.Id);
+            await Navigation.PopAsync(); // Закрываем страницу
+        }
+    }
 }

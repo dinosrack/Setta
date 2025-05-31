@@ -90,12 +90,12 @@
                                            Style="{StaticResource SecondarySmallLabel}" />
                                 </HorizontalStackLayout>
 
-                                <!-- Вес (только у завершённых) -->
+                                <!-- Вес и время (только у завершённых) -->
                                 <Label Text="{Binding SummaryText}"
                                        IsVisible="{Binding EndDateTime, Converter={StaticResource NotNullConverter}}"
                                        Style="{StaticResource SecondarySmallLabel}"
                                        VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                                       TextColor="{StaticResource Secondary}" />
                             </VerticalStackLayout>
 
                             <!-- Стрелка справа -->

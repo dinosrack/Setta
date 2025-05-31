@@ -73,5 +73,11 @@ namespace Setta.Services
             await Init();
             return await db.Table<WorkoutSet>().Where(s => s.ExerciseId == exerciseId).ToListAsync();
         }
+
+        public static async Task DeleteWorkoutAsync(int id)
+        {
+            await Init();
+            await db.DeleteAsync<Workout>(id);
+        }
     }
 }
