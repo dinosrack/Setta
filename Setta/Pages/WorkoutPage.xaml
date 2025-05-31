@@ -1,67 +1,98 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Setta.Models"
              x:Class="Setta.Pages.WorkoutPage"
-             Padding="20">
-    <VerticalStackLayout Spacing="20">
-        
-        <Label Text="Тренировки" 
-               Style="{StaticResource HeadlineLabel}"/>
+             Padding="20"
+             x:Name="PageRoot">
 
-        <Button
-            Text="Записать тренировку"
-            BackgroundColor="{StaticResource Important}"
-            TextColor="White"
-            HeightRequest="50"
-            Clicked="OnAddWorkoutClicked"/>
+    <ContentPage.Resources>
+        <DataTemplate x:Key="WorkoutGroupHeaderTemplate">
+            <Label Text="{Binding DateDisplay}"
+                   FontAttributes="Bold"
+                   Margin="0,0,0,10"
+                   TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+        </DataTemplate>
+    </ContentPage.Resources>
 
-        <Label
-            Text="У вас еще не записаны тренировки"
-            x:Name="NoWorkoutLabel"
-            Style="{StaticResource SecondaryLabel}"
-            HorizontalOptions="Center"
-            IsVisible="False"/>
+    <!-- Сетка вместо VerticalStackLayout -->
+    <Grid RowDefinitions="Auto,*" RowSpacing="20">
 
-        <CollectionView
-                    x:Name="WorkoutView"
-                    IsVisible="False">
+        <!-- Верхняя часть: заголовок + кнопка -->
+        <VerticalStackLayout Grid.Row="0" Spacing="20">
+            <Label Text="Тренировки"
+                   Style="{StaticResource HeadlineLabel}" />
+
+            <Button
+                Text="Записать тренировку"
+                BackgroundColor="{StaticResource Important}"
+                TextColor="White"
+                HeightRequest="50"
+                Clicked="OnAddWorkoutClicked" />
+
+            <Label
+                Text="У вас еще не записаны тренировки"
+                x:Name="NoWorkoutLabel"
+                Style="{StaticResource SecondaryLabel}"
+                HorizontalOptions="Center"
+                IsVisible="False" />
+        </VerticalStackLayout>
+
+        <!-- Прокручиваемый список тренировок -->
+        <CollectionView x:Name="WorkoutView"
+                        Grid.Row="1"
+                        IsVisible="False"
+                        IsGrouped="True"
+                        GroupHeaderTemplate="{StaticResource WorkoutGroupHeaderTemplate}"
+                        SelectionMode="None">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame
-                        Padding="10"
-                        Margin="0,0,0,10"
+                <DataTemplate x:DataType="models:WorkoutViewItem">
+                    <Border
+                        StrokeThickness="{Binding IsActive, Converter={StaticResource BoolToThickness}}"
+                        Stroke="{StaticResource Important}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
-                        CornerRadius="10"
-                        HasShadow="False">
+                        Padding="15"
+                        Margin="0,0,0,10"
+                        StrokeShape="RoundRectangle 10"
+                        HeightRequest="70">
 
-                        <Grid ColumnDefinitions="*,Auto" Padding="5,0,0,0">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={x:Reference PageRoot}, Path=WorkoutTapCommand}"
+                              CommandParameter="{Binding}" />
+                        </Border.GestureRecognizers>
 
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer
-                                            Command="{Binding Source={x:Reference PageRoot}, Path=TemplateTapCommand}"
-                                            CommandParameter="{Binding}" />
-                            </Grid.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                              VerticalOptions="Center"
+                              HorizontalOptions="FillAndExpand">
 
-                            <!-- Название шаблона + упражнения -->
-                            <VerticalStackLayout Grid.Column="0" Spacing="2">
-                                <Label Text="{Binding Name}"/>
-                                <Label Text="{Binding ExerciseNames}" Style="{StaticResource SecondarySmallLabel}" />
-                            </VerticalStackLayout>
+                            <BoxView WidthRequest="4"
+                                     CornerRadius="10"
+                                     Color="{StaticResource Important}"
+                                     VerticalOptions="Center"
+                                     HeightRequest="30"
+                                     Margin="0,0,10,0" />
 
-                            <!-- Стрелка -->
-                            <Image Source="arrowright.svg"
-                                           WidthRequest="16"
-                                           HeightRequest="16"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="End"
-                                           Grid.Column="1"
-                                           Margin="10,0,0,0"/>
+                            <HorizontalStackLayout Grid.Column="1"
+                                                   VerticalOptions="Center"
+                                                   Spacing="10">
+                                <Label Text="Тренировка"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource LightText}, Dark={StaticResource DarkText}}" />
+                                <Label Text="{Binding TimeDisplay}"
+                                       VerticalOptions="Center"
+                                       TextColor="{StaticResource Secondary}"
+                                       Style="{StaticResource SecondarySmallLabel}" />
+                            </HorizontalStackLayout>
+
+                            <Image Grid.Column="2"
+                                   Source="arrowright.svg"
+                                   WidthRequest="16"
+                                   HeightRequest="16"
+                                   VerticalOptions="Center"
+                                   Margin="10,0,0,0" />
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

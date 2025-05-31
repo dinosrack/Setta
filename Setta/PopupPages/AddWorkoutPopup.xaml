@@ -58,15 +58,14 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                     <Button
                         Grid.Column="0"
-                        Text="Новая"
-                        Command="{Binding EmptyWorkoutCommand}"
+                        Clicked="OnEmptyWorkoutClicked"
+                        Text="Пустая"
                         BackgroundColor="{AppThemeBinding Light={StaticResource LightElement}, Dark={StaticResource DarkElement}}"
                         HeightRequest="50"
                         HorizontalOptions="Fill" />
                     <Button
                         Grid.Column="1"
                         Text="Из шаблона"
-                        Command="{Binding UseTemplateCommand}"
                         BackgroundColor="{StaticResource Important}"
                         TextColor="White"
                         HeightRequest="50"
