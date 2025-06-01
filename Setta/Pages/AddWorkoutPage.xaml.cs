@@ -49,19 +49,21 @@ public partial class AddWorkoutPage : ContentPage
 
             if (list == null || list.Count == 0) return;
 
-            foreach (var ex in list)
+            int availableSlots = 7 - _selectedExercises.Count;
+
+            var newExercises = list
+                .Where(ex => ex != null && ex.ExerciseName != null &&
+                             !_selectedExercises.Any(e => e.Exercise.ExerciseName == ex.ExerciseName))
+                .Take(availableSlots)
+                .ToList();
+
+            if (newExercises.Count < list.Count)
             {
-                if (ex == null || ex.ExerciseName == null) continue;
-                if (_selectedExercises.Any(e => e.Exercise.ExerciseName == ex.ExerciseName)) continue;
+                await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 тренировку."));
+            }
 
-                var newItem = new ExerciseInTemplate
-                {
-                    Exercise = ex,
-                    Sets = new ObservableCollection<ExerciseSet>()
-                };
-
-                _selectedExercises.Add(newItem);
-
+            foreach (var ex in newExercises)
+            {
                 var workoutExercise = new WorkoutExercise
                 {
                     WorkoutId = _workout.Id,
@@ -69,7 +71,16 @@ public partial class AddWorkoutPage : ContentPage
                     MuscleGroup = ex.MuscleGroup
                 };
 
-                await WorkoutDatabaseService.AddWorkoutExerciseAsync(workoutExercise);
+                int id = await WorkoutDatabaseService.AddWorkoutExerciseAsync(workoutExercise);
+
+                var newItem = new ExerciseInTemplate
+                {
+                    Exercise = ex,
+                    WorkoutExerciseId = id,
+                    Sets = new ObservableCollection<ExerciseSet>()
+                };
+
+                _selectedExercises.Add(newItem);
             }
 
             await WorkoutDatabaseService.UpdateWorkoutAsync(_workout);
@@ -92,6 +103,12 @@ public partial class AddWorkoutPage : ContentPage
             if (result is null)
             {
                 _selectedExercises.Remove(selected);
+
+                // Удаляем из SQLite
+                if (selected.WorkoutExerciseId.HasValue)
+                {
+                    await WorkoutDatabaseService.DeleteWorkoutExerciseWithSetsAsync(selected.WorkoutExerciseId.Value);
+                }
             }
             else if (result is ExerciseInTemplate updated)
             {
@@ -156,6 +173,8 @@ public partial class AddWorkoutPage : ContentPage
 
     private async Task LoadExistingExercisesAsync()
     {
+        _selectedExercises.Clear();
+
         var exercises = await WorkoutDatabaseService.GetWorkoutExercisesAsync(_workout.Id);
 
         foreach (var ex in exercises)
@@ -184,11 +203,16 @@ public partial class AddWorkoutPage : ContentPage
         UpdateExerciseListUI();
     }
 
+
     private async void OnUseTemplateClicked(object sender, EventArgs e)
     {
-        // Получаем все шаблоны
-        var templates = await TemplateDatabaseService.GetTemplatesAsync();
+        if (_selectedExercises.Any())
+        {
+            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы уже добавили упражнения. Шаблон можно использовать только в пустой тренировке."));
+            return;
+        }
 
+        var templates = await TemplateDatabaseService.GetTemplatesAsync();
         if (templates == null || templates.Count == 0)
         {
             await this.ShowPopupAsync(new ErrorsTemplatesPopup("У вас еще нет шаблонов."));
@@ -196,12 +220,11 @@ public partial class AddWorkoutPage : ContentPage
         }
 
         var page = new ChooseTemplatePage();
-
         page.TemplateChosen += async (s, selectedTemplate) =>
         {
             if (selectedTemplate == null) return;
 
-            await WorkoutDatabaseService.ApplyTemplateToWorkoutAsync(_workout.Id, selectedTemplate);
+            await WorkoutDatabaseService.ApplyTemplateToWorkoutAsync(_workout.Id, selectedTemplate, _selectedExercises.Count);
             _selectedExercises.Clear();
             await LoadExistingExercisesAsync();
         };
@@ -218,6 +241,7 @@ public partial class AddWorkoutPage : ContentPage
         {
             await WorkoutDatabaseService.DeleteWorkoutAsync(_workout.Id);
             await Navigation.PopAsync();
+            _selectedExercises.Clear();
         }
     }
 }

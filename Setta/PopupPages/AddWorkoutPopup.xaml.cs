@@ -7,18 +7,38 @@ using Setta.Models;
 namespace Setta.PopupPages;
 public partial class AddWorkoutPopup : Popup
 {
-	public AddWorkoutPopup()
-	{
-		InitializeComponent();
-	}
+    public AddWorkoutPopup()
+    {
+        InitializeComponent();
+    }
 
     private async void OnContinueClicked(object sender, EventArgs e)
     {
-        var selectedDate = WorkoutDatePicker.Date;
+        var selectedDate = WorkoutDatePicker.Date.Date;
+        var now = DateTime.Today;
+
+        // Нельзя выбрать дату в будущем
+        if (selectedDate > now)
+        {
+            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsTemplatesPopup(
+                "Нельзя создать тренировку на будущее. Выберите сегодняшнюю или прошедшую дату."));
+            return;
+        }
+
+        var allWorkouts = await WorkoutDatabaseService.GetWorkoutsAsync();
+
+        // Ограничение: не более 2 тренировок на выбранный день
+        int countForDate = allWorkouts.Count(w => w.StartDateTime.Date == selectedDate);
+        if (countForDate >= 2)
+        {
+            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsTemplatesPopup(
+                "Вы можете записать не более 2 тренировок за 1 день."));
+            return;
+        }
 
         var workout = new Workout
         {
-            StartDateTime = selectedDate.Date.Add(DateTime.Now.TimeOfDay),
+            StartDateTime = selectedDate.Add(DateTime.Now.TimeOfDay),
             EndDateTime = null,
             TotalWeight = 0
         };

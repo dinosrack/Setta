@@ -25,7 +25,8 @@ namespace Setta.Services
         public static async Task<int> AddWorkoutAsync(Workout workout)
         {
             await Init();
-            return await db.InsertAsync(workout);
+            await db.InsertAsync(workout);
+            return workout.Id;
         }
 
         public static async Task<List<Workout>> GetWorkoutsAsync()
@@ -51,7 +52,8 @@ namespace Setta.Services
         public static async Task<int> AddWorkoutExerciseAsync(WorkoutExercise exercise)
         {
             await Init();
-            return await db.InsertAsync(exercise);
+            await db.InsertAsync(exercise);
+            return exercise.Id;
         }
 
         public static async Task<List<WorkoutExercise>> GetWorkoutExercisesAsync(int workoutId)
@@ -65,7 +67,8 @@ namespace Setta.Services
         public static async Task<int> AddWorkoutSetAsync(WorkoutSet set)
         {
             await Init();
-            return await db.InsertAsync(set);
+            await db.InsertAsync(set);
+            return set.Id;
         }
 
         public static async Task<List<WorkoutSet>> GetWorkoutSetsAsync(int exerciseId)
@@ -74,19 +77,37 @@ namespace Setta.Services
             return await db.Table<WorkoutSet>().Where(s => s.ExerciseId == exerciseId).ToListAsync();
         }
 
-        public static async Task DeleteWorkoutAsync(int id)
+        public static async Task DeleteWorkoutAsync(int workoutId)
         {
             await Init();
-            await db.DeleteAsync<Workout>(id);
+
+            var exercises = await GetWorkoutExercisesAsync(workoutId);
+            foreach (var ex in exercises)
+            {
+                await db.Table<WorkoutSet>().DeleteAsync(s => s.ExerciseId == ex.Id);
+            }
+
+            await db.Table<WorkoutExercise>().DeleteAsync(e => e.WorkoutId == workoutId);
+            await db.DeleteAsync<Workout>(workoutId);
         }
 
-        public static async Task ApplyTemplateToWorkoutAsync(int workoutId, WorkoutTemplate template)
+        public static async Task DeleteWorkoutExerciseWithSetsAsync(int workoutExerciseId)
         {
             await Init();
+            await db.Table<WorkoutSet>().DeleteAsync(s => s.ExerciseId == workoutExerciseId);
+            await db.Table<WorkoutExercise>().DeleteAsync(e => e.Id == workoutExerciseId);
+        }
+
+
+        public static async Task ApplyTemplateToWorkoutAsync(int workoutId, WorkoutTemplate template, int existingCount = 0)
+        {
+            await Init();
+            int totalAdded = existingCount;
 
             foreach (var templateExercise in template.Exercises)
             {
-                // Добавляем упражнение в тренировку
+                if (totalAdded >= 7) break;
+
                 var workoutExercise = new WorkoutExercise
                 {
                     WorkoutId = workoutId,
@@ -95,25 +116,22 @@ namespace Setta.Services
                 };
 
                 await db.InsertAsync(workoutExercise);
-
-                // Получаем ID добавленного упражнения
                 int exerciseId = workoutExercise.Id;
 
-                // Добавляем подходы
                 if (templateExercise.Sets != null)
                 {
                     foreach (var set in templateExercise.Sets)
                     {
-                        var workoutSet = new WorkoutSet
+                        await db.InsertAsync(new WorkoutSet
                         {
                             ExerciseId = exerciseId,
                             Reps = int.TryParse(set.Reps, out var reps) ? reps : 0,
                             Weight = int.TryParse(set.Weight, out var weight) ? weight : 0
-                        };
-
-                        await db.InsertAsync(workoutSet);
+                        });
                     }
                 }
+
+                totalAdded++;
             }
         }
 

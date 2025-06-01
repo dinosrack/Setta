@@ -15,21 +15,12 @@ public partial class WorkoutPage : ContentPage
 
     private async void OnAddWorkoutClicked(object sender, EventArgs e)
     {
-        var selectedDate = DateTime.Today;
         var allWorkouts = await WorkoutDatabaseService.GetWorkoutsAsync();
 
         // ѕроверка на активную тренировку
         if (allWorkouts.Any(w => w.EndDateTime == null))
         {
             await this.ShowPopupAsync(new ErrorsTemplatesPopup("Ќельз€ начать новую тренировку, пока есть активна€."));
-            return;
-        }
-
-        // ѕроверка на количество тренировок в выбранный день
-        int countForDate = allWorkouts.Count(w => w.StartDateTime.Date == selectedDate);
-        if (countForDate >= 2)
-        {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("¬ы можете записать не более 2 тренировок за 1 день."));
             return;
         }
 
@@ -46,6 +37,21 @@ public partial class WorkoutPage : ContentPage
     private async void LoadWorkouts()
     {
         var workouts = await WorkoutDatabaseService.GetWorkoutsAsync();
+
+        // «авершаем все старые активные тренировки, кроме самой новой
+        var activeWorkouts = workouts
+            .Where(w => w.EndDateTime == null)
+            .OrderByDescending(w => w.StartDateTime)
+            .ToList();
+
+        if (activeWorkouts.Count > 1)
+        {
+            foreach (var w in activeWorkouts.Skip(1))
+            {
+                w.EndDateTime = w.StartDateTime; // или DateTime.Now
+                await WorkoutDatabaseService.UpdateWorkoutAsync(w);
+            }
+        }
 
         var viewItems = workouts.Select(w => new WorkoutViewItem
         {
