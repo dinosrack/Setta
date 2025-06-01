@@ -76,7 +76,7 @@ public partial class EditTemplatePage : ContentPage
         // ѕроверка лимита до открыти€ страницы выбора
         if (_selectedExercises.Count >= 7)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("¬ы можете добавить не более 7 упражнений в 1 шаблон."));
+            await this.ShowPopupAsync(new ErrorsPopup("¬ы можете добавить не более 7 упражнений в 1 шаблон."));
             return;
         }
 
@@ -99,7 +99,7 @@ public partial class EditTemplatePage : ContentPage
 
                     if (_selectedExercises.Count >= 7)
                     {
-                        this.ShowPopup(new ErrorsTemplatesPopup("¬ы можете добавить не более 7 упражнений в 1 шаблон."));
+                        this.ShowPopup(new ErrorsPopup("¬ы можете добавить не более 7 упражнений в 1 шаблон."));
                         break;
                     }
 
@@ -155,13 +155,13 @@ public partial class EditTemplatePage : ContentPage
         {
             if (ex.Sets == null || ex.Sets.Count == 0)
             {
-                await this.ShowPopupAsync(new ErrorsTemplatesPopup("”пражнени€ должны содержать не менее 1 заполненного подхода."));
+                await this.ShowPopupAsync(new ErrorsPopup("”пражнени€ должны содержать не менее 1 заполненного подхода."));
                 return;
             }
 
             if (ex.Sets.Any(set => set.Weight == null || set.Reps == null))
             {
-                await this.ShowPopupAsync(new ErrorsTemplatesPopup("”пражнени€ должны содержать заполненные подходы."));
+                await this.ShowPopupAsync(new ErrorsPopup("”пражнени€ должны содержать заполненные подходы."));
                 return;
             }
         }

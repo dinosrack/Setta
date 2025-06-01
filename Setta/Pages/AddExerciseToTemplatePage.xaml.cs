@@ -35,7 +35,7 @@ public partial class AddExerciseToTemplatePage : ContentPage
 
         if (selected == null || selected.Count == 0)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Выберите не менее 1 упражнения."));
+            await this.ShowPopupAsync(new ErrorsPopup("Выберите не менее 1 упражнения."));
             return;
         }
 

@@ -68,8 +68,8 @@
 	  <Compile Update="PopupPages\DeleteItemPopup.xaml.cs">
 	    <DependentUpon>DeleteItemPopup.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="PopupPages\ErrorsTemplatesPopup.xaml.cs">
-	    <DependentUpon>ErrorsTemplatesPopup.xaml</DependentUpon>
+	  <Compile Update="PopupPages\ErrorsPopup.xaml.cs">
+	    <DependentUpon>ErrorsPopup.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -116,7 +116,7 @@
 	  <MauiXaml Update="PopupPages\DeleteItemPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="PopupPages\ErrorsTemplatesPopup.xaml">
+	  <MauiXaml Update="PopupPages\ErrorsPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="PopupPages\FeedbackPopup.xaml">

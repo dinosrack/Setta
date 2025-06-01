@@ -20,7 +20,7 @@ public partial class WorkoutPage : ContentPage
         // ѕроверка на активную тренировку
         if (allWorkouts.Any(w => w.EndDateTime == null))
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Ќельз€ начать новую тренировку, пока есть активна€."));
+            await this.ShowPopupAsync(new ErrorsPopup("Ќельз€ начать новую тренировку, пока есть активна€."));
             return;
         }
 

@@ -32,7 +32,7 @@ public partial class ProgressInExercisesPopup : Popup
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    var popup = new ErrorsTemplatesPopup("Вы можете добавить не более 10 подходов.");
+                    var popup = new ErrorsPopup("Вы можете добавить не более 10 подходов.");
                     App.Current.MainPage.ShowPopup(popup);
                 });
             });
@@ -52,7 +52,7 @@ public partial class ProgressInExercisesPopup : Popup
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    var popup = new ErrorsTemplatesPopup("Вы не можете удалить единственный подход.");
+                    var popup = new ErrorsPopup("Вы не можете удалить единственный подход.");
                     App.Current.MainPage.ShowPopup(popup);
                 });
                 return;

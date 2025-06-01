@@ -20,7 +20,7 @@ public partial class AddWorkoutPopup : Popup
         // Нельзя выбрать дату в будущем
         if (selectedDate > now)
         {
-            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsTemplatesPopup(
+            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsPopup(
                 "Нельзя создать тренировку на будущее. Выберите сегодняшнюю или прошедшую дату."));
             return;
         }
@@ -31,7 +31,7 @@ public partial class AddWorkoutPopup : Popup
         int countForDate = allWorkouts.Count(w => w.StartDateTime.Date == selectedDate);
         if (countForDate >= 2)
         {
-            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsTemplatesPopup(
+            await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsPopup(
                 "Вы можете записать не более 2 тренировок за 1 день."));
             return;
         }

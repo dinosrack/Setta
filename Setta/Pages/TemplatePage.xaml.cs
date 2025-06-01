@@ -45,7 +45,7 @@ public partial class TemplatePage : ContentPage
     {
         if (_templates.Count >= 3)
         {
-            var popup = new ErrorsTemplatesPopup("Вы можете создать не более 3 шаблонов.");
+            var popup = new ErrorsPopup("Вы можете создать не более 3 шаблонов.");
             await this.ShowPopupAsync(popup);
             return;
         }

@@ -37,7 +37,7 @@ public partial class AddWorkoutPage : ContentPage
     {
         if (_selectedExercises.Count >= 7)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 тренировку."));
+            await this.ShowPopupAsync(new ErrorsPopup("Вы можете добавить не более 7 упражнений в 1 тренировку."));
             return;
         }
 
@@ -59,7 +59,7 @@ public partial class AddWorkoutPage : ContentPage
 
             if (newExercises.Count < list.Count)
             {
-                await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы можете добавить не более 7 упражнений в 1 тренировку."));
+                await this.ShowPopupAsync(new ErrorsPopup("Вы можете добавить не более 7 упражнений в 1 тренировку."));
             }
 
             foreach (var ex in newExercises)
@@ -149,13 +149,13 @@ public partial class AddWorkoutPage : ContentPage
     {
         if (!_selectedExercises.Any())
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Добавьте не менее 1 упражнения."));
+            await this.ShowPopupAsync(new ErrorsPopup("Добавьте не менее 1 упражнения."));
             return;
         }
 
         if (_selectedExercises.Any(e => e.Sets.Count == 0 || e.Sets.Any(s => s.Reps == null || s.Weight == null)))
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Упражнения должны содержать не менее 1 заполненного подхода."));
+            await this.ShowPopupAsync(new ErrorsPopup("Упражнения должны содержать не менее 1 заполненного подхода."));
             return;
         }
 
@@ -208,14 +208,14 @@ public partial class AddWorkoutPage : ContentPage
     {
         if (_selectedExercises.Any())
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вы уже добавили упражнения. Шаблон можно использовать только в пустой тренировке."));
+            await this.ShowPopupAsync(new ErrorsPopup("Вы уже добавили упражнения. Шаблон можно использовать только в пустой тренировке."));
             return;
         }
 
         var templates = await TemplateDatabaseService.GetTemplatesAsync();
         if (templates == null || templates.Count == 0)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("У вас еще нет шаблонов."));
+            await this.ShowPopupAsync(new ErrorsPopup("У вас еще нет шаблонов."));
             return;
         }
 

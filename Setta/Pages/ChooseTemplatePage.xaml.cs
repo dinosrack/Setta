@@ -32,7 +32,7 @@ public partial class ChooseTemplatePage : ContentPage
     {
         if (SelectedTemplate == null)
         {
-            await this.ShowPopupAsync(new ErrorsTemplatesPopup("Вам нужно выбрать шаблон."));
+            await this.ShowPopupAsync(new ErrorsPopup("Вам нужно выбрать шаблон."));
             return;
         }
 

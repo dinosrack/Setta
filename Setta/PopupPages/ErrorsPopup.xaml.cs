@@ -2,9 +2,9 @@ using CommunityToolkit.Maui.Views;
 
 namespace Setta.PopupPages;
 
-public partial class ErrorsTemplatesPopup : Popup
+public partial class ErrorsPopup : Popup
 {
-    public ErrorsTemplatesPopup(string message)
+    public ErrorsPopup(string message)
     {
         InitializeComponent();
         MessageLabel.Text = message;
