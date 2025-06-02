@@ -28,7 +28,7 @@ namespace Setta.ViewModels
         }
 
         private List<Exercise> _allExercises = new();
-        private List<string> _excludedExerciseNames = new(); // ← новое поле
+        private List<string> _excludedExerciseNames = new(); // новое поле
 
         public List<string> SelectedMuscleGroups { get; set; } = new();
         public List<string> SelectedEquipment { get; set; } = new();
