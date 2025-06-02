@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:Setta.ViewModels"
     xmlns:models="clr-namespace:Setta.Models"
-    x:Class="Setta.Pages.AddExerciseToTemplatePage"
+    x:Class="Setta.Pages.ChooseExercisePage"
     Shell.TabBarIsVisible="False"
     Padding="20">
 
@@ -14,7 +14,7 @@
     </ContentPage.Resources>
 
     <ContentPage.BindingContext>
-        <viewmodels:AddExerciseToTemplateViewModel />
+        <viewmodels:ChooseExerciseViewModel />
     </ContentPage.BindingContext>
 
     <Shell.BackButtonBehavior>

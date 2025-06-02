@@ -8,6 +8,13 @@ using CommunityToolkit.Maui.Views;
 using System.Linq;
 using Setta.Services;
 
+/// <summary>
+/// Страница списка упражнений с возможностью поиска, фильтрации и добавления новых.
+/// Загружает пользовательские и предустановленные упражнения, поддерживает фильтрацию по группе мышц, оборудованию и названию.
+/// Позволяет добавлять, просматривать, редактировать и удалять упражнения.
+/// Все действия отображаются в реальном времени благодаря подпискам через MessagingCenter.
+/// </summary>
+
 namespace Setta.Pages;
 
 public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
@@ -15,17 +22,17 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
     // Поисковый запрос
     private string _searchQuery;
 
-    // Исходный список упражнений
+    // Исходный список упражнений (до фильтрации)
     private ObservableCollection<Exercise> _allExercises;
 
-    // Фильтруемый список упражнений
+    // Текущий отображаемый (фильтрованный) список
     private ObservableCollection<Exercise> _exercises;
 
     // Выбранные фильтры
     private List<string> _selectedGroups = new();
     private List<string> _selectedEquipment = new();
 
-    // Публичное свойство для привязки списка
+    // Привязка списка для UI
     public ObservableCollection<Exercise> Exercises
     {
         get => _exercises;
@@ -37,7 +44,7 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         }
     }
 
-    // Публичное свойство для привязки поискового запроса
+    // Привязка поискового запроса
     public string SearchQuery
     {
         get => _searchQuery;
@@ -57,7 +64,7 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
 
         _ = LoadExercisesAsync();
 
-        // Подписка на выбранные фильтры
+        // Подписка на изменения фильтров
         MessagingCenter.Subscribe<FilterPageViewModel, Tuple<List<string>, List<string>>>(this, "FiltersApplied",
             (_, tuple) =>
             {
@@ -66,49 +73,49 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
                 ApplyFilters();
             });
 
-        // Подписка на новое упражнение
+        // Подписка на добавление упражнения
         MessagingCenter.Subscribe<AddExercisePage, Exercise>(this, "ExerciseAdded", async (_, _) =>
         {
-            await LoadExercisesAsync(); // Обновляем упражнения после добавления
+            await LoadExercisesAsync(); // Перезагружаем упражнения
         });
 
-        // Подписка на обновление упражнения
+        // Подписка на изменение упражнения
         MessagingCenter.Subscribe<EditExercisePage, Exercise>(this, "ExerciseUpdated", async (_, _) =>
         {
-            await LoadExercisesAsync(); // Обновляем упражнения после изменения
+            await LoadExercisesAsync();
         });
 
         // Подписка на удаление упражнения
         MessagingCenter.Subscribe<EditExercisePage, Exercise>(this, "ExerciseDeleted", async (_, _) =>
         {
-            await LoadExercisesAsync(); // Обновляем упражнения после удаления
+            await LoadExercisesAsync();
         });
     }
 
+    // Загрузка всех упражнений: из Excel и базы данных
     private async Task LoadExercisesAsync()
     {
         var excelExercises = ExerciseData.Exercises;
 
         var dbExercises = await ExerciseDatabaseService.GetExercisesAsync();
 
-        // Устанавливаем флаг для упражнений из базы данных
+        // Отмечаем, что упражнения из базы
         foreach (var ex in dbExercises)
             ex.IsFromDatabase = true;
 
-        // Сортировка по убыванию ID
+        // Сортировка по убыванию ID (новые сверху)
         var sortedDbExercises = dbExercises
             .OrderByDescending(e => e.Id)
             .ToList();
 
-        // Объединяем: сначала пользовательские, затем Excel
+        // Сначала пользовательские, затем Excel-упражнения
         var all = sortedDbExercises.Concat(excelExercises).ToList();
 
         _allExercises = new ObservableCollection<Exercise>(all);
         ApplyFilters();
     }
 
-
-    // Общая логика фильтрации по группам, оборудованию и тексту
+    // Применить фильтры по группе мышц, оборудованию и поиску
     private void ApplyFilters()
     {
         var source = _allExercises.AsEnumerable();
@@ -127,27 +134,27 @@ public partial class ExercisesPage : ContentPage, INotifyPropertyChanged
         UpdateLastItem();
     }
 
-    // Отмечаем последний элемент списка (для отрисовки separator’а)
+    // Отметить последний элемент для правильного отображения разделителей
     private void UpdateLastItem()
     {
         for (int i = 0; i < Exercises.Count; i++)
             Exercises[i].IsLastItem = i == Exercises.Count - 1;
     }
 
-    // Открытие страницы фильтров
+    // Открыть окно фильтрации
     private void OnFilterClicked(object sender, EventArgs e)
     {
         var popup = new FilterPopup(_selectedGroups, _selectedEquipment);
         this.ShowPopup(popup);
     }
 
+    // Открыть страницу добавления нового упражнения
     private async void OnAddExerciseClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new AddExercisePage());
     }
 
-
-    // Открытие страницы деталей упражнения
+    // Открыть страницу подробной информации об упражнении
     private async void OnExerciseTapped(object sender, EventArgs e)
     {
         if ((sender as VisualElement)?.BindingContext is Exercise exercise)

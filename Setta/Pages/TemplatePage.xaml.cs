@@ -6,10 +6,18 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Setta.PopupPages;
 
+/// <summary>
+/// —траница управлени€ шаблонами тренировок.
+/// ѕозвол€ет создавать, редактировать и удал€ть шаблоны (до 3-х штук).
+/// ќбновл€ет список шаблонов в реальном времени при добавлении, изменении или удалении.
+/// »спользует всплывающие окна дл€ отображени€ ошибок и подтверждений.
+/// </summary>
+
 namespace Setta.Pages;
 
 public partial class TemplatePage : ContentPage
 {
+    //  оллекци€ шаблонов дл€ отображени€ в списке
     private ObservableCollection<WorkoutTemplate> _templates = new();
 
     public TemplatePage()
@@ -30,6 +38,7 @@ public partial class TemplatePage : ContentPage
         });
     }
 
+    // «агрузка шаблонов из базы данных
     private async void LoadTemplates()
     {
         var templates = await TemplateDatabaseService.GetTemplatesAsync();
@@ -41,6 +50,7 @@ public partial class TemplatePage : ContentPage
         TemplatesView.IsVisible = _templates.Any();
     }
 
+    // ќбработка нажати€ на кнопку добавлени€ шаблона
     private async void OnAddTemplateClicked(object sender, EventArgs e)
     {
         if (_templates.Count >= 3)
@@ -53,6 +63,7 @@ public partial class TemplatePage : ContentPage
         await Navigation.PushAsync(new AddTemplatePage());
     }
 
+    //  оманда дл€ открыти€ страницы редактировани€ шаблона
     public ICommand TemplateTapCommand => new Command<WorkoutTemplate>(async (template) =>
     {
         await Navigation.PushAsync(new EditTemplatePage(template));

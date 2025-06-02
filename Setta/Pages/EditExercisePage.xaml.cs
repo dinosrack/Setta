@@ -5,6 +5,13 @@ using Setta.ViewModels;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 
+/// <summary>
+/// Страница редактирования упражнения.
+/// Позволяет изменять основную и второстепенную группу мышц, оборудование, название упражнения.
+/// Поддерживает валидацию введённых данных, сохранение изменений и удаление упражнения из базы.
+/// Использует всплывающие окна для выбора значений и подтверждения удаления.
+/// </summary>
+
 namespace Setta.Pages
 {
     public partial class EditExercisePage : ContentPage
@@ -19,6 +26,7 @@ namespace Setta.Pages
             InitializeComponent();
             _exercise = exercise;
 
+            // Инициализация значений на странице из переданного упражнения
             ExerciseNameEntry.Text = _exercise.ExerciseName;
 
             PrimaryMuscleLabel.Text =
@@ -37,6 +45,7 @@ namespace Setta.Pages
                 : _exercise.Equipment;
         }
 
+        // Выбор основной группы мышц
         async void OnPrimaryMuscleTapped(object sender, EventArgs e)
         {
             var isPlaceholder = PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
@@ -55,6 +64,7 @@ namespace Setta.Pages
                 PrimaryMuscleLabel.Text = result.First();
         }
 
+        // Выбор второстепенных групп мышц
         async void OnSecondaryMusclesTapped(object sender, EventArgs e)
         {
             var isPlaceholder = SecondaryMuscleLabel.Text == PlaceholderUnselectedMuscle;
@@ -77,6 +87,7 @@ namespace Setta.Pages
             }
         }
 
+        // Выбор оборудования
         async void OnEquipmentTapped(object sender, EventArgs e)
         {
             var isPlaceholder = EquipmentLabel.Text == PlaceholderUnselectedEquipment;
@@ -95,10 +106,12 @@ namespace Setta.Pages
                 EquipmentLabel.Text = result.First();
         }
 
+        // Сохранение изменений
         async void OnSaveClicked(object sender, EventArgs e)
         {
             bool hasError = false;
 
+            // Валидация названия
             if (string.IsNullOrWhiteSpace(ExerciseNameEntry.Text))
             {
                 NameErrorLabel.IsVisible = true;
@@ -109,6 +122,7 @@ namespace Setta.Pages
                 NameErrorLabel.IsVisible = false;
             }
 
+            // Валидация основной группы мышц
             if (PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle)
             {
                 PrimaryMuscleErrorLabel.IsVisible = true;
@@ -119,6 +133,7 @@ namespace Setta.Pages
                 PrimaryMuscleErrorLabel.IsVisible = false;
             }
 
+            // Валидация оборудования
             if (EquipmentLabel.Text == PlaceholderUnselectedEquipment)
             {
                 EquipmentErrorLabel.IsVisible = true;
@@ -145,6 +160,7 @@ namespace Setta.Pages
             await Navigation.PopAsync();
         }
 
+        // Удаление упражнения
         async void OnDeleteClicked(object sender, EventArgs e)
         {
             var popup = new DeleteItemPopup();
@@ -157,6 +173,7 @@ namespace Setta.Pages
             }
         }
 
+        // Вернуться на предыдущую страницу
         async void OnBackTapped(object sender, EventArgs e)
         {
             await Navigation.PopAsync();

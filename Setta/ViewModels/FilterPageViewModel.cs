@@ -6,6 +6,12 @@ using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using Setta.Models;
 
+/// <summary>
+/// ViewModel для работы с фильтрами по группе мышц и оборудованию.
+/// Формирует коллекции фильтров на основе данных, поддерживает выбор, сброс, применение фильтров и выдаёт только реально используемые группы.
+/// Используется в popup-окнах и страницах с фильтрами.
+/// </summary>
+
 namespace Setta.ViewModels
 {
     public class FilterPageViewModel
@@ -51,7 +57,7 @@ namespace Setta.ViewModels
         public FilterPageViewModel(IEnumerable<string> selectedGroups,
                                    IEnumerable<string> selectedEquipment)
         {
-            // Отбираем только те группы мышц, которые есть в данных
+            // Определяем только реально присутствующие группы мышц из данных
             var presentGroups = ExerciseData.Exercises
                 .Select(e => e.MuscleGroup)
                 .Distinct()
@@ -63,7 +69,7 @@ namespace Setta.ViewModels
                     .Select(g => new MuscleGroupFilter(g, selectedGroups.Contains(g)))
             );
 
-            // Отбираем только то оборудование, которое есть в данных
+            // Определяем только реально присутствующее оборудование из данных
             var presentEquipment = ExerciseData.Exercises
                 .SelectMany(e => e.EquipmentList)
                 .Distinct()
@@ -79,6 +85,7 @@ namespace Setta.ViewModels
             ResetCommand = new Command(OnReset);
         }
 
+        // Получить только реально доступные группы мышц
         public static List<string> GetAvailableMuscleGroups()
         {
             var presentGroups = ExerciseData.Exercises
@@ -91,6 +98,7 @@ namespace Setta.ViewModels
                 .ToList();
         }
 
+        // Получить только реально доступное оборудование
         public static List<string> GetAvailableEquipment()
         {
             var presentEquipment = ExerciseData.Exercises
@@ -103,7 +111,7 @@ namespace Setta.ViewModels
                 .ToList();
         }
 
-
+        // Отправить выбранные фильтры через MessagingCenter
         public async Task OnApplyAsync()
         {
             var chosenGroups = MuscleGroups
@@ -121,6 +129,7 @@ namespace Setta.ViewModels
                 Tuple.Create(chosenGroups, chosenEquipment));
         }
 
+        // Сброс всех фильтров
         private void OnReset()
         {
             foreach (var f in MuscleGroups)

@@ -8,6 +8,13 @@ using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 using Setta.Services;
 
+/// <summary>
+/// Страница добавления нового упражнения в приложение.
+/// Реализует выбор основной и второстепенной группы мышц, оборудования, а также валидацию введённых данных.
+/// После успешного добавления вызывает сервис сохранения в базу данных и возвращает пользователя назад.
+/// Использует всплывающие окна для выбора групп мышц и оборудования.
+/// </summary>
+
 namespace Setta.Pages
 {
     public partial class AddExercisePage : ContentPage
@@ -20,6 +27,7 @@ namespace Setta.Pages
             InitializeComponent();
         }
 
+        // Обработка нажатия на основную группу мышц
         async void OnPrimaryMuscleTapped(object sender, EventArgs e)
         {
             var isPlaceholder = string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text)
@@ -41,6 +49,7 @@ namespace Setta.Pages
             }
         }
 
+        // Обработка нажатия на второстепенные группы мышц
         async void OnSecondaryMusclesTapped(object sender, EventArgs e)
         {
             var isPlaceholder = string.IsNullOrWhiteSpace(SecondaryMuscleLabel.Text)
@@ -65,6 +74,7 @@ namespace Setta.Pages
             }
         }
 
+        // Обработка нажатия на выбор оборудования
         async void OnEquipmentTapped(object sender, EventArgs e)
         {
             var isPlaceholder = string.IsNullOrWhiteSpace(EquipmentLabel.Text)
@@ -86,10 +96,12 @@ namespace Setta.Pages
             }
         }
 
+        // Добавление упражнения по кнопке
         async void OnAddExerciseClicked(object sender, EventArgs e)
         {
             bool hasError = false;
 
+            // Валидация названия упражнения
             if (string.IsNullOrWhiteSpace(ExerciseNameEntry.Text))
             {
                 NameErrorLabel.IsVisible = true;
@@ -100,6 +112,7 @@ namespace Setta.Pages
                 NameErrorLabel.IsVisible = false;
             }
 
+            // Валидация основной группы мышц
             if (string.IsNullOrWhiteSpace(PrimaryMuscleLabel.Text)
                 || PrimaryMuscleLabel.Text == PlaceholderUnselectedMuscle)
             {
@@ -111,6 +124,7 @@ namespace Setta.Pages
                 PrimaryMuscleErrorLabel.IsVisible = false;
             }
 
+            // Валидация оборудования
             if (string.IsNullOrWhiteSpace(EquipmentLabel.Text)
                 || EquipmentLabel.Text == PlaceholderUnselectedEquipment)
             {
@@ -129,6 +143,7 @@ namespace Setta.Pages
             var isSecondaryValid = !string.IsNullOrWhiteSpace(secondaryText)
                                    && secondaryText != PlaceholderUnselectedMuscle;
 
+            // Формируем новый объект упражнения
             var newExercise = new Exercise
             {
                 ExerciseName = ExerciseNameEntry.Text.Trim(),
@@ -139,10 +154,12 @@ namespace Setta.Pages
 
             await ExerciseDatabaseService.AddExerciseAsync(newExercise);
 
+            // Уведомляем остальные части приложения о добавлении нового упражнения
             MessagingCenter.Send(this, "ExerciseAdded", newExercise);
             await Navigation.PopAsync();
         }
 
+        // Возврат на предыдущую страницу
         async void OnBackTapped(object sender, EventArgs e)
         {
             await Navigation.PopAsync();

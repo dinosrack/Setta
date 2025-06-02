@@ -4,10 +4,18 @@ using Setta.PopupPages;
 using Setta.Services;
 using System.Collections.ObjectModel;
 
+/// <summary>
+/// Страница добавления и редактирования тренировки.
+/// Позволяет добавлять до 7 упражнений, редактировать подходы, использовать шаблоны, сохранять и удалять тренировку.
+/// Интегрируется с базой данных: загружает, добавляет и удаляет упражнения и подходы в SQLite.
+/// Предусмотрены проверки корректности заполнения и всплывающие окна для ошибок и подтверждений.
+/// </summary>
+
 namespace Setta.Pages;
 
 public partial class AddWorkoutPage : ContentPage
 {
+    // Коллекция выбранных упражнений для тренировки
     private ObservableCollection<ExerciseInTemplate> _selectedExercises = new();
     private Workout _workout;
 
@@ -18,21 +26,24 @@ public partial class AddWorkoutPage : ContentPage
 
         SelectedDateLabel.Text = _workout.StartDateTime.ToString("dd MMMM yyyy");
 
-        // Загружаем упражнения ТОЛЬКО из базы
+        // Загружаем упражнения только из базы данных
         _ = LoadExistingExercisesAsync();
     }
 
+    // Вернуться на предыдущую страницу
     private async void OnBackTapped(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
     }
 
+    // Обновить отображение списка упражнений
     private void UpdateExerciseListUI()
     {
         SelectedExercisesView.ItemsSource = _selectedExercises;
         SelectedExercisesView.IsVisible = _selectedExercises.Any();
     }
 
+    // Добавление упражнений
     private async void OnAddExercisesClicked(object sender, EventArgs e)
     {
         if (_selectedExercises.Count >= 7)
@@ -41,11 +52,13 @@ public partial class AddWorkoutPage : ContentPage
             return;
         }
 
-        MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
+        // Сброс предыдущей подписки
+        MessagingCenter.Unsubscribe<ChooseExercisePage, List<Exercise>>(this, "ExercisesSelected");
 
-        MessagingCenter.Subscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected", async (_, list) =>
+        // Подписка на получение выбранных упражнений
+        MessagingCenter.Subscribe<ChooseExercisePage, List<Exercise>>(this, "ExercisesSelected", async (_, list) =>
         {
-            MessagingCenter.Unsubscribe<AddExerciseToTemplatePage, List<Exercise>>(this, "ExercisesSelected");
+            MessagingCenter.Unsubscribe<ChooseExercisePage, List<Exercise>>(this, "ExercisesSelected");
 
             if (list == null || list.Count == 0) return;
 
@@ -71,6 +84,7 @@ public partial class AddWorkoutPage : ContentPage
                     MuscleGroup = ex.MuscleGroup
                 };
 
+                // Сохраняем упражнение в базе и получаем Id
                 int id = await WorkoutDatabaseService.AddWorkoutExerciseAsync(workoutExercise);
 
                 var newItem = new ExerciseInTemplate
@@ -87,10 +101,12 @@ public partial class AddWorkoutPage : ContentPage
             UpdateExerciseListUI();
         });
 
+        // Передаём уже выбранные упражнения
         var alreadySelected = _selectedExercises.Select(e => e.Exercise).ToList();
-        await Navigation.PushAsync(new AddExerciseToTemplatePage(alreadySelected));
+        await Navigation.PushAsync(new ChooseExercisePage(alreadySelected));
     }
 
+    // Редактирование или удаление упражнения в тренировке
     private async void OnExerciseTapped(object sender, EventArgs e)
     {
         if ((sender as VisualElement)?.BindingContext is ExerciseInTemplate selected)
@@ -104,7 +120,7 @@ public partial class AddWorkoutPage : ContentPage
             {
                 _selectedExercises.Remove(selected);
 
-                // Удаляем из SQLite
+                // Удаляем из базы все подходы и упражнение
                 if (selected.WorkoutExerciseId.HasValue)
                 {
                     await WorkoutDatabaseService.DeleteWorkoutExerciseWithSetsAsync(selected.WorkoutExerciseId.Value);
@@ -115,7 +131,7 @@ public partial class AddWorkoutPage : ContentPage
                 var index = _selectedExercises.IndexOf(selected);
                 _selectedExercises[index] = updated;
 
-                // Сохраняем подходы в SQLite
+                // Сохраняем подходы в базе данных
                 if (updated.WorkoutExerciseId.HasValue)
                 {
                     foreach (var set in updated.Sets)
@@ -132,7 +148,7 @@ public partial class AddWorkoutPage : ContentPage
                     }
                 }
 
-                // Обновим общий вес тренировки
+                // Обновить общий вес тренировки
                 int totalWeight = _selectedExercises.Sum(ex =>
                     ex.Sets.Where(s => int.TryParse(s.Reps, out _) && int.TryParse(s.Weight, out _))
                            .Sum(s => int.Parse(s.Reps) * int.Parse(s.Weight)));
@@ -145,6 +161,7 @@ public partial class AddWorkoutPage : ContentPage
         }
     }
 
+    // Сохранение тренировки
     private async void OnSaveWorkoutClicked(object sender, EventArgs e)
     {
         if (!_selectedExercises.Any())
@@ -171,6 +188,7 @@ public partial class AddWorkoutPage : ContentPage
         await Navigation.PopAsync();
     }
 
+    // Загрузка упражнений из базы данных для текущей тренировки
     private async Task LoadExistingExercisesAsync()
     {
         _selectedExercises.Clear();
@@ -203,7 +221,7 @@ public partial class AddWorkoutPage : ContentPage
         UpdateExerciseListUI();
     }
 
-
+    // Использовать шаблон для создания тренировки
     private async void OnUseTemplateClicked(object sender, EventArgs e)
     {
         if (_selectedExercises.Any())
@@ -232,6 +250,7 @@ public partial class AddWorkoutPage : ContentPage
         await Navigation.PushAsync(page);
     }
 
+    // Удаление тренировки
     private async void OnDeleteWorkoutClicked(object sender, EventArgs e)
     {
         var popup = new DeleteItemPopup();

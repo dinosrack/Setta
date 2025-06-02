@@ -6,9 +6,15 @@ using Setta.Models;
 using Setta.Services;
 using System.Linq;
 
+/// <summary>
+/// ViewModel для выбора упражнений при создании или редактировании шаблона.
+/// Поддерживает фильтрацию по названию, группе мышц, оборудованию, а также исключение уже выбранных упражнений.
+/// Реализует биндинг, команды для UI, а также возвращает выбранные элементы для добавления в шаблон.
+/// </summary>
+
 namespace Setta.ViewModels
 {
-    public class AddExerciseToTemplateViewModel : INotifyPropertyChanged
+    public class ChooseExerciseViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<SelectableExercise> Exercises { get; private set; } = new();
 
@@ -28,16 +34,17 @@ namespace Setta.ViewModels
         }
 
         private List<Exercise> _allExercises = new();
-        private List<string> _excludedExerciseNames = new(); // новое поле
+        private List<string> _excludedExerciseNames = new(); // Список исключённых названий
 
         public List<string> SelectedMuscleGroups { get; set; } = new();
         public List<string> SelectedEquipment { get; set; } = new();
 
-        public AddExerciseToTemplateViewModel()
+        public ChooseExerciseViewModel()
         {
             _ = LoadExercisesAsync();
         }
 
+        // Установка списка уже выбранных упражнений (для исключения из выбора)
         public void SetExcludedExercises(List<Exercise> alreadySelected)
         {
             _excludedExerciseNames = alreadySelected
@@ -49,6 +56,7 @@ namespace Setta.ViewModels
             ApplyFilters();
         }
 
+        // Загрузка всех упражнений из БД и Excel
         private async Task LoadExercisesAsync()
         {
             var dbExercises = await ExerciseDatabaseService.GetExercisesAsync();
@@ -63,6 +71,7 @@ namespace Setta.ViewModels
             ApplyFilters();
         }
 
+        // Применить фильтры из popup
         public void ApplyFiltersFromPopup(List<string> groups, List<string> equipment)
         {
             SelectedMuscleGroups = groups;
@@ -70,11 +79,12 @@ namespace Setta.ViewModels
             ApplyFilters();
         }
 
+        // Фильтрация и формирование списка упражнений
         private void ApplyFilters()
         {
             var filtered = _allExercises
                 .Where(e =>
-                    !_excludedExerciseNames.Contains(e.ExerciseName) && // ← фильтрация уже выбранных
+                    !_excludedExerciseNames.Contains(e.ExerciseName) && // Исключаем уже выбранные
                     (string.IsNullOrWhiteSpace(SearchQuery) || e.ExerciseName.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)) &&
                     (SelectedMuscleGroups.Count == 0 || SelectedMuscleGroups.Contains(e.MuscleGroup)) &&
                     (SelectedEquipment.Count == 0 || e.EquipmentList.Any(eq => SelectedEquipment.Contains(eq))))
@@ -88,6 +98,7 @@ namespace Setta.ViewModels
             OnPropertyChanged(nameof(Exercises));
         }
 
+        // Команда для переключения состояния выбранности упражнения
         public ICommand ToggleSelectCommand => new Command<SelectableExercise>(ex =>
         {
             if (ex != null)
@@ -96,6 +107,7 @@ namespace Setta.ViewModels
             OnPropertyChanged(nameof(Exercises));
         });
 
+        // Получить выбранные упражнения для добавления в шаблон
         public List<Exercise> GetSelectedExercises() =>
             Exercises.Where(e => e.IsSelected).Select(e => e.Exercise).ToList();
 

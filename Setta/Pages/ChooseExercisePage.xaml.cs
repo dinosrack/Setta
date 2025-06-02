@@ -3,20 +3,27 @@ using Setta.Models;
 using Setta.PopupPages;
 using Setta.ViewModels;
 
+/// <summary>
+/// Страница добавления упражнений в шаблон тренировки.
+/// Позволяет выбрать упражнения из общего списка, применить фильтры по группе мышц и оборудованию,
+/// и отправить выбранные элементы обратно в вызывающий компонент.
+/// Использует всплывающие окна для фильтрации и отображения ошибок.
+/// </summary>
+
 namespace Setta.Pages;
 
-public partial class AddExerciseToTemplatePage : ContentPage
+public partial class ChooseExercisePage : ContentPage
 {
-    private AddExerciseToTemplateViewModel ViewModel => BindingContext as AddExerciseToTemplateViewModel;
+    private ChooseExerciseViewModel ViewModel => BindingContext as ChooseExerciseViewModel;
 
-    public AddExerciseToTemplatePage(List<Exercise> alreadySelected)
+    public ChooseExercisePage(List<Exercise> alreadySelected)
     {
         InitializeComponent();
 
-        // Установим исключения перед фильтрацией
+        // Установим исключения перед фильтрацией (убираем уже выбранные упражнения)
         ViewModel?.SetExcludedExercises(alreadySelected);
 
-        // Подписка на выбор фильтров из Popup
+        // Подписка на применение фильтров через popup
         MessagingCenter.Subscribe<FilterPageViewModel, Tuple<List<string>, List<string>>>(this,
             "FiltersApplied", (_, tuple) =>
             {
@@ -24,11 +31,13 @@ public partial class AddExerciseToTemplatePage : ContentPage
             });
     }
 
+    // Возврат назад по тапу
     private async void OnBackTapped(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
     }
 
+    // Добавление выбранных упражнений в шаблон
     private async void OnAddClicked(object sender, EventArgs e)
     {
         var selected = ViewModel?.GetSelectedExercises();
@@ -39,10 +48,12 @@ public partial class AddExerciseToTemplatePage : ContentPage
             return;
         }
 
+        // Передаём выбранные упражнения и закрываем страницу
         MessagingCenter.Send(this, "ExercisesSelected", selected);
         await Navigation.PopAsync();
     }
 
+    // Открытие окна фильтрации
     private void OnFilterClicked(object sender, EventArgs e)
     {
         if (ViewModel == null) return;

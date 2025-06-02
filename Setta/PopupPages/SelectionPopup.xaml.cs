@@ -3,6 +3,12 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Layouts;
 using System.Collections.ObjectModel;
 
+/// <summary>
+/// Popup-окно для выбора элементов из списка (один или несколько).
+/// Используется для выбора группы мышц, оборудования и других параметров.
+/// Реализует динамическое создание кнопок, поддержку мультирежима выбора и возврат выбранных элементов.
+/// </summary>
+
 namespace Setta.PopupPages;
 
 public partial class SelectionPopup : Popup
@@ -26,6 +32,7 @@ public partial class SelectionPopup : Popup
         BuildButtons();
     }
 
+    // Динамически создаём кнопки для выбора элементов
     void BuildButtons()
     {
         ItemsLayout.Children.Clear();
@@ -43,7 +50,7 @@ public partial class SelectionPopup : Popup
                 HorizontalOptions = LayoutOptions.Start
             };
 
-            // Задаём TextColor через AppThemeBinding
+            // Задаём цвет текста с учётом темы приложения
             button.SetAppThemeColor(
                 Button.TextColorProperty,
                 (Color)Application.Current.Resources["LightText"],
@@ -58,8 +65,7 @@ public partial class SelectionPopup : Popup
         }
     }
 
-
-
+    // Обработка нажатия на элемент (выбор/снятие выбора)
     void OnItemTapped(string item)
     {
         if (_isMultiSelect)
@@ -78,6 +84,7 @@ public partial class SelectionPopup : Popup
         UpdateButtonStyles();
     }
 
+    // Обновить стили кнопок после изменения выбора
     void UpdateButtonStyles()
     {
         foreach (var kvp in _buttons)
@@ -86,6 +93,7 @@ public partial class SelectionPopup : Popup
         }
     }
 
+    // Получить цвет кнопки в зависимости от выбранности и темы
     Color GetBackgroundColor(string item)
     {
         bool isSelected = _selectedItems.Contains(item);
@@ -101,7 +109,7 @@ public partial class SelectionPopup : Popup
         return Colors.Gray;
     }
 
-
+    // Завершить выбор и вернуть результат
     void OnApply(object sender, EventArgs e)
     {
         Close(_selectedItems.ToList());

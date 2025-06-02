@@ -1,5 +1,11 @@
 using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Platform; // Для Platform.CurrentActivity
+using Microsoft.Maui.Platform;
+
+/// <summary>
+/// Popup-окно для смены темы приложения (Светлая, Тёмная, Авто).
+/// Сохраняет выбранную тему в Preferences и применяет её немедленно.
+/// На Android меняет цвет системных панелей через MainActivity.
+/// </summary>
 
 namespace Setta.PopupPages
 {
@@ -10,6 +16,7 @@ namespace Setta.PopupPages
             InitializeComponent();
         }
 
+        // Обработка изменения выбора темы
         private void OnCheckedChanged(object sender, CheckedChangedEventArgs e)
         {
             if (sender is RadioButton radioButton && e.Value && radioButton.Value is string selectedTheme)
@@ -38,6 +45,7 @@ namespace Setta.PopupPages
             }
         }
 
+        // Автоматически отмечаем RadioButton при открытии popup в соответствии с текущей темой
         private void OnPopupOpened(object? sender, EventArgs e)
         {
             string selectedTheme = Preferences.Get("SelectedTheme", "Auto");
@@ -59,6 +67,5 @@ namespace Setta.PopupPages
                 }
             }
         }
-
     }
 }

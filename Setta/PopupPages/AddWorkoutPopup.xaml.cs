@@ -4,6 +4,13 @@ using Setta.Pages;
 using Setta.Services;
 using Setta.Models;
 
+/// <summary>
+/// Popup-окно дл€ создани€ новой тренировки.
+/// ѕозвол€ет выбрать дату, провер€ет ограничени€ (не более 2 тренировок на день, нельз€ в будущем),
+/// создаЄт новую тренировку и переходит к еЄ редактированию.
+/// »спользует popup дл€ вывода ошибок.
+/// </summary>
+
 namespace Setta.PopupPages;
 public partial class AddWorkoutPopup : Popup
 {
@@ -12,6 +19,7 @@ public partial class AddWorkoutPopup : Popup
         InitializeComponent();
     }
 
+    // ќбработка нажати€ на "ѕродолжить"
     private async void OnContinueClicked(object sender, EventArgs e)
     {
         var selectedDate = WorkoutDatePicker.Date.Date;
@@ -36,6 +44,7 @@ public partial class AddWorkoutPopup : Popup
             return;
         }
 
+        // —оздание новой тренировки
         var workout = new Workout
         {
             StartDateTime = selectedDate.Add(DateTime.Now.TimeOfDay),

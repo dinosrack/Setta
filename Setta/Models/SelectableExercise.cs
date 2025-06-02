@@ -2,21 +2,19 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
+/// <summary>
+/// Обёртка над Exercise с состоянием выбора и командой для переключения.
+/// Используется для реализации выбора упражнений в списках (например, при добавлении к тренировке или в шаблон).
+/// Поддерживает биндинг выбранности (IsSelected), передачу команды для изменения выбранности,
+/// а также хранит отметку о последнем элементе (для корректного отображения разделителей в UI).
+/// </summary>
+
 namespace Setta.Models
 {
-    /// <summary>
-    /// Обёртка над Exercise с состоянием выбора и командой для переключения
-    /// </summary>
     public class SelectableExercise : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Связанное упражнение
-        /// </summary>
         public Exercise Exercise { get; }
 
-        /// <summary>
-        /// Состояние выбора
-        /// </summary>
         private bool _isSelected;
         public bool IsSelected
         {
@@ -31,27 +29,17 @@ namespace Setta.Models
             }
         }
 
-        /// <summary>
-        /// Команда переключения выбора (используется в XAML)
-        /// </summary>
-        public ICommand ToggleCommand { get; set; }
+        public ICommand ToggleCommand { get; set; } // Команда для смены выбранности
 
-        /// <summary>
-        /// Отметка, последний ли это элемент (для скрытия разделителя)
-        /// </summary>
-        public bool IsLastItem { get; set; }
+        public bool IsLastItem { get; set; } // Флаг для скрытия разделителя в UI
 
-        /// <summary>
-        /// Конструктор без команды (не рекомендуется)
-        /// </summary>
+        // Конструктор без команды
         public SelectableExercise(Exercise exercise)
         {
             Exercise = exercise;
         }
 
-        /// <summary>
-        /// Конструктор с командой
-        /// </summary>
+        // Конструктор с командой
         public SelectableExercise(Exercise exercise, ICommand toggleCommand)
         {
             Exercise = exercise;
@@ -59,7 +47,6 @@ namespace Setta.Models
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

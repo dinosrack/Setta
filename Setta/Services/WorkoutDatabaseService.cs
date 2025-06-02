@@ -1,18 +1,26 @@
 ﻿using SQLite;
 using Setta.Models;
 
+/// <summary>
+/// Сервис работы с базой данных тренировок.
+/// Реализует добавление, получение, обновление и удаление тренировок, упражнений в тренировках и подходов.
+/// Поддерживает работу с шаблонами, автоматическую инициализацию и каскадное удаление.
+/// Используется для всей логики хранения истории тренировок, структуры и связей между сущностями.
+/// </summary>
+
 namespace Setta.Services
 {
     public class WorkoutDatabaseService
     {
         private static SQLiteAsyncConnection db;
 
+        // Инициализация базы и создание таблиц (однократно)
         private static async Task Init()
         {
             if (db != null)
                 return;
 
-            var databasePath = Path.Combine(FileSystem.AppDataDirectory, "setta.db");
+            var databasePath = Path.Combine(FileSystem.AppDataDirectory, "workouts.db");
             db = new SQLiteAsyncConnection(databasePath);
 
             await db.CreateTableAsync<Workout>();
@@ -20,8 +28,9 @@ namespace Setta.Services
             await db.CreateTableAsync<WorkoutSet>();
         }
 
-        // ==== Workout ====
+        // Сущность Workout
 
+        // Добавить тренировку
         public static async Task<int> AddWorkoutAsync(Workout workout)
         {
             await Init();
@@ -29,26 +38,30 @@ namespace Setta.Services
             return workout.Id;
         }
 
+        // Получить список тренировок (по убыванию даты)
         public static async Task<List<Workout>> GetWorkoutsAsync()
         {
             await Init();
             return await db.Table<Workout>().OrderByDescending(w => w.StartDateTime).ToListAsync();
         }
 
+        // Получить тренировку по id
         public static async Task<Workout> GetWorkoutByIdAsync(int id)
         {
             await Init();
             return await db.Table<Workout>().FirstOrDefaultAsync(w => w.Id == id);
         }
 
+        // Обновить тренировку
         public static async Task UpdateWorkoutAsync(Workout workout)
         {
             await Init();
             await db.UpdateAsync(workout);
         }
 
-        // ==== WorkoutExercise ====
+        // Сущность WorkoutExercise
 
+        // Добавить упражнение к тренировке
         public static async Task<int> AddWorkoutExerciseAsync(WorkoutExercise exercise)
         {
             await Init();
@@ -56,14 +69,16 @@ namespace Setta.Services
             return exercise.Id;
         }
 
+        // Получить упражнения по id тренировки
         public static async Task<List<WorkoutExercise>> GetWorkoutExercisesAsync(int workoutId)
         {
             await Init();
             return await db.Table<WorkoutExercise>().Where(e => e.WorkoutId == workoutId).ToListAsync();
         }
 
-        // ==== WorkoutSet ====
+        // Сущность WorkoutSet
 
+        // Добавить подход
         public static async Task<int> AddWorkoutSetAsync(WorkoutSet set)
         {
             await Init();
@@ -71,12 +86,14 @@ namespace Setta.Services
             return set.Id;
         }
 
+        // Получить подходы по id упражнения
         public static async Task<List<WorkoutSet>> GetWorkoutSetsAsync(int exerciseId)
         {
             await Init();
             return await db.Table<WorkoutSet>().Where(s => s.ExerciseId == exerciseId).ToListAsync();
         }
 
+        // Удалить тренировку и все связанные упражнения и подходы
         public static async Task DeleteWorkoutAsync(int workoutId)
         {
             await Init();
@@ -91,6 +108,7 @@ namespace Setta.Services
             await db.DeleteAsync<Workout>(workoutId);
         }
 
+        // Удалить упражнение с подходами по id упражнения в тренировке
         public static async Task DeleteWorkoutExerciseWithSetsAsync(int workoutExerciseId)
         {
             await Init();
@@ -98,7 +116,7 @@ namespace Setta.Services
             await db.Table<WorkoutExercise>().DeleteAsync(e => e.Id == workoutExerciseId);
         }
 
-
+        // Применить шаблон к тренировке (добавить упражнения и подходы из шаблона)
         public static async Task ApplyTemplateToWorkoutAsync(int workoutId, WorkoutTemplate template, int existingCount = 0)
         {
             await Init();
@@ -134,6 +152,5 @@ namespace Setta.Services
                 totalAdded++;
             }
         }
-
     }
 }
