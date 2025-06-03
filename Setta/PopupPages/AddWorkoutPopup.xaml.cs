@@ -23,10 +23,10 @@ public partial class AddWorkoutPopup : Popup
     private async void OnContinueClicked(object sender, EventArgs e)
     {
         var selectedDate = WorkoutDatePicker.Date.Date;
-        var now = DateTime.Today;
+        var now = DateTime.Now;
 
         // Нельзя выбрать дату в будущем
-        if (selectedDate > now)
+        if (selectedDate > now.Date)
         {
             await Shell.Current.CurrentPage.ShowPopupAsync(new ErrorsPopup(
                 "Нельзя создать тренировку на будущее. Выберите сегодняшнюю или прошедшую дату."));
@@ -45,10 +45,27 @@ public partial class AddWorkoutPopup : Popup
         }
 
         // Создание новой тренировки
+        var workoutDate = selectedDate.Date;
+
+        DateTime startDateTime;
+        DateTime? endDateTime = null;
+
+        if (workoutDate == now.Date)
+        {
+            // Тренировка на сегодня — точное текущее время
+            startDateTime = now;
+        }
+        else
+        {
+            // Тренировка на другой день — 12:00 и сразу завершается через 1 час
+            startDateTime = workoutDate.AddHours(12);
+            endDateTime = startDateTime.AddHours(1);
+        }
+
         var workout = new Workout
         {
-            StartDateTime = selectedDate.Add(DateTime.Now.TimeOfDay),
-            EndDateTime = null,
+            StartDateTime = startDateTime,
+            EndDateTime = endDateTime,
             TotalWeight = 0
         };
 

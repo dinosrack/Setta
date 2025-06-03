@@ -57,7 +57,7 @@ public partial class WorkoutPage : ContentPage
         {
             foreach (var w in activeWorkouts.Skip(1))
             {
-                w.EndDateTime = w.StartDateTime; // можно также использовать DateTime.Now
+                w.EndDateTime = DateTime.Now;
                 await WorkoutDatabaseService.UpdateWorkoutAsync(w);
             }
         }
