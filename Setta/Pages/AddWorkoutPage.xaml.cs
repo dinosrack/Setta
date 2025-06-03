@@ -182,7 +182,12 @@ public partial class AddWorkoutPage : ContentPage
                    .Sum(s => int.Parse(s.Reps) * int.Parse(s.Weight)));
 
         _workout.TotalWeight = totalWeight;
-        _workout.EndDateTime = DateTime.Now;
+
+        // «авершаем тренировку, только если она активна
+        if (_workout.EndDateTime == null)
+        {
+            _workout.EndDateTime = DateTime.Now;
+        }
 
         await WorkoutDatabaseService.UpdateWorkoutAsync(_workout);
         await Navigation.PopAsync();

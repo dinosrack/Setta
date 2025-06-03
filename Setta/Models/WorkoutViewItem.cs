@@ -27,7 +27,7 @@ namespace Setta.Models
 
         // Сводка: длительность (в минутах) и общий вес, только для завершённых тренировок
         public string SummaryText =>
-            !IsActive && EndDateTime.HasValue
+            !IsActive && EndDateTime.HasValue && EndDateTime.Value > StartDateTime
                 ? $"{(int)(EndDateTime.Value - StartDateTime).TotalMinutes} мин | {TotalWeight} кг"
                 : "";
     }

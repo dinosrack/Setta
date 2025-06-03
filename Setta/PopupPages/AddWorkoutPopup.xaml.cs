@@ -52,14 +52,14 @@ public partial class AddWorkoutPopup : Popup
 
         if (workoutDate == now.Date)
         {
-            // Тренировка на сегодня — точное текущее время
+            // Сегодня: активная тренировка, начинается сейчас
             startDateTime = now;
         }
         else
         {
-            // Тренировка на другой день — 12:00 и сразу завершается через 1 час
+            // Прошлая дата: фиксированное время начала и окончания
             startDateTime = workoutDate.AddHours(12);
-            endDateTime = startDateTime.AddHours(1);
+            endDateTime = workoutDate.AddHours(13); // строго через 1 час, тоже по дате workoutDate
         }
 
         var workout = new Workout

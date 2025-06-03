@@ -57,9 +57,16 @@ public partial class WorkoutPage : ContentPage
         {
             foreach (var w in activeWorkouts.Skip(1))
             {
-                w.EndDateTime = DateTime.Now;
+                if (w.StartDateTime.Date < DateTime.Now.Date)
+                    w.EndDateTime = w.StartDateTime.AddMinutes(60);
+                else
+                    w.EndDateTime = DateTime.Now;
+
                 await WorkoutDatabaseService.UpdateWorkoutAsync(w);
             }
+
+            // Обновляем список после изменений
+            workouts = await WorkoutDatabaseService.GetWorkoutsAsync();
         }
 
         // Преобразуем тренировки в view-модели для отображения
@@ -71,12 +78,11 @@ public partial class WorkoutPage : ContentPage
             TotalWeight = w.TotalWeight
         });
 
-        // Группируем по дате (пример: "13 апреля")
         var grouped = viewItems
             .GroupBy(w => w.StartDateTime.Date)
             .OrderByDescending(g => g.Key)
             .Select(g => new WorkoutGroup(
-                g.Key.ToString("d MMMM", new System.Globalization.CultureInfo("ru-RU")),
+                g.Key.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("ru-RU")),
                 g.OrderByDescending(w => w.StartDateTime)))
             .ToList();
 
