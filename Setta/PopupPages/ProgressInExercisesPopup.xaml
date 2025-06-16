@@ -135,6 +135,7 @@
                 <Button Text="Удалить"
                         BackgroundColor="{StaticResource Red}"
                         HeightRequest="50"
+                        TextColor="White"
                         HorizontalOptions="FillAndExpand"
                         Clicked="OnDeleteExercise"
                         Grid.Column="0"/>
@@ -142,6 +143,7 @@
                 <Button Text="Сохранить"
                         BackgroundColor="{StaticResource Important}"
                         HeightRequest="50"
+                        TextColor="White"
                         HorizontalOptions="FillAndExpand"
                         Clicked="OnSaveExercise"
                         Grid.Column="1"/>
